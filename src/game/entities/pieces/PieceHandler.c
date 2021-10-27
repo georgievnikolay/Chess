@@ -21,14 +21,10 @@
 
 enum PieceHandlerDefines {
     STARTING_PIECES_COUNT = 16,
-    PAWNS_COUNT = 8,
-    WHITE_PLAYER_START_PAWN_ROW = 6,
-    WHITE_PLAYER_START_ROW = 7,
-    BLACK_PLAYER_START_PAWN_ROW = 1,
-    BLACK_PLAYER_START_ROW = 0,
-    NON_PAWN_PIECES_CTN = 8,
-    PIECES_IN_A_ROW_CTN = 8,
-    ROWS_WITH_PIECES = 2
+    TILES_IN_ROW = 8,
+    TILES_IN_COL = 8,
+    BOARD_MID = 4,
+    NONE = -1
 };
 
 static void doMovePiece(struct ChessPiece* piece, const struct BoardPos* boardPos) {
@@ -48,10 +44,10 @@ static void handlePieceGrabbedEvent(struct PieceHandler* self,
         return;
     }
 
-    struct ChessPiece* selectadPiece = (struct ChessPiece*)getElementVector(
+    struct ChessPiece* selectedPiece = (struct ChessPiece*)getElementVector(
             &self->pieces[self->selectedPiecePlayerId], self->selectedPieceId);
     const struct BoardPos boardPos = getBoardPos(&event->pos);
-    doMovePiece(selectadPiece, &boardPos);
+    doMovePiece(selectedPiece, &boardPos);
 }
 
 static void handlePieceNoGrabbedEvent(struct PieceHandler* self, 
@@ -83,74 +79,67 @@ static void handlePieceNoGrabbedEvent(struct PieceHandler* self,
     }
 }
 
+static int32_t insertChessPiece(struct Vector* player, const struct ChessPieceCfg* pieceCfg) {
+    struct ChessPiece* currPiece = NULL;
+    currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
+    if (currPiece == NULL) {
+        LOGERR("Bad allocation for chessPiece at [%d,%d].",
+                pieceCfg->boardPos.row, pieceCfg->boardPos.col);
+        return FAILURE;
+    }
+
+    if (SUCCESS != initChessPiece(currPiece, pieceCfg)) {
+        LOGERR("initChessPiece() failed rsrdId: %d", pieceCfg->rsrcId);
+        return FAILURE;
+    }
+
+    pushElementVector(player, currPiece);
+
+    return SUCCESS;      
+}
+
 //TODO Please fix this, there should be a smarter way
 static int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], int32_t whitePiecesRsrcId, int32_t blackPiecesRsrcId) {
     initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
     initVector(&pieces[BLACK_PLAYER_ID], STARTING_PIECES_COUNT);
 
-    const PieceType blackNonPawnTypes[PIECES_IN_A_ROW_CTN] = {
-        ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK};
-    
-    const PieceType whiteNonPawnTypes[NON_PAWN_PIECES_CTN] = {
-        ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK};
+    const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL] = {
+        {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK},
+        {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
+        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
+        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
+        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
+        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
+        {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
+        {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK}
+    };
     
     struct ChessPieceCfg pieceCfg;
-    struct ChessPiece* currPiece = NULL;
     
-    for (int32_t i = 0; i < PAWNS_COUNT; i++) {
-        pieceCfg.boardPos.col = i;
+    for (int32_t row = 0; row < TILES_IN_ROW; ++row) {
+        pieceCfg.boardPos.row = row;
         
-        pieceCfg.boardPos.row = WHITE_PLAYER_START_PAWN_ROW;
-        pieceCfg.playerId = WHITE_PLAYER_ID;
-        pieceCfg.rsrcId = whitePiecesRsrcId;
-        pieceCfg.pieceType = PAWN;
-        
-        for (int32_t player = 0; player < PLAYERS_COUNT; player++) {
-            currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
-            if (currPiece == NULL) {
-                LOGERR("Bad allocation for chessPiece with rsrcId: %d", i);
-                return FAILURE;
-            }
-
-            pieceCfg.boardPos.col = i;
-            if (SUCCESS != initChessPiece(currPiece, &pieceCfg)) {
-                LOGERR("populateWhitePieces() failed rsrdId: %d, relativeId: %d", player, i);
-                return FAILURE;
-            }
-
-            pushElementVector(&pieces[player], currPiece);        
-            
-            pieceCfg.boardPos.row = BLACK_PLAYER_START_PAWN_ROW;
+        if (row < BOARD_MID) {
             pieceCfg.playerId = BLACK_PLAYER_ID;
             pieceCfg.rsrcId = blackPiecesRsrcId;
-
+        } else {
+            pieceCfg.playerId = WHITE_PLAYER_ID;
+            pieceCfg.rsrcId = whitePiecesRsrcId;
         }
 
-        pieceCfg.boardPos.col = i;
-        pieceCfg.boardPos.row = WHITE_PLAYER_START_ROW;
-        pieceCfg.playerId = WHITE_PLAYER_ID;
-        pieceCfg.rsrcId = whitePiecesRsrcId;
-        pieceCfg.pieceType = whiteNonPawnTypes[i];
+        for (int32_t col = 0; col < TILES_IN_COL; ++col) {
+            pieceCfg.boardPos.col = col;
 
-            for (int32_t player = 0; player < PLAYERS_COUNT; player++) {
-                currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
-                if (currPiece == NULL) {
-                    LOGERR("Bad allocation for chessPiece with rsrcId: %d", i);
-                    return FAILURE;
-                }
+            pieceCfg.pieceType = allPieces[row][col];
+            if (pieceCfg.pieceType == (PieceType)NONE) {
+                continue;
+            }
 
-                pieceCfg.boardPos.col = i;
-                if (SUCCESS != initChessPiece(currPiece, &pieceCfg)) {
-                    LOGERR("populateWhitePieces() failed rsrdId: %d, relativeId: %d", player, i);
-                    return FAILURE;
-                }
-
-                pushElementVector(&pieces[player], currPiece);        
-
-                pieceCfg.boardPos.row = BLACK_PLAYER_START_ROW;
-                pieceCfg.playerId = BLACK_PLAYER_ID;
-                pieceCfg.rsrcId = blackPiecesRsrcId;
-                pieceCfg.pieceType = blackNonPawnTypes[i];
+            if (SUCCESS != insertChessPiece(&pieces[pieceCfg.playerId], 
+                                            &pieceCfg)) {
+                LOGERR("Error, insertChessPiece() failed");
+                return FAILURE;
+            }
         }
     }
 

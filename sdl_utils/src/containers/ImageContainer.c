@@ -52,11 +52,18 @@ int32_t initImageContainer(struct ImageContainer* self,
 
 void deinitImageContainer(struct ImageContainer* self) {
     for (int32_t i = 0; i < MAX_IMAGE_SIZE; i++) {
-        if (&self->textureFrames[i]) {
-            freeTexture(&self->textures[i]);
+        if (NULL == self->textures[i]) {
+            continue;
         }
 
+        size_t frameCount = getSizeVector(&self->textureFrames[i]);
+        for (size_t j = 0; j < frameCount; j++) {
+            free(getElementVector(&self->textureFrames[i], j));
+        }
+        
         freeVector(&self->textureFrames[i]);
+
+        freeTexture(&self->textures[i]);
     }
 
     freeVector(&EMPTY_VECTOR);
