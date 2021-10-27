@@ -82,7 +82,7 @@ int32_t initRenderer(struct Renderer* self, SDL_Window* window) {
     }
 
     //set color to blue
-    if (SUCCESS != SDL_SetRenderDrawColor(self->sdlRenderer, 0, 0, 255, SDL_ALPHA_OPAQUE)) {
+    if (SUCCESS != SDL_SetRenderDrawColor(self->sdlRenderer, 192, 192, 192, SDL_ALPHA_OPAQUE)) {
         LOGERR("SDL_SetRenderDrawColor() failed. SDL Error: %s", SDL_GetError());
         return FAILURE;
     }

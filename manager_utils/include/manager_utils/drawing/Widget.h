@@ -43,4 +43,6 @@ void hideWidget(struct Widget *self);
 
 void showWidget(struct Widget *self);
 
+void setPositionWidget(struct Widget* self, const struct Point* pos);
+
 #endif /* MANAGER_UTILS_INCLUDE_MANAGER_UTILS_DRAWING_WIDGET_H_ */

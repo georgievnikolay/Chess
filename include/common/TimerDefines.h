@@ -16,7 +16,7 @@
 /*Unique IDs for all the different timers 
 our application is goint to use*/
 typedef enum {
-    WHEEL_TIMER_ID
+    DUMMY_TIMER
 } TimerIds;
 
 #endif /* INCLUDE_COMMON_TIMERDEFINES_H_ */

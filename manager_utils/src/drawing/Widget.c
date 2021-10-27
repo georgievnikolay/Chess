@@ -76,3 +76,7 @@ void hideWidget(struct Widget *self) {
 void showWidget(struct Widget *self) {
     self->isVisible = true;
 }
+
+void setPositionWidget(struct Widget* self, const struct Point* pos) {
+    self->drawParams.pos = *pos;
+}

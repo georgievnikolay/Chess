@@ -10,8 +10,9 @@
 /* Own library includes */
 #include "common/TimerDefines.h"
 #include "common/CommonDefines.h"
-#include "utils/drawing/Rectangle.h"
 #include "sdl_utils/config/ImageContainerCfg.h"
+#include "utils/drawing/Rectangle.h"
+#include "utils/ErrorCodes.h"
 
 /* Forward declarations */
 
@@ -20,15 +21,12 @@
 static const int32_t SCREEN_WIDTH = 1024;
 static const int32_t SCREEN_HEIGHT = 800;
 
-static const int32_t RUNNING_GIRL_FRAMES_COUNT = 6;
-static const int32_t RUNNING_GIRL_FRAME_ANIM_WIDTH = 256;
-static const int32_t RUNNING_GIRL_FRAME_ANIM_HEIGHT = 220;
+static const int32_t CHESS_BOARD_IMG_WIDTH_HEIGHT = 800;
 
-static const int32_t WHEEL_WIDTH_HEIGHT = 695;
+static const int32_t CHESS_PIECE_FRAMES_COUNT = 6;
+static const int32_t CHESS_PIECE_FRAME_WIDTH_HEIGHT = 100;
 
-static const int32_t START_STOP_BUTTON_FRAMES_COUNT = 3;
-static const int32_t START_STOP_BUTTON_WIDTH = 150;
-static const int32_t START_STOP_BUTTON_HEIGHT = 50;
+static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
 static const int32_t ANGELINE_VINTAGE_FONT = 40;
 
@@ -48,7 +46,7 @@ static void populateWindowCfg(struct MonitorWindowCfg* cfg) {
     cfg->width = SCREEN_WIDTH;
     cfg->height = SCREEN_HEIGHT;
     cfg->windowPos = POINT_UNDEFINED;
-    cfg->windowName = "Hardware_Rendering";
+    cfg->windowName = "CHESS";
 }
 
 static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
@@ -56,50 +54,47 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     initVector(&imgCfg.frames, 10);
     struct Rectangle* frame;
 
-    //Hero
-    for (int32_t i = 0; i < RUNNING_GIRL_FRAMES_COUNT; i++) {
-        frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
-        frame->x = 0 + (RUNNING_GIRL_FRAME_ANIM_WIDTH * i);
-        frame->y = 0;
-        frame->w = RUNNING_GIRL_FRAME_ANIM_WIDTH;
-        frame->h = RUNNING_GIRL_FRAME_ANIM_HEIGHT;
-
-        pushElementVector(&imgCfg.frames, frame);
-    }
-
-    populateResourceLocation(imgCfg.location, "resources/images/sprites/running_girl.png");
-    insertImageConfig(cfg, RUNNING_GIRL_ID, &imgCfg);
-    clearElementsVector(&imgCfg.frames);
-
-    //Wheel
+    //Chess Board
     frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
     frame->x = 0;
     frame->y = 0;
-    frame->w = WHEEL_WIDTH_HEIGHT;
-    frame->h = WHEEL_WIDTH_HEIGHT;
+    frame->w = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+    frame->h = CHESS_BOARD_IMG_WIDTH_HEIGHT;
     pushElementVector(&imgCfg.frames, frame);
     
-    populateResourceLocation(imgCfg.location, "resources/images/wheel.png");
-    insertImageConfig(cfg, WHEEL_ID, &imgCfg);
+    populateResourceLocation(imgCfg.location, "resources/images/ChessBoard.jpg");
+    insertImageConfig(cfg, CHESS_BOARD_TEXTURE_ID, &imgCfg);
     clearElementsVector(&imgCfg.frames);
+
+    //Target
+    frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
+    frame->x = 0;
+    frame->y = 0;
+    frame->w = TARGET_WIDTH_HEIGHT;
+    frame->h = TARGET_WIDTH_HEIGHT;
+    pushElementVector(&imgCfg.frames, frame);
     
-    //Buttons
-#define BUTTONS_COUNT 2
-    char* buttonLocation[BUTTONS_COUNT] = {
-        "resources/buttons/button_start.png", 
-        "resources/buttons/button_stop.png"};
+    populateResourceLocation(imgCfg.location, "resources/images/Target.png");
+    insertImageConfig(cfg, TARGET_TEXTURE_ID, &imgCfg);
+    clearElementsVector(&imgCfg.frames);
 
-    const int32_t buttonIds[BUTTONS_COUNT] = {
-        START_BUTTON_ID, 
-        STOP_BUTTON_ID};
+    //Chess Pieces
+#define PLAYERS_COUNT 2
+    char* buttonLocation[PLAYERS_COUNT] = {
+        "resources/images/Whites.png",
+        "resources/images/Blacks.png"};
 
-    for (int32_t buttonId = 0; buttonId < BUTTONS_COUNT; buttonId++) {
-        for (int32_t i = 0; i < START_STOP_BUTTON_FRAMES_COUNT; i++) {
+    const int32_t buttonIds[PLAYERS_COUNT] = {
+        WHITE_PIECES_TEXTURE_ID,
+        BLACK_PIECES_TEXTURE_ID};
+
+    for (int32_t buttonId = 0; buttonId < PLAYERS_COUNT; buttonId++) {
+        for (int32_t i = 0; i < CHESS_PIECE_FRAMES_COUNT; i++) {
             frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
-            frame->x = 0 + (START_STOP_BUTTON_WIDTH * i);
+            frame->x = 0 + (CHESS_PIECE_FRAME_WIDTH_HEIGHT * i);
             frame->y = 0;
-            frame->w = START_STOP_BUTTON_WIDTH;
-            frame->h = START_STOP_BUTTON_HEIGHT;
+            frame->w = CHESS_PIECE_FRAME_WIDTH_HEIGHT;
+            frame->h = CHESS_PIECE_FRAME_WIDTH_HEIGHT;
 
             pushElementVector(&imgCfg.frames, frame);
         }
@@ -129,11 +124,11 @@ static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
 }
 
 static void populateGameCfg(struct GameCfg* cfg) {
-    cfg->heroRsrcId = RUNNING_GIRL_ID;
-    cfg->wheelRsrcId = WHEEL_ID;
-    cfg->startButtonRsrcId = START_BUTTON_ID;
-    cfg->stopButtonRsrcId = STOP_BUTTON_ID;
-    cfg->rotWheelTimerId = WHEEL_TIMER_ID;
+    cfg->gameBoardRsrcId = CHESS_BOARD_TEXTURE_ID;
+    cfg->targetRsrcId = TARGET_TEXTURE_ID;
+    
+    cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
+    cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
 }
 
 struct EngineConfig loadEngineConfig() {

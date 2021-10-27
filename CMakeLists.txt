@@ -23,21 +23,28 @@ add_executable(
         ${_INCLUDE_DIR}/engine/Engine.h
         ${_INCLUDE_DIR}/engine/config/EngineConfig.h
         ${_INCLUDE_DIR}/engine/EngineConfigLoader.h
+        
+        ${_INCLUDE_DIR}/game/proxies/GameBoardProxy.h
         ${_INCLUDE_DIR}/game/config/GameCfg.h
+        ${_INCLUDE_DIR}/game/config/PieceHandlerCfg.h
+        ${_INCLUDE_DIR}/game/defines/ChessDefines.h
+        ${_INCLUDE_DIR}/game/entities/board/GameBoard.h
+        ${_INCLUDE_DIR}/game/entities/pieces/types/ChessPiece.h
+        ${_INCLUDE_DIR}/game/entities/pieces/PieceHandler.h
+        ${_INCLUDE_DIR}/game/utils/BoardPos.h
+        ${_INCLUDE_DIR}/game/utils/BoardUtils.h
         ${_INCLUDE_DIR}/game/Game.h
-        ${_INCLUDE_DIR}/game/entities/Hero.h
-        ${_INCLUDE_DIR}/game/entities/Wheel.h
-        ${_INCLUDE_DIR}/game/entities/buttons/WheelButton.h
-        ${_INCLUDE_DIR}/game/proxies/GameInterface.h
 
 
         ${_SOURCE_DIR}/main.c
         ${_SOURCE_DIR}/engine/Engine.c
         ${_SOURCE_DIR}/engine/EngineConfigLoader.c
+        
+        ${_SOURCE_DIR}/game/entities/board/GameBoard.c
+        ${_SOURCE_DIR}/game/entities/pieces/types/ChessPiece.c
+        ${_SOURCE_DIR}/game/entities/pieces/PieceHandler.c
+        ${_SOURCE_DIR}/game/utils/BoardUtils.c
         ${_SOURCE_DIR}/game/Game.c
-        ${_SOURCE_DIR}/game/entities/Hero.c
-        ${_SOURCE_DIR}/game/entities/Wheel.c
-        ${_SOURCE_DIR}/game/entities/buttons/WheelButton.c
 )
 
 set_target_c_standard(${PROJECT_NAME} 11)

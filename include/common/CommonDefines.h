@@ -14,10 +14,10 @@
 /*        Defines       */
 
 typedef enum {
-    RUNNING_GIRL_ID,
-    WHEEL_ID,
-    START_BUTTON_ID,
-    STOP_BUTTON_ID
+    CHESS_BOARD_TEXTURE_ID,
+    WHITE_PIECES_TEXTURE_ID,
+    BLACK_PIECES_TEXTURE_ID,
+    TARGET_TEXTURE_ID
 } TextureIds;
 
 /*Unique ID enum for all the font we use
