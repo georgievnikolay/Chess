@@ -19,6 +19,7 @@ struct GameCfg {
     struct PieceHandlerCfg pieceHandlerCfg;
     int32_t gameBoardRsrcId;
     int32_t targetRsrcId;
+    int32_t moveSelectorRsrcId;
 };
 
 #endif /* INCLUDE_GAME_CONFIG_GAMECFG_H_ */

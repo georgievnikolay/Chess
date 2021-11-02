@@ -27,9 +27,10 @@ int32_t initChessPiece(struct ChessPiece* self, const struct ChessPieceCfg* cfg)
     createImage(&self->pieceImg, cfg->rsrcId, &absPos);
     setFrameImage(&self->pieceImg, cfg->pieceType);
     
-    self->poardPos = cfg->boardPos;
+    self->boardPos = cfg->boardPos;
     self->playerId = cfg->playerId;
     self->pieceType = cfg->pieceType;
+    self->isUnfinished = false;
     
     return SUCCESS;
 }
@@ -50,7 +51,7 @@ bool containsEventChessPiece(struct ChessPiece* self,
 
 void setBoardPosChessPiece(struct ChessPiece* self,
                            const struct BoardPos* boardPos) {
-    self->poardPos = *boardPos;
+    self->boardPos = *boardPos;
     const struct Point pos = getAbsPos(boardPos);
     setPositionWidget(&self->pieceImg.widget, &pos);
 }

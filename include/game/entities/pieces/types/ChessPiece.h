@@ -27,9 +27,12 @@ struct ChessPieceCfg {
 
 struct ChessPiece {
     struct Image pieceImg;
-    struct BoardPos poardPos;
+    struct BoardPos boardPos;
     int32_t playerId;
     PieceType pieceType;
+
+    //TODO: remove when all pieces are impl
+    bool isUnfinished;
 };
 
 int32_t initChessPiece(struct ChessPiece* self, const struct ChessPieceCfg* cfg);

@@ -17,6 +17,7 @@
 struct PieceHandlerCfg {
     int32_t whitePiecesRsrcId;
     int32_t blackPiecesRsrcId;
+    int32_t notReadyFontId;
 };
 
 #endif /* INCLUDE_GAME_CONFIG_PIECEHANDLERCFG_H_ */

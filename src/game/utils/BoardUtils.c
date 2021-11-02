@@ -7,8 +7,12 @@
 
 /* Own library includes */
 #include "game/utils/BoardPos.h"
+#include "game/entities/pieces/types/ChessPiece.h"
+#include "utils/containers/Vector.h"
 #include "utils/drawing/Point.h"
 #include "utils/drawing/Rectangle.h"
+#include "utils/ErrorCodes.h"
+#include "utils/Log.h"
 
 /* Forward declarations */
 
@@ -56,4 +60,95 @@ bool isInsideBoardPoint(const struct Point *absPos) {
           .w = BOARD_WIDTH_HEIGHT, .h = BOARD_WIDTH_HEIGHT };
 
     return isPointInsideRect(absPos, &boardRect);
+}
+
+int32_t getOpponentId(int32_t activePlayerId) {
+    if (activePlayerId == WHITE_PLAYER_ID) {
+        return BLACK_PLAYER_ID;
+    }
+
+    return WHITE_PLAYER_ID;
+}
+
+struct BoardPos getAdjacentPos(Direction dir, const struct BoardPos *currPos) {
+    struct BoardPos pos = *currPos;
+
+    switch (dir) {
+        case UP:
+            --pos.row;
+            break;
+
+        case UP_LEFT:
+            --pos.col;
+            --pos.row;
+            break;
+
+        case LEFT:
+            --pos.col;
+            break;
+
+        case DOWN_LEFT:
+            --pos.col;
+            ++pos.row;        
+            break;
+
+        case DOWN:
+            ++pos.row;            
+            break;
+
+        case DOWN_RIGHT:
+            ++pos.col;
+            ++pos.row;
+            break;
+
+        case RIGHT:
+            ++pos.col;
+            break;
+
+        case UP_RIGHT:
+            ++pos.col;
+            --pos.row;
+            break;
+
+        default:
+            LOGERR("Error, recieved unsupported direction: %d", dir);
+            break;
+    }
+
+    return pos;
+}
+
+bool doCollideWithPiece(const struct BoardPos *selectedPos,
+                                        const struct Vector *pieces,
+                                        int32_t *outCollisionRelativeId) {
+    
+    const struct ChessPiece* piece = NULL;
+    const size_t size = getSizeVector(pieces);
+    for (size_t i = 0; i < size; i++) {
+        piece = (const struct ChessPiece*)getElementVector(pieces, i);
+
+        if (areBoardPosEqual(selectedPos, &piece->boardPos)) {
+            *outCollisionRelativeId = (int32_t)i;
+            return true;
+        }
+    }
+
+    *outCollisionRelativeId = -1;
+    return false;
+}
+
+TileType getTileType(const struct BoardPos *boardPos,
+                                  const struct Vector *playerPieces,
+                                  const struct Vector *enemyPieces) {
+    int32_t foundIdx = 0;
+
+    if (doCollideWithPiece(boardPos, playerPieces, &foundIdx)) {
+        return GUARD_TILE;
+    }
+
+    if (doCollideWithPiece(boardPos, enemyPieces, &foundIdx)) {
+        return TAKE_TILE;
+    }
+
+    return MOVE_TILE;
 }

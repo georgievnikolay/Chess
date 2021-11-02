@@ -19,7 +19,7 @@
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
     if (SUCCESS != initGameBoard(&self->gameBoard, cfg->gameBoardRsrcId, 
-                                                   cfg->targetRsrcId)) {
+                                 cfg->targetRsrcId, cfg->moveSelectorRsrcId)) {
         LOGERR("Error, initGameBoard() failed");
         return FAILURE;
     }

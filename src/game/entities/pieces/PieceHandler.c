@@ -10,7 +10,9 @@
 #include "game/proxies/GameBoardProxy.h"
 #include "game/config/PieceHandlerCfg.h"
 #include "game/utils/BoardUtils.h"
-#include "game/entities/pieces/types//ChessPiece.h"
+#include "game/entities/pieces/types/ChessPiece.h"
+#include "game/entities/pieces/PieceHandlerPopulator.h"
+#include "game/entities/pieces/ChessPieceResolver.h"
 #include "sdl_utils/InputEvent.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
@@ -19,16 +21,32 @@
 
 /*        Defines       */
 
-enum PieceHandlerDefines {
-    STARTING_PIECES_COUNT = 16,
-    TILES_IN_ROW = 8,
-    TILES_IN_COL = 8,
-    BOARD_MID = 4,
-    NONE = -1
-};
+static void doMovePiece(struct PieceHandler* self, 
+                        struct ChessPiece* piece,
+                        const struct BoardPos* selectedBoardPos) {
 
-static void doMovePiece(struct ChessPiece* piece, const struct BoardPos* boardPos) {
-    setBoardPosChessPiece(piece, boardPos);
+    setBoardPosChessPieceResolver(piece, selectedBoardPos);
+    const int32_t opponentId = getOpponentId(piece->playerId);
+    int32_t foundIdx = -1;
+
+    if (doCollideWithPiece(selectedBoardPos, &self->pieces[opponentId], &foundIdx)) {
+        struct ChessPiece* enemyPiece = 
+                getElementVector(&self->pieces[opponentId], foundIdx);
+        deinitChessPieceResolver(enemyPiece);
+        free(enemyPiece);
+        deleteElementVector(&self->pieces[opponentId], foundIdx);
+    }
+}
+
+static void handlePieceGrabbed(struct PieceHandler* self,
+                               struct ChessPiece* selectedPiece,
+                               const struct Point* pos) {
+
+    const struct BoardPos boardPos = getBoardPos(pos);
+    const struct Vector moveTile = 
+            getMoveTilesPieceResolver(selectedPiece, self->pieces);
+    
+    onPieceGrabbedGameBoardProxy(self->gameBoardProxy, &boardPos, &moveTile);
 }
 
 static void handlePieceGrabbedEvent(struct PieceHandler* self, 
@@ -38,16 +56,22 @@ static void handlePieceGrabbedEvent(struct PieceHandler* self,
     }
 
     self->isPieceGrabbed = false;
-    onPieceUngrabbed(self->gameBoardProxy);
     
     if (!isInsideBoardPoint(&event->pos)) {
+        onPieceUngrabbedGameBoardProxy(self->gameBoardProxy);
         return;
     }
 
+    const struct BoardPos boardPos = getBoardPos(&event->pos);
+    if (!isMoveAllowedGameBoardProxy(self->gameBoardProxy, &boardPos)) {
+        onPieceUngrabbedGameBoardProxy(self->gameBoardProxy);
+        return;
+    }
+    onPieceUngrabbedGameBoardProxy(self->gameBoardProxy);
+
     struct ChessPiece* selectedPiece = (struct ChessPiece*)getElementVector(
             &self->pieces[self->selectedPiecePlayerId], self->selectedPieceId);
-    const struct BoardPos boardPos = getBoardPos(&event->pos);
-    doMovePiece(selectedPiece, &boardPos);
+    doMovePiece(self, selectedPiece, &boardPos);
 }
 
 static void handlePieceNoGrabbedEvent(struct PieceHandler* self, 
@@ -67,83 +91,18 @@ static void handlePieceNoGrabbedEvent(struct PieceHandler* self,
         for (size_t pieceId = 0; pieceId < size; pieceId++) {
             currPiece = 
                 (struct ChessPiece*)getElementVector(&self->pieces[i], pieceId);
-            if (containsEventChessPiece(currPiece, event)) {
-                self->isPieceGrabbed = true;
-                self->selectedPieceId = (int32_t)pieceId;
-                self->selectedPiecePlayerId = i;
-                const struct BoardPos boardPos = getBoardPos(&event->pos);
-                onPieceGrabbed(self->gameBoardProxy, &boardPos);
-                return;
-            }
-        }
-    }
-}
-
-static int32_t insertChessPiece(struct Vector* player, const struct ChessPieceCfg* pieceCfg) {
-    struct ChessPiece* currPiece = NULL;
-    currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
-    if (currPiece == NULL) {
-        LOGERR("Bad allocation for chessPiece at [%d,%d].",
-                pieceCfg->boardPos.row, pieceCfg->boardPos.col);
-        return FAILURE;
-    }
-
-    if (SUCCESS != initChessPiece(currPiece, pieceCfg)) {
-        LOGERR("initChessPiece() failed rsrdId: %d", pieceCfg->rsrcId);
-        return FAILURE;
-    }
-
-    pushElementVector(player, currPiece);
-
-    return SUCCESS;      
-}
-
-//TODO Please fix this, there should be a smarter way
-static int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], int32_t whitePiecesRsrcId, int32_t blackPiecesRsrcId) {
-    initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
-    initVector(&pieces[BLACK_PLAYER_ID], STARTING_PIECES_COUNT);
-
-    const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL] = {
-        {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK},
-        {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
-        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
-        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
-        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
-        {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
-        {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
-        {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK}
-    };
-    
-    struct ChessPieceCfg pieceCfg;
-    
-    for (int32_t row = 0; row < TILES_IN_ROW; ++row) {
-        pieceCfg.boardPos.row = row;
-        
-        if (row < BOARD_MID) {
-            pieceCfg.playerId = BLACK_PLAYER_ID;
-            pieceCfg.rsrcId = blackPiecesRsrcId;
-        } else {
-            pieceCfg.playerId = WHITE_PLAYER_ID;
-            pieceCfg.rsrcId = whitePiecesRsrcId;
-        }
-
-        for (int32_t col = 0; col < TILES_IN_COL; ++col) {
-            pieceCfg.boardPos.col = col;
-
-            pieceCfg.pieceType = allPieces[row][col];
-            if (pieceCfg.pieceType == (PieceType)NONE) {
+            
+            if (!containsEventChessPiece(currPiece, event)) {
                 continue;
             }
-
-            if (SUCCESS != insertChessPiece(&pieces[pieceCfg.playerId], 
-                                            &pieceCfg)) {
-                LOGERR("Error, insertChessPiece() failed");
-                return FAILURE;
-            }
+            
+            self->isPieceGrabbed = true;
+            self->selectedPieceId = (int32_t)pieceId;
+            self->selectedPiecePlayerId = i;
+            handlePieceGrabbed(self, currPiece, &event->pos);
+            return;
         }
     }
-
-    return SUCCESS;
 }
 
 int32_t initPieceHandler(struct PieceHandler* self, 
@@ -157,8 +116,8 @@ int32_t initPieceHandler(struct PieceHandler* self,
     self->gameBoardProxy = gameBoardProxy;
 
     if (SUCCESS != populatePieces(self->pieces, cfg->whitePiecesRsrcId, 
-                                                cfg->blackPiecesRsrcId)) {
-        LOGERR("populateWhitePieces() failed");
+                                  cfg->blackPiecesRsrcId, cfg->notReadyFontId)) {
+        LOGERR("populatePieces() failed");
         return FAILURE;
     }
 
@@ -177,7 +136,7 @@ void deinitPieceHandler(struct PieceHandler* self) {
         for (size_t pieceId = 0; pieceId < size; pieceId++) {
             currPiece = 
                 (struct ChessPiece*)getElementVector(&self->pieces[i], pieceId);
-            deinitChessPiece(currPiece);
+            deinitChessPieceResolver(currPiece);
             free(currPiece);
         }
         freeVector(&self->pieces[i]);
@@ -200,7 +159,7 @@ void drawPieceHandler(struct PieceHandler* self) {
         for (size_t pieceId = 0; pieceId < size; pieceId++) {
             currPiece = 
                 (struct ChessPiece*)getElementVector(&self->pieces[i], pieceId);
-            drawChessPiece(currPiece);
+            drawChessPieceResolver(currPiece);
         }
     }
 }

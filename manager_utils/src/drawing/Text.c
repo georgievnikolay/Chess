@@ -66,6 +66,11 @@ void destroyText(struct Text *self) {
         return;        
     }
 
+    if (self->textContent) {
+        free(self->textContent);
+        self->textContent = NULL;
+    }
+
     resetText(self);
     self->widget.isDestroyed = true;
     self->widget.isCreated = false;
@@ -75,11 +80,7 @@ void resetText(struct Text *self) {
     resetWidget(&self->widget);
     self->color = COLOR_BLACK;
     self->fontId = INVALID_RSRC_ID;
-
-    if (self->textContent) {
-        free(self->textContent);
-        self->textContent = NULL;
-    }
+    self->textContent = NULL;
 }
 
 void setText(struct Text *self, const char *textContent) {

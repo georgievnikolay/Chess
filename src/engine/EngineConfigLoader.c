@@ -26,9 +26,12 @@ static const int32_t CHESS_BOARD_IMG_WIDTH_HEIGHT = 800;
 static const int32_t CHESS_PIECE_FRAMES_COUNT = 6;
 static const int32_t CHESS_PIECE_FRAME_WIDTH_HEIGHT = 100;
 
+static const int32_t MOVE_TILES_FRAMES_COUNT = 3;
+static const int32_t MOVE_TILES_FRAME_WIDTH_HEIGHT = 100;
+
 static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
-static const int32_t ANGELINE_VINTAGE_FONT = 40;
+static const int32_t ANGELINE_VINTAGE_FONT = 20;
 
 static const int64_t ENGINE_TARGET_FRAMES = 30;
 
@@ -54,6 +57,7 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     initVector(&imgCfg.frames, 10);
     struct Rectangle* frame;
 
+//TODO: find better way to populate
     //Chess Board
     frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
     frame->x = 0;
@@ -105,6 +109,20 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     }
 #undef BUTTONS_COUNT
 
+    //Move Tiles
+    for (int32_t i = 0; i < MOVE_TILES_FRAMES_COUNT; i++) {
+            frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
+            frame->x = 0 + (MOVE_TILES_FRAME_WIDTH_HEIGHT * i);
+            frame->y = 0;
+            frame->w = MOVE_TILES_FRAME_WIDTH_HEIGHT;
+            frame->h = MOVE_TILES_FRAME_WIDTH_HEIGHT;
+
+            pushElementVector(&imgCfg.frames, frame);
+        }
+        populateResourceLocation(imgCfg.location, "resources/images/MoveTiles.png");
+        insertImageConfig(cfg, MOVE_TILES_TEXTURE_ID, &imgCfg);
+        clearElementsVector(&imgCfg.frames);
+
     freeVector(&imgCfg.frames);
 }
 
@@ -112,7 +130,7 @@ static void populateTextContainerConfig(struct TextContainerCfg* cfg) {
     struct FontConfig fontCfg;
     fontCfg.fontSize = ANGELINE_VINTAGE_FONT;
     populateResourceLocation(fontCfg.location, "resources/fonts/AngelineVintage.ttf");
-    insertFontConfig(cfg, ANGELINE_VINTAGE_40_FONT_ID, &fontCfg);
+    insertFontConfig(cfg, ANGELINE_VINTAGE_20_FONT_ID, &fontCfg);
 }
 
 static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
@@ -126,9 +144,11 @@ static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
 static void populateGameCfg(struct GameCfg* cfg) {
     cfg->gameBoardRsrcId = CHESS_BOARD_TEXTURE_ID;
     cfg->targetRsrcId = TARGET_TEXTURE_ID;
+    cfg->moveSelectorRsrcId = MOVE_TILES_TEXTURE_ID;
     
     cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
     cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
+    cfg->pieceHandlerCfg.notReadyFontId = ANGELINE_VINTAGE_20_FONT_ID;
 }
 
 struct EngineConfig loadEngineConfig() {
@@ -138,7 +158,7 @@ struct EngineConfig loadEngineConfig() {
     populateManagerHandlerCfg(&cfg.managerHandlerCfg);
     populateGameCfg(&cfg.gameCfg);
 
-    cfg.debugConsoleFontId = ANGELINE_VINTAGE_40_FONT_ID;
+    cfg.debugConsoleFontId = ANGELINE_VINTAGE_20_FONT_ID;
 
     return cfg;
 }

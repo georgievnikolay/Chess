@@ -4,6 +4,7 @@
 /*      Own include     */
 
 /*    System includes   */
+#include <stdbool.h>
 
 /* Third party includes */
 
@@ -11,11 +12,15 @@
 
 /* Forward declarations */
 struct BoardPos;
+struct Vector;
 
 /*        Defines       */
 
-void onPieceGrabbed(void* proxy, const struct BoardPos* boardPos);
+void onPieceGrabbedGameBoardProxy(void* proxy, const struct BoardPos* boardPos,
+                    const struct Vector* moveTiles);
 
-void onPieceUngrabbed(void* proxy);
+void onPieceUngrabbedGameBoardProxy(void* proxy);
+
+bool isMoveAllowedGameBoardProxy(void* proxy, const struct BoardPos* boardPos);
 
 #endif /* INCLUDE_GAME_PROXIES_GAMEBOARDPROXY_H_ */

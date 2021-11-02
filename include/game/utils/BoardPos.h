@@ -5,6 +5,7 @@
 
 /*    System includes   */
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Third party includes */
 
@@ -18,5 +19,8 @@ struct BoardPos {
     int32_t row;
     int32_t col;
 };
+
+bool areBoardPosEqual(const struct BoardPos* left, 
+                      const struct BoardPos* right);
 
 #endif /* INCLUDE_GAME_UTILS_BOARDPOS_H_ */
