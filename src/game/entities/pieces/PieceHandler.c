@@ -204,3 +204,16 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
 
     pushElementVector(&self->pieces[currPlayerId], currPiece);
 }
+
+void setWidgetFlipTypePieceHandler(struct PieceHandler* self, 
+                                   WidgetFlip flipType) {
+    struct ChessPiece* currPiece = NULL;
+    for (int32_t i = 0; i < PLAYERS_COUNT; i++) {
+        const size_t size = getSizeVector(&self->pieces[i]);
+        for (size_t pieceId = 0; pieceId < size; pieceId++) {
+            currPiece = 
+                (struct ChessPiece*)getElementVector(&self->pieces[i], pieceId);
+            currPiece->pieceImg.widget.drawParams.flipType = flipType;
+        }
+    }
+}

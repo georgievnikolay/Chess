@@ -42,6 +42,19 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
+    if (SUCCESS != initGameBoardAnimator(&self->gameBoardAnimator, 
+            (void*)self, &self->gameBoard.boardImg)) {
+        LOGERR("Error, initGameBoardAnimator() failed");
+        return FAILURE;
+    }
+
+    if (SUCCESS != initInputInverter(&self->inputInverter, 
+            cfg->piecePromotionPanelCfg.gameBoardWidth, 
+            cfg->piecePromotionPanelCfg.gameBoardHeight)) {
+        LOGERR("Error, initInputInverter() failed");
+        return FAILURE;
+    }
+
     return SUCCESS;
 }
 
@@ -51,11 +64,13 @@ void deinitGame(struct Game* self) {
     deinitPiecePromotionPanel(&self->piecePromotionPanel);
 }
 
-void handleEventGame(struct Game* self, const struct InputEvent* event) {
+void handleEventGame(struct Game* self, struct InputEvent* event) {
     if (self->piecePromotionPanel.isActive) {
         handleEventPiecePromotionPanel(&self->piecePromotionPanel, event);
         return;
     }
+
+    invertEventInputInverter(&self->inputInverter, event);
 
     handleEventPieceHandler(&self->pieceHandler, event);
 }
@@ -68,10 +83,10 @@ void drawGame(struct Game* self) {
 
 /*Proxies*/
 void finishTurnGameProxy(void* proxy) {
+    //activate animator
     struct Game* self = (struct Game*)proxy;
-    finishTurn(&self->gameLogic);
+    startAnimGameBoardAnimator(&self->gameBoardAnimator, self->gameLogic.activePlayerId);
 
-    self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
 }
 
 void activatePawnPromotionGameProxy(void* proxy) {
@@ -88,4 +103,17 @@ void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType) {
     promotePiecePieceHandler(&self->pieceHandler, pieceType);
 
     LOGC("Recieved piedeType: %d, %d", pieceType, self->pieceHandler.selectedPieceId);
+}
+
+void onGameBoardAnimationFinishedGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+    finishTurn(&self->gameLogic);
+
+    self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
+}
+
+void setWidgetFlipTypeGameProxy(void* proxy, WidgetFlip flipType) {
+     struct Game* self = (struct Game*)proxy;
+    setWidgetFlipTypePieceHandler(&self->pieceHandler, flipType);
+    self->inputInverter.flipType = flipType;
 }

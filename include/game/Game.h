@@ -12,8 +12,10 @@
 #include "game/config/GameCfg.h"
 #include "game/entities/PiecePromotionPanel.h"
 #include "game/entities/board/GameBoard.h"
+#include "game/entities/board/GameBoardAnimator.h"
 #include "game/entities/pieces/PieceHandler.h"
-#include "game/GameLogic.h"
+#include "game/logic/InputInverter.h"
+#include "game/logic/GameLogic.h"
 
 /* Forward declarations */
 struct InputEvent;
@@ -25,13 +27,15 @@ struct Game {
     struct PieceHandler pieceHandler;
     struct PiecePromotionPanel piecePromotionPanel;
     struct GameLogic gameLogic;
+    struct GameBoardAnimator gameBoardAnimator;
+    struct InputInverter inputInverter;
 };
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg);
 
 void deinitGame(struct Game* self);
 
-void handleEventGame(struct Game* self, const struct InputEvent* event);
+void handleEventGame(struct Game* self, struct InputEvent* event);
 
 void drawGame(struct Game* self);
 

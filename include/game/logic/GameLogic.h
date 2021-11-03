@@ -1,5 +1,5 @@
-#ifndef INCLUDE_GAME_GAMELOGIC_H_
-#define INCLUDE_GAME_GAMELOGIC_H_
+#ifndef INCLUDE_GAME_LOGIC_GAMELOGIC_H_
+#define INCLUDE_GAME_LOGIC_GAMELOGIC_H_
 
 /*      Own include     */
 
@@ -22,4 +22,4 @@ int32_t initGameLogic(struct GameLogic* self);
 
 void finishTurn(struct GameLogic* self);
 
-#endif /* INCLUDE_GAME_GAMELOGIC_H_ */
+#endif /* INCLUDE_GAME_LOGIC_GAMELOGIC_H_ */

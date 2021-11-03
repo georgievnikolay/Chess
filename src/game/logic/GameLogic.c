@@ -1,5 +1,5 @@
 /*      Own include     */
-#include "game/GameLogic.h"
+#include "game/logic/GameLogic.h"
 
 /*    System includes   */
 
