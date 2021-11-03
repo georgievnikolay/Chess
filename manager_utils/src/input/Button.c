@@ -24,6 +24,20 @@ void resetButton(struct Button *self) {
     resetImage(&self->img);
 }
 
+void destroyButton(struct Button *self) {
+    if (self->img.widget.isDestroyed) {
+        LOGERR("Error, Button with rsrcId: %d, was already destroyed!", 
+                self->img.widget.drawParams.rsrcId);
+        return;        
+    }
+
+    self->img.widget.isDestroyed = true;
+    self->img.widget.isCreated = false;
+
+    destroyImage(&self->img);
+    resetButton(self);
+}
+
 void drawButton(struct Button *self) {
 drawImage(&self->img);
 }

@@ -9,9 +9,11 @@
 /* Own library includes */
 #include "game/defines/ChessDefines.h"
 #include "game/defines/ChessStructs.h"
-#include "game/entities/pieces/types/ChessPiece.h"
+#include "game/proxies/GameProxy.h"
 #include "game/utils/BoardUtils.h"
 #include "game/utils/BoardMoveHelper.h"
+#include "utils/ErrorCodes.h"
+#include "utils/Log.h"
 
 /* Forward declarations */
 
@@ -205,11 +207,46 @@ static struct Vector getBlackMoveTiles(
     deinitBoardMoveHelper(&moveHelper);
     return moveTiles;
 }
-struct Vector getMoveTilesPawn(const struct ChessPiece* piece, 
-                               const struct Vector pieces[PLAYERS_COUNT]) {
-    if (WHITE_PLAYER_ID == piece->playerId) {
-        return getWhiteMoveTiles(piece, pieces);
+
+int32_t initPawn(struct Pawn* self, const struct ChessPieceCfg* cfg, 
+                 void* gameProxy) {
+    if (initChessPiece(&self->base, cfg)) {
+        LOGERR("Error, initChessPiece() failed for rsrcId: %d", cfg->rsrcId);
+        return FAILURE;
     }
 
-    return getBlackMoveTiles(piece, pieces);
+    if (NULL == gameProxy) {
+        LOGERR("Error, NULL provided for gameProxy");
+        return FAILURE;
+    }
+    self->gameProxy = gameProxy;
+
+    return SUCCESS;
+}
+
+void setBoardPosPawn(struct Pawn* self, const struct BoardPos* boardPos) {
+    setBoardPosChessPiece(&self->base, boardPos);
+
+    if (WHITE_PLAYER_ID == self->base.playerId) {
+        if (WHITE_PLAYER_END_PAWN_ROW == boardPos->row) {
+            activatePawnPromotionGameProxy(self->gameProxy);
+            return;
+        }
+    }
+
+    if (BLACK_PLAYER_ID == self->base.playerId) {
+        if (BLACK_PLAYER_END_PAWN_ROW == boardPos->row) {
+            activatePawnPromotionGameProxy(self->gameProxy);
+            return;
+        }
+    }
+}
+
+struct Vector getMoveTilesPawn(const struct ChessPiece* self, 
+                               const struct Vector pieces[PLAYERS_COUNT]) {
+    if (WHITE_PLAYER_ID == self->playerId) {
+        return getWhiteMoveTiles(self, pieces);
+    }
+
+    return getBlackMoveTiles(self, pieces);
 }

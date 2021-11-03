@@ -10,6 +10,7 @@
 
 /* Own library includes */
 #include "game/config/PieceHandlerCfg.h"
+#include "game/config/PiecePromotionPanelCfg.h"
 
 /* Forward declarations */
 
@@ -17,6 +18,7 @@
 
 struct GameCfg {
     struct PieceHandlerCfg pieceHandlerCfg;
+    struct PiecePromotionPanelCfg piecePromotionPanelCfg;
     int32_t gameBoardRsrcId;
     int32_t targetRsrcId;
     int32_t moveSelectorRsrcId;

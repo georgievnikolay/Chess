@@ -20,17 +20,24 @@ add_executable(
     ${PROJECT_NAME}
         ${_INCLUDE_DIR}/common/CommonDefines.h
         ${_INCLUDE_DIR}/common/TimerDefines.h
+
         ${_INCLUDE_DIR}/engine/Engine.h
         ${_INCLUDE_DIR}/engine/config/EngineConfig.h
         ${_INCLUDE_DIR}/engine/EngineConfigLoader.h
         
+        ${_INCLUDE_DIR}/game/proxies/GameProxy.h
         ${_INCLUDE_DIR}/game/proxies/GameBoardProxy.h
+        ${_INCLUDE_DIR}/game/proxies/PiecePromotionPanelProxy.h
         ${_INCLUDE_DIR}/game/config/GameCfg.h
         ${_INCLUDE_DIR}/game/config/PieceHandlerCfg.h
+        ${_INCLUDE_DIR}/game/config/PiecePromotionPanelCfg.h
+        ${_INCLUDE_DIR}/game/config/PiecePromotionButtonCfg.h
         ${_INCLUDE_DIR}/game/defines/ChessDefines.h
         ${_INCLUDE_DIR}/game/defines/ChessStructs.h
+        ${_INCLUDE_DIR}/game/entities/PiecePromotionPanel.h
         ${_INCLUDE_DIR}/game/entities/board/GameBoard.h
         ${_INCLUDE_DIR}/game/entities/board/MoveSelector.h
+        ${_INCLUDE_DIR}/game/entities/buttons/PiecePromotionButton.h
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandler.h
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerPopulator.h
         ${_INCLUDE_DIR}/game/entities/pieces/ChessPieceResolver.h
@@ -42,14 +49,17 @@ add_executable(
         ${_INCLUDE_DIR}/game/utils/BoardUtils.h
         ${_INCLUDE_DIR}/game/utils/BoardMoveHelper.h
         ${_INCLUDE_DIR}/game/Game.h
+        ${_INCLUDE_DIR}/game/GameLogic.h
 
 
         ${_SOURCE_DIR}/main.c
         ${_SOURCE_DIR}/engine/Engine.c
         ${_SOURCE_DIR}/engine/EngineConfigLoader.c
         
+        ${_SOURCE_DIR}/game/entities/PiecePromotionPanel.c
         ${_SOURCE_DIR}/game/entities/board/GameBoard.c
         ${_SOURCE_DIR}/game/entities/board/MoveSelector.c
+        ${_SOURCE_DIR}/game/entities/buttons/PiecePromotionButton.c
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandler.c
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerPopulator.c
         ${_SOURCE_DIR}/game/entities/pieces/ChessPieceResolver.c
@@ -61,6 +71,8 @@ add_executable(
         ${_SOURCE_DIR}/game/utils/BoardUtils.c
         ${_SOURCE_DIR}/game/utils/BoardMoveHelper.c
         ${_SOURCE_DIR}/game/Game.c
+        ${_SOURCE_DIR}/game/GameLogic.c
+
 )
 
 set_target_c_standard(${PROJECT_NAME} 11)

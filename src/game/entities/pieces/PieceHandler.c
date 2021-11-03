@@ -8,6 +8,7 @@
 
 /* Own library includes */
 #include "game/proxies/GameBoardProxy.h"
+#include "game/proxies/GameProxy.h"
 #include "game/config/PieceHandlerCfg.h"
 #include "game/utils/BoardUtils.h"
 #include "game/entities/pieces/types/ChessPiece.h"
@@ -36,6 +37,8 @@ static void doMovePiece(struct PieceHandler* self,
         free(enemyPiece);
         deleteElementVector(&self->pieces[opponentId], foundIdx);
     }
+
+    finishTurnGameProxy(self->gameProxy);
 }
 
 static void handlePieceGrabbed(struct PieceHandler* self,
@@ -70,7 +73,7 @@ static void handlePieceGrabbedEvent(struct PieceHandler* self,
     onPieceUngrabbedGameBoardProxy(self->gameBoardProxy);
 
     struct ChessPiece* selectedPiece = (struct ChessPiece*)getElementVector(
-            &self->pieces[self->selectedPiecePlayerId], self->selectedPieceId);
+            &self->pieces[self->currPlayerId], self->selectedPieceId);
     doMovePiece(self, selectedPiece, &boardPos);
 }
 
@@ -86,28 +89,27 @@ static void handlePieceNoGrabbedEvent(struct PieceHandler* self,
 
     struct ChessPiece* currPiece = NULL;
 
-    for (int32_t i = WHITE_PLAYER_ID; i < PLAYERS_COUNT; i++) {
-        const size_t size = getSizeVector(&self->pieces[i]);
-        for (size_t pieceId = 0; pieceId < size; pieceId++) {
-            currPiece = 
-                (struct ChessPiece*)getElementVector(&self->pieces[i], pieceId);
-            
-            if (!containsEventChessPiece(currPiece, event)) {
-                continue;
-            }
-            
-            self->isPieceGrabbed = true;
-            self->selectedPieceId = (int32_t)pieceId;
-            self->selectedPiecePlayerId = i;
-            handlePieceGrabbed(self, currPiece, &event->pos);
-            return;
+    const size_t size = getSizeVector(&self->pieces[self->currPlayerId]);
+    for (size_t pieceId = 0; pieceId < size; pieceId++) {
+        currPiece = 
+            (struct ChessPiece*)getElementVector(
+                &self->pieces[self->currPlayerId], pieceId);
+        
+        if (!containsEventChessPiece(currPiece, event)) {
+            continue;
         }
+        
+        self->isPieceGrabbed = true;
+        self->selectedPieceId = (int32_t)pieceId;
+        handlePieceGrabbed(self, currPiece, &event->pos);
+        return;
     }
 }
 
 int32_t initPieceHandler(struct PieceHandler* self, 
                          const struct PieceHandlerCfg* cfg,
-                         void* gameBoardProxy) {
+                         int32_t startingPlayerId,
+                         void* gameProxy, void* gameBoardProxy) {
     
     if (NULL == gameBoardProxy) {
         LOGERR("Error, NULL provided for gameBoardProxy");
@@ -115,15 +117,21 @@ int32_t initPieceHandler(struct PieceHandler* self,
     }
     self->gameBoardProxy = gameBoardProxy;
 
+    if (NULL == gameProxy) {
+        LOGERR("Error, NULL provided for gameProxy");
+        return FAILURE;
+    }
+    self->gameProxy = gameProxy;
+
     if (SUCCESS != populatePieces(self->pieces, cfg->whitePiecesRsrcId, 
-                                  cfg->blackPiecesRsrcId, cfg->notReadyFontId)) {
+                                  cfg->blackPiecesRsrcId, cfg->notReadyFontId, gameProxy)) {
         LOGERR("populatePieces() failed");
         return FAILURE;
     }
 
     self->isPieceGrabbed = false;
     self->selectedPieceId = 0;
-    self->selectedPiecePlayerId = 0;
+    self->currPlayerId = startingPlayerId;
 
     return SUCCESS;
 }
@@ -162,4 +170,37 @@ void drawPieceHandler(struct PieceHandler* self) {
             drawChessPieceResolver(currPiece);
         }
     }
+}
+
+
+void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
+    //Have to get the opposite player because after the move its instantly the other player
+    const int32_t currPlayerId = getOpponentId(self->currPlayerId);
+    int32_t currPieceIdx = self->selectedPieceId;
+    
+    struct ChessPiece* currPiece = 
+        getElementVector(&self->pieces[currPlayerId], currPieceIdx);
+    
+    struct ChessPieceCfg pieceCfg;
+    pieceCfg.pieceType = pieceType;
+    pieceCfg.boardPos = currPiece->boardPos;
+    pieceCfg.playerId = currPiece->playerId;
+
+    //TODO: how to get the texture?
+    pieceCfg.rsrcId = currPlayerId;
+
+    //TODO: unfinished
+    bool isUnfinished = true;
+    if (pieceType == ROOK) {
+        isUnfinished = false;
+    }
+    int32_t notReadyFontId = 0; //Angeline vintage font with size 20
+    
+    deinitChessPieceResolver(currPiece);
+    free(currPiece);
+    deleteElementVector(&self->pieces[currPlayerId], currPieceIdx);
+
+    promoteChessPiecePieceResolver(&pieceCfg, notReadyFontId, isUnfinished, &currPiece);
+
+    pushElementVector(&self->pieces[currPlayerId], currPiece);
 }

@@ -18,7 +18,8 @@
 /*        Defines       */
 
 //maybe move to resolver
-static int32_t insertChessPiece(struct Vector* player, const struct ChessPieceCfg* pieceCfg, int32_t notReadyFontId) {
+static int32_t insertChessPiece(struct Vector* player, void* gameProxy,
+                                const struct ChessPieceCfg* pieceCfg, int32_t notReadyFontId) {
     struct ChessPiece* currPiece = NULL;
     // currPiece = (struct UnfinishedPiece*)malloc(sizeof(struct UnfinishedPiece));
     // if (currPiece == NULL) {
@@ -36,7 +37,7 @@ static int32_t insertChessPiece(struct Vector* player, const struct ChessPieceCf
         isUnfinished = false;
     }
 
-    if (SUCCESS != initChessPieceResolver(pieceCfg, notReadyFontId, isUnfinished, &currPiece)) {
+    if (SUCCESS != initChessPieceResolver(pieceCfg, notReadyFontId, isUnfinished, gameProxy, &currPiece)) {
         LOGERR("initChessPieceResolver() failed rsrdId: %d", pieceCfg->rsrcId);
         return FAILURE;        
     }
@@ -45,8 +46,12 @@ static int32_t insertChessPiece(struct Vector* player, const struct ChessPieceCf
     return SUCCESS;      
 }
 
-int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], int32_t whitePiecesRsrcId, 
-                       int32_t blackPiecesRsrcId, int32_t notReadyFontId) {
+int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], 
+                       int32_t whitePiecesRsrcId, 
+                       int32_t blackPiecesRsrcId, 
+                       int32_t notReadyFontId,
+                       void* gameProxy) {
+
     initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
     initVector(&pieces[BLACK_PLAYER_ID], STARTING_PIECES_COUNT);
 
@@ -82,7 +87,7 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], int32_t whitePiecesR
                 continue;
             }
 
-            if (SUCCESS != insertChessPiece(&pieces[pieceCfg.playerId], 
+            if (SUCCESS != insertChessPiece(&pieces[pieceCfg.playerId], gameProxy,
                                             &pieceCfg, notReadyFontId)) {
                 LOGERR("Error, insertChessPiece() failed");
                 return FAILURE;

@@ -10,9 +10,10 @@
 
 /* Own library includes */
 #include "game/config/GameCfg.h"
+#include "game/entities/PiecePromotionPanel.h"
 #include "game/entities/board/GameBoard.h"
 #include "game/entities/pieces/PieceHandler.h"
-#include "manager_utils/drawing/Text.h"
+#include "game/GameLogic.h"
 
 /* Forward declarations */
 struct InputEvent;
@@ -22,6 +23,8 @@ struct InputEvent;
 struct Game {
     struct GameBoard gameBoard;
     struct PieceHandler pieceHandler;
+    struct PiecePromotionPanel piecePromotionPanel;
+    struct GameLogic gameLogic;
 };
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg);

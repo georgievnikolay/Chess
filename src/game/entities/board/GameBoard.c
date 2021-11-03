@@ -56,6 +56,8 @@ void drawGameBoard(struct GameBoard* self) {
     drawImage(&self->targetImg);
 }
 
+
+/*Proxies*/
 void onPieceGrabbedGameBoardProxy(void* proxy, const struct BoardPos* boardPos,
                     const struct Vector* moveTiles) {
     struct GameBoard* self = (struct GameBoard*)proxy;
@@ -75,7 +77,6 @@ void onPieceUngrabbedGameBoardProxy(void* proxy) {
 
     clearMoveTiles(&self->currSelectedTiles);
 }
-
 
 bool isMoveAllowedGameBoardProxy(void* proxy, const struct BoardPos* boardPos) {
     struct GameBoard* self = (struct GameBoard*)proxy;

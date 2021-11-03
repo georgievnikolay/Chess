@@ -25,12 +25,15 @@ void setBoardPosChessPieceResolver(struct ChessPiece* piece,
     }
 
     switch (piece->pieceType) {
+        case PAWN:
+            setBoardPosPawn((struct Pawn*)piece, boardPos);
+            break;
+
         case KING:
         case QUEEN:
         case BISHOP:
         case KNIGHT:
         case ROOK:
-        case PAWN:
             setBoardPosChessPiece(piece, boardPos);
             break;
         default:
@@ -112,7 +115,7 @@ struct Vector getMoveTilesPieceResolver(
 
 int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg, 
                                int32_t notReadyFontId,
-                               bool isUnfinished,
+                               bool isUnfinished, void* gameProxy,
                                struct ChessPiece** outPiece) {
     if (isUnfinished) {
         struct UnfinishedPiece* currPiece = NULL;
@@ -133,7 +136,24 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
     }
 
     switch (cfg->pieceType) {
-        case PAWN:
+        case PAWN: {
+            struct Pawn* currPiece = NULL;
+            currPiece = (struct Pawn*)malloc(sizeof(struct Pawn));
+            if (currPiece == NULL) {
+                LOGERR("Bad allocation for chessPiece at [%d,%d].",
+                    cfg->boardPos.row, cfg->boardPos.col);
+                return FAILURE;
+            }
+        
+            if (SUCCESS != initPawn(currPiece, cfg, gameProxy)) {
+                LOGERR("initUnfinishedPiece() failed rsrdId: %d", cfg->rsrcId);
+                return FAILURE;
+            }
+
+            *outPiece = (struct ChessPiece*)currPiece;
+        }            
+            break;
+
         case ROOK: {
             struct ChessPiece* currPiece = NULL;
             currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
@@ -153,6 +173,62 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
             break;
 
         case KING:
+        case QUEEN:
+        case BISHOP:
+        case KNIGHT:
+            LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
+            return FAILURE;
+        default:
+            LOGERR("Error, recieved unsupported pieceType: %d", (*outPiece)->pieceType);
+            return FAILURE;
+            break;
+    }
+
+    return SUCCESS;
+}
+
+int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg, 
+                               int32_t notReadyFontId,
+                               bool isUnfinished,
+                               struct ChessPiece** outPiece) {
+    
+    if (isUnfinished) {
+        struct UnfinishedPiece* currPiece = NULL;
+        currPiece = (struct UnfinishedPiece*)malloc(sizeof(struct UnfinishedPiece));
+        if (currPiece == NULL) {
+            LOGERR("Bad allocation for chessPiece at [%d,%d].",
+                cfg->boardPos.row, cfg->boardPos.col);
+            return FAILURE;
+        }
+        
+        if (SUCCESS != initUnfinishedPiece(currPiece, cfg, notReadyFontId)) {
+            LOGERR("initUnfinishedPiece() failed rsrdId: %d", cfg->rsrcId);
+            return FAILURE;
+        }
+
+        *outPiece = (struct ChessPiece*)currPiece;
+        return SUCCESS;
+    }
+
+    switch (cfg->pieceType) {
+        case ROOK: {
+            struct ChessPiece* currPiece = NULL;
+            currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
+            if (currPiece == NULL) {
+                LOGERR("Bad allocation for chessPiece at [%d,%d].",
+                    cfg->boardPos.row, cfg->boardPos.col);
+                return FAILURE;
+            }
+        
+            if (SUCCESS != initChessPiece(currPiece, cfg)) {
+                LOGERR("initUnfinishedPiece() failed rsrdId: %d", cfg->rsrcId);
+                return FAILURE;
+            }
+
+            *outPiece = currPiece;
+        }            
+            break;
+
         case QUEEN:
         case BISHOP:
         case KNIGHT:

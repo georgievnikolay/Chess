@@ -28,6 +28,8 @@ void createButton(struct Button *self, int32_t rsrcId, const struct Point *pos);
 
 void resetButton(struct Button *self);
 
+void destroyButton(struct Button *self);
+
 void drawButton(struct Button *self);
 
 void lockInputButton(struct Button *self);
