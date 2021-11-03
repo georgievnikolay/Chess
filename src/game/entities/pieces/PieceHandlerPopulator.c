@@ -33,7 +33,9 @@ static int32_t insertChessPiece(struct Vector* player, void* gameProxy,
     //     return FAILURE;
     // }
     bool isUnfinished = true;
-    if (pieceCfg->pieceType == ROOK || pieceCfg->pieceType == PAWN) {
+    if (pieceCfg->pieceType == ROOK || 
+        pieceCfg->pieceType == PAWN ||
+        pieceCfg->pieceType == BISHOP) {
         isUnfinished = false;
     }
 

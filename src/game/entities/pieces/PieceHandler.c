@@ -191,7 +191,8 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
 
     //TODO: unfinished
     bool isUnfinished = true;
-    if (pieceType == ROOK) {
+    if (pieceType == ROOK || 
+        pieceType == BISHOP) {
         isUnfinished = false;
     }
     int32_t notReadyFontId = 0; //Angeline vintage font with size 20

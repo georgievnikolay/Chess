@@ -42,9 +42,10 @@ int32_t initPiecePromotionPanel(struct PiecePromotionPanel *self,
     const PieceType pieceTypes[PROMOTE_BUTTONS_COUNT] = {
         QUEEN, ROOK, BISHOP, KNIGHT };
     
-    const int32_t buttonXOffsetPixels = 50;
+    const int32_t buttonXInitialOffsetPixels = 75;
+    const int32_t buttonXOffsetPixels = 100;
     const int32_t startX = (cfg->gameBoardWidth - 
-        PROMOTE_BUTTONS_COUNT * (cfg->buttonWidth + buttonXOffsetPixels)) / 2;
+        PROMOTE_BUTTONS_COUNT * (cfg->buttonWidth + buttonXInitialOffsetPixels)) / 2;
 
     const int32_t startY = (cfg->gameBoardHeight - cfg->buttonHeight) / 2;
     buttonCfg.bgrPos.y = startY;

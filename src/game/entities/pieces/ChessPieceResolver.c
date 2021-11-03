@@ -10,6 +10,7 @@
 #include "game/entities/pieces/types/UnfinishedPiece.h"
 #include "game/entities/pieces/types/Rook.h"
 #include "game/entities/pieces/types/Pawn.h"
+#include "game/entities/pieces/types/Bishop.h"
 #include "game/utils/BoardPos.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
@@ -95,12 +96,17 @@ struct Vector getMoveTilesPieceResolver(
         case ROOK:
             return getMoveTilesRook(piece, pieces);
             break;
+        
         case PAWN:
             return getMoveTilesPawn(piece, pieces);
             break;
+        
+        case BISHOP:
+            return getMoveTilesBishop(piece, pieces);
+            break;
+
         case KING:
         case QUEEN:
-        case BISHOP:
         case KNIGHT:
             break;
         default:
@@ -154,6 +160,7 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
         }            
             break;
 
+        case BISHOP:
         case ROOK: {
             struct ChessPiece* currPiece = NULL;
             currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
@@ -174,7 +181,6 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
 
         case KING:
         case QUEEN:
-        case BISHOP:
         case KNIGHT:
             LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
             return FAILURE;
@@ -211,6 +217,7 @@ int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
     }
 
     switch (cfg->pieceType) {
+        case BISHOP:
         case ROOK: {
             struct ChessPiece* currPiece = NULL;
             currPiece = (struct ChessPiece*)malloc(sizeof(struct ChessPiece));
@@ -230,7 +237,6 @@ int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
             break;
 
         case QUEEN:
-        case BISHOP:
         case KNIGHT:
             LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
             return FAILURE;

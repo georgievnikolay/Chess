@@ -1,5 +1,5 @@
 /*      Own include     */
-#include "Queen.h"
+#include "game/entities/pieces/types/Queen.h"
 
 /*    System includes   */
 
