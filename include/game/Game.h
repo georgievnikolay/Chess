@@ -12,9 +12,7 @@
 #include "game/config/GameCfg.h"
 #include "game/entities/PiecePromotionPanel.h"
 #include "game/entities/board/GameBoard.h"
-#include "game/entities/board/GameBoardAnimator.h"
 #include "game/entities/pieces/PieceHandler.h"
-#include "game/logic/InputInverter.h"
 #include "game/logic/GameLogic.h"
 
 /* Forward declarations */
@@ -27,8 +25,6 @@ struct Game {
     struct PieceHandler pieceHandler;
     struct PiecePromotionPanel piecePromotionPanel;
     struct GameLogic gameLogic;
-    struct GameBoardAnimator gameBoardAnimator;
-    struct InputInverter inputInverter;
 };
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg);

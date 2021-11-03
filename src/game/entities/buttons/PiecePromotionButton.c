@@ -36,7 +36,7 @@ int32_t initPiecePromotionButton(struct PiecePromotionButton *self,
 
 void deinitPiecePromotionButton(struct PiecePromotionButton *self) {
     destroyImage(&self->bgrImg);
-    if (self->button.img.widget.isCreated && !self->button.img.widget.isDestroyed) {
+    if (self->button.img.widget.isCreated) {
         destroyButton(&self->button);
     }
 }

@@ -20,8 +20,4 @@ void activatePawnPromotionGameProxy(void* proxy);
 
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType);
 
-void onGameBoardAnimationFinishedGameProxy(void* proxy);
-
-void setWidgetFlipTypeGameProxy(void* proxy, WidgetFlip flipType);
-
 #endif /* INCLUDE_GAME_PROXIES_GAMEPROXY_H_ */

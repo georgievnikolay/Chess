@@ -42,12 +42,12 @@ typedef enum {
 } Direction;
 
 enum PieceHandlerDefines {
-    WHITE_PLAYER_START_PAWN_ROW = 6,
-    WHITE_PLAYER_END_PAWN_ROW = 0,
+    PLAYER_END_PAWN_ROW = 0,
     
+    WHITE_PLAYER_START_PAWN_ROW = 6,
     BLACK_PLAYER_START_PAWN_ROW = 1,
-    BLACK_PLAYER_END_PAWN_ROW  = 7,
 
+    BOARD_ROWS_COLS = 7,
     STARTING_PIECES_COUNT = 16,
     TILES_IN_ROW = 8,
     TILES_IN_COL = 8,

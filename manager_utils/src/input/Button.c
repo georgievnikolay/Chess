@@ -31,9 +31,6 @@ void destroyButton(struct Button *self) {
         return;        
     }
 
-    self->img.widget.isDestroyed = true;
-    self->img.widget.isCreated = false;
-
     destroyImage(&self->img);
     resetButton(self);
 }

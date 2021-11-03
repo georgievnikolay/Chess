@@ -42,19 +42,6 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
-    if (SUCCESS != initGameBoardAnimator(&self->gameBoardAnimator, 
-            (void*)self, &self->gameBoard.boardImg)) {
-        LOGERR("Error, initGameBoardAnimator() failed");
-        return FAILURE;
-    }
-
-    if (SUCCESS != initInputInverter(&self->inputInverter, 
-            cfg->piecePromotionPanelCfg.gameBoardWidth, 
-            cfg->piecePromotionPanelCfg.gameBoardHeight)) {
-        LOGERR("Error, initInputInverter() failed");
-        return FAILURE;
-    }
-
     return SUCCESS;
 }
 
@@ -70,8 +57,6 @@ void handleEventGame(struct Game* self, struct InputEvent* event) {
         return;
     }
 
-    invertEventInputInverter(&self->inputInverter, event);
-
     handleEventPieceHandler(&self->pieceHandler, event);
 }
 
@@ -85,7 +70,9 @@ void drawGame(struct Game* self) {
 void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
-    startAnimGameBoardAnimator(&self->gameBoardAnimator, self->gameLogic.activePlayerId);
+    finishTurn(&self->gameLogic);
+    invertPieces(self->pieceHandler.pieces);
+    self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
 
 }
 
@@ -103,17 +90,4 @@ void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType) {
     promotePiecePieceHandler(&self->pieceHandler, pieceType);
 
     LOGC("Recieved piedeType: %d, %d", pieceType, self->pieceHandler.selectedPieceId);
-}
-
-void onGameBoardAnimationFinishedGameProxy(void* proxy) {
-    struct Game* self = (struct Game*)proxy;
-    finishTurn(&self->gameLogic);
-
-    self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
-}
-
-void setWidgetFlipTypeGameProxy(void* proxy, WidgetFlip flipType) {
-     struct Game* self = (struct Game*)proxy;
-    setWidgetFlipTypePieceHandler(&self->pieceHandler, flipType);
-    self->inputInverter.flipType = flipType;
 }
