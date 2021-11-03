@@ -12,6 +12,7 @@
 /* Own library includes */
 #include "game/defines/ChessDefines.h"
 #include "utils/containers/Vector.h"
+#include "utils/drawing/DrawParams.h"
 
 /* Forward declarations */
 struct InputEvent;
@@ -40,5 +41,7 @@ void handleEventPieceHandler(struct PieceHandler* self, const struct InputEvent*
 void drawPieceHandler(struct PieceHandler* self);
 
 void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType);
+
+void setWidgetFlipTypePieceHandler(struct PieceHandler* self, WidgetFlip flipType);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLER_H_ */
