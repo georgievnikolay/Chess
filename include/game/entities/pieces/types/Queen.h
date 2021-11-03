@@ -17,6 +17,6 @@ struct ChessPiece;
 /*        Defines       */
 
 struct Vector getMoveTilesQueen(const struct ChessPiece* self, 
-                               const struct Vector pieces[PLAYERS_COUNT]);
+                                const struct Vector pieces[PLAYERS_COUNT]);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_TYPES_QUEEN_H_ */
