@@ -42,7 +42,6 @@ add_executable(
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerPopulator.h
         ${_INCLUDE_DIR}/game/entities/pieces/ChessPieceResolver.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/ChessPiece.h
-        ${_INCLUDE_DIR}/game/entities/pieces/types/UnfinishedPiece.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Rook.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Pawn.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Bishop.h
@@ -68,7 +67,6 @@ add_executable(
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerPopulator.c
         ${_SOURCE_DIR}/game/entities/pieces/ChessPieceResolver.c
         ${_SOURCE_DIR}/game/entities/pieces/types/ChessPiece.c
-        ${_SOURCE_DIR}/game/entities/pieces/types/UnfinishedPiece.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Rook.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Pawn.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Bishop.c

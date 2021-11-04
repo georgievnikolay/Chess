@@ -21,7 +21,6 @@ int32_t initUnfinishedPiece(struct UnfinishedPiece* self,
         LOGERR("Error, initChessPiece() dailed for rsrcId: %d", cfg->rsrcId);
         return FAILURE;
     }
-    self->base.isUnfinished = true;
 
     resetText(&self->notReadyText);
     const struct Point textPos = getAbsPos(&self->base.boardPos);

@@ -19,30 +19,10 @@
 
 //maybe move to resolver
 static int32_t insertChessPiece(struct Vector* player, void* gameProxy,
-                                const struct ChessPieceCfg* pieceCfg, int32_t notReadyFontId) {
+                                const struct ChessPieceCfg* pieceCfg) {
     struct ChessPiece* currPiece = NULL;
-    // currPiece = (struct UnfinishedPiece*)malloc(sizeof(struct UnfinishedPiece));
-    // if (currPiece == NULL) {
-    //     LOGERR("Bad allocation for chessPiece at [%d,%d].",
-    //             pieceCfg->boardPos.row, pieceCfg->boardPos.col);
-    //     return FAILURE;
-    // }
 
-    // if (SUCCESS != initUnfinishedPiece(currPiece, pieceCfg, notReadyFontId)) {
-    //     LOGERR("initUnfinishedPiece() failed rsrdId: %d", pieceCfg->rsrcId);
-    //     return FAILURE;
-    // }
-    bool isUnfinished = true;
-    if (pieceCfg->pieceType == ROOK || 
-        pieceCfg->pieceType == PAWN ||
-        pieceCfg->pieceType == BISHOP ||
-        pieceCfg->pieceType == KING ||
-        pieceCfg->pieceType == QUEEN ||
-        pieceCfg->pieceType == KNIGHT) {
-        isUnfinished = false;
-    }
-
-    if (SUCCESS != initChessPieceResolver(pieceCfg, notReadyFontId, isUnfinished, gameProxy, &currPiece)) {
+    if (SUCCESS != initChessPieceResolver(pieceCfg, gameProxy, &currPiece)) {
         LOGERR("initChessPieceResolver() failed rsrdId: %d", pieceCfg->rsrcId);
         return FAILURE;        
     }
@@ -54,7 +34,6 @@ static int32_t insertChessPiece(struct Vector* player, void* gameProxy,
 int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], 
                        int32_t whitePiecesRsrcId, 
                        int32_t blackPiecesRsrcId, 
-                       int32_t notReadyFontId,
                        void* gameProxy) {
 
     initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
@@ -93,7 +72,7 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT],
             }
 
             if (SUCCESS != insertChessPiece(&pieces[pieceCfg.playerId], gameProxy,
-                                            &pieceCfg, notReadyFontId)) {
+                                            &pieceCfg)) {
                 LOGERR("Error, insertChessPiece() failed");
                 return FAILURE;
             }

@@ -19,7 +19,6 @@
 int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], 
                        int32_t whitePiecesRsrcId, 
                        int32_t blackPiecesRsrcId, 
-                       int32_t notReadyFontId,
                        void* gameProxy);
                                   
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLERPOPULATOR_H_ */

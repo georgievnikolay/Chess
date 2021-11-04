@@ -180,7 +180,7 @@ static void populateGameCfg(struct GameCfg* cfg) {
     
     cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
     cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
-    cfg->pieceHandlerCfg.notReadyFontId = ANGELINE_VINTAGE_20_FONT_ID;
+    // cfg->pieceHandlerCfg.notReadyFontId = ANGELINE_VINTAGE_20_FONT_ID;
 
     populatePiecePromotionPanelCfg(&cfg->piecePromotionPanelCfg);
 }

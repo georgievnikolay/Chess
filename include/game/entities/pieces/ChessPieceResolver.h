@@ -19,9 +19,8 @@ struct ChessPieceCfg;
 
 /*        Defines       */
 
-int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg, 
-                               int32_t notReadyFontId,
-                               bool isUnfinished, void* gameProxy,
+int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
+                               void* gameProxy,
                                struct ChessPiece** outPiece);
 
 void setBoardPosChessPieceResolver(struct ChessPiece* piece, 
@@ -29,14 +28,12 @@ void setBoardPosChessPieceResolver(struct ChessPiece* piece,
 
 void deinitChessPieceResolver(struct ChessPiece* piece);
 
-struct Vector getMoveTilesPieceResolver(
-    struct ChessPiece* piece, const struct Vector pieces[PLAYERS_COUNT]);
+struct Vector getMoveTilesPieceResolver(struct ChessPiece* piece, 
+                                        const struct Vector pieces[PLAYERS_COUNT]);
 
 void drawChessPieceResolver(struct ChessPiece* piece);
 
-int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg, 
-                               int32_t notReadyFontId,
-                               bool isUnfinished,
-                               struct ChessPiece** outPiece);
+int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
+                                       struct ChessPiece** outPiece);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_TYPES_CHESSPIECERESOLVER_H_ */

@@ -30,7 +30,6 @@ int32_t initChessPiece(struct ChessPiece* self, const struct ChessPieceCfg* cfg)
     self->boardPos = cfg->boardPos;
     self->playerId = cfg->playerId;
     self->pieceType = cfg->pieceType;
-    self->isUnfinished = false;
     
     return SUCCESS;
 }

@@ -124,7 +124,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
     self->gameProxy = gameProxy;
 
     if (SUCCESS != populatePieces(self->pieces, cfg->whitePiecesRsrcId, 
-                                  cfg->blackPiecesRsrcId, cfg->notReadyFontId, gameProxy)) {
+                                  cfg->blackPiecesRsrcId, gameProxy)) {
         LOGERR("populatePieces() failed");
         return FAILURE;
     }
@@ -188,22 +188,12 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
 
     //TODO: how to get the texture?
     pieceCfg.rsrcId = currPlayerId;
-
-    //TODO: unfinished
-    bool isUnfinished = true;
-    if (pieceType == ROOK || 
-        pieceType == BISHOP ||
-        pieceType == QUEEN ||
-        pieceType == KNIGHT) {
-        isUnfinished = false;
-    }
-    int32_t notReadyFontId = 0; //Angeline vintage font with size 20
     
     deinitChessPieceResolver(currPiece);
     free(currPiece);
     deleteElementVector(&self->pieces[currPlayerId], currPieceIdx);
 
-    promoteChessPiecePieceResolver(&pieceCfg, notReadyFontId, isUnfinished, &currPiece);
+    promoteChessPiecePieceResolver(&pieceCfg, &currPiece);
 
     pushElementVector(&self->pieces[currPlayerId], currPiece);
 }
