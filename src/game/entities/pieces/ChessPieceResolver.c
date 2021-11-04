@@ -12,6 +12,7 @@
 #include "game/entities/pieces/types/Pawn.h"
 #include "game/entities/pieces/types/Bishop.h"
 #include "game/entities/pieces/types/Queen.h"
+#include "game/entities/pieces/types/King.h"
 #include "game/utils/BoardPos.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
@@ -111,6 +112,9 @@ struct Vector getMoveTilesPieceResolver(
             break;
 
         case KING:
+            return getMoveTilesKing(piece, pieces);
+            break;
+
         case KNIGHT:
             break;
         default:
@@ -164,6 +168,7 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
         }            
             break;
 
+        case KING:
         case QUEEN:
         case BISHOP:
         case ROOK: {
@@ -184,7 +189,6 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
         }            
             break;
 
-        case KING:
         case KNIGHT:
             LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
             return FAILURE;

@@ -37,8 +37,13 @@ typedef enum {
     DOWN,
     DOWN_LEFT,
     LEFT,
-    DIRECTION_COUNT
-//TODO: KNIGHT define, not linear
+    DIRECTION_COUNT,
+
+    KNIGHT_UP_LEFT,
+    KNIGHT_UP_RIGHT,
+    KNIGHT_DOWN_RIGHT,
+    KNIGHT_DOWN_LEFT,
+    KNIGHT_DIRECTION_COUNT = 4
 } Direction;
 
 enum PieceHandlerDefines {

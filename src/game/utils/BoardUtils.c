@@ -110,6 +110,22 @@ struct BoardPos getAdjacentPos(Direction dir, const struct BoardPos *currPos) {
             --pos.row;
             break;
 
+        case KNIGHT_UP_LEFT:
+            pos.row -= 2;
+            pos.col -= 1;
+        
+        case KNIGHT_UP_RIGHT:
+            pos.row -= 2;
+            pos.col += 1;
+
+        case KNIGHT_DOWN_RIGHT:
+            pos.row += 2;
+            pos.col += 1;
+
+        case KNIGHT_DOWN_LEFT:
+            pos.row += 2;
+            pos.col -= 1;
+                        
         default:
             LOGERR("Error, recieved unsupported direction: %d", dir);
             break;

@@ -47,6 +47,7 @@ add_executable(
         ${_INCLUDE_DIR}/game/entities/pieces/types/Pawn.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Bishop.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Queen.h
+        ${_INCLUDE_DIR}/game/entities/pieces/types/King.h
         ${_INCLUDE_DIR}/game/logic/GameLogic.h
         ${_INCLUDE_DIR}/game/utils/BoardPos.h
         ${_INCLUDE_DIR}/game/utils/BoardUtils.h
@@ -71,6 +72,7 @@ add_executable(
         ${_SOURCE_DIR}/game/entities/pieces/types/Pawn.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Bishop.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Queen.c
+        ${_SOURCE_DIR}/game/entities/pieces/types/King.c
         ${_SOURCE_DIR}/game/logic/GameLogic.c
         ${_SOURCE_DIR}/game/utils/BoardPos.c
         ${_SOURCE_DIR}/game/utils/BoardUtils.c
