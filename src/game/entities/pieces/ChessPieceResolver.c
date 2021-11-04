@@ -13,6 +13,7 @@
 #include "game/entities/pieces/types/Bishop.h"
 #include "game/entities/pieces/types/Queen.h"
 #include "game/entities/pieces/types/King.h"
+#include "game/entities/pieces/types/Knight.h"
 #include "game/utils/BoardPos.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
@@ -116,7 +117,9 @@ struct Vector getMoveTilesPieceResolver(
             break;
 
         case KNIGHT:
+            return getMoveTilesKnight(piece, pieces);
             break;
+            
         default:
             LOGERR("Error, recieved unsupported pieceType: %d", piece->pieceType);
             break;
@@ -170,6 +173,7 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
 
         case KING:
         case QUEEN:
+        case KNIGHT:
         case BISHOP:
         case ROOK: {
             struct ChessPiece* currPiece = NULL;
@@ -189,9 +193,6 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
         }            
             break;
 
-        case KNIGHT:
-            LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
-            return FAILURE;
         default:
             LOGERR("Error, recieved unsupported pieceType: %d", (*outPiece)->pieceType);
             return FAILURE;
@@ -225,6 +226,7 @@ int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
     }
 
     switch (cfg->pieceType) {
+        case KNIGHT:
         case QUEEN:
         case BISHOP:
         case ROOK: {
@@ -245,9 +247,6 @@ int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
         }            
             break;
 
-        case KNIGHT:
-            LOGERR("Error, pieceType: %d is not implemented", (*outPiece)->pieceType);
-            return FAILURE;
         default:
             LOGERR("Error, recieved unsupported pieceType: %d", (*outPiece)->pieceType);
             return FAILURE;
