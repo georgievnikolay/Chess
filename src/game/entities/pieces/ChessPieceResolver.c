@@ -69,6 +69,8 @@ void drawChessPieceResolver(struct ChessPiece* piece) {
         case PAWN:
             drawChessPiece(piece);
             break;
+        case NONE:
+            break;
         default:
             LOGERR("Error, recieved unsupported pieceType: %d", piece->pieceType);
             break;
@@ -159,7 +161,7 @@ int32_t initChessPieceResolver(const struct ChessPieceCfg* cfg,
             break;
 
         default:
-            LOGERR("Error, recieved unsupported pieceType: %d", (*outPiece)->pieceType);
+            LOGERR("Error, recieved unsupported pieceType: %d", cfg->pieceType);
             return FAILURE;
             break;
     }

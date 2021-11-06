@@ -11,6 +11,7 @@
 /* Own library includes */
 #include "game/config/GameCfg.h"
 #include "game/entities/PiecePromotionPanel.h"
+#include "game/entities/GameStatePanel.h"
 #include "game/entities/board/GameBoard.h"
 #include "game/entities/pieces/PieceHandler.h"
 #include "game/logic/GameLogic.h"
@@ -24,6 +25,7 @@ struct Game {
     struct GameBoard gameBoard;
     struct PieceHandler pieceHandler;
     struct PiecePromotionPanel piecePromotionPanel;
+    struct GameStatePanel gameStatePanel;
     struct GameLogic gameLogic;
 };
 

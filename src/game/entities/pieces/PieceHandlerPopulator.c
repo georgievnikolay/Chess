@@ -10,6 +10,7 @@
 #include "game/config/PieceHandlerCfg.h"
 #include "game/entities/pieces/ChessPieceResolver.h"
 #include "game/entities/pieces/types/ChessPiece.h"
+#include "game/utils/SaveFile.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
 
@@ -39,7 +40,11 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT],
     initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
     initVector(&pieces[BLACK_PLAYER_ID], STARTING_PIECES_COUNT);
 
-    const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL] = {
+    PieceType allPieces[TILES_IN_ROW][TILES_IN_COL];
+    int32_t playerIds[TILES_IN_ROW][TILES_IN_COL]; 
+    loadFile(allPieces, playerIds);
+    
+    /*= {
         {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK},
         {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
         {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
@@ -48,22 +53,29 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT],
         {NONE, NONE,   NONE,   NONE, NONE,  NONE,   NONE,   NONE},
         {PAWN, PAWN,   PAWN,   PAWN, PAWN,  PAWN,   PAWN,   PAWN},
         {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK}
-    };
-    
+    };*/
+
     struct ChessPieceCfg pieceCfg;
-    
     for (int32_t row = 0; row < TILES_IN_ROW; ++row) {
         pieceCfg.boardPos.row = row;
         
-        if (row < BOARD_MID) {
-            pieceCfg.playerId = BLACK_PLAYER_ID;
-            pieceCfg.rsrcId = blackPiecesRsrcId;
-        } else {
-            pieceCfg.playerId = WHITE_PLAYER_ID;
-            pieceCfg.rsrcId = whitePiecesRsrcId;
-        }
+        // if (row < BOARD_MID) {
+        //     pieceCfg.playerId = BLACK_PLAYER_ID;
+        //     pieceCfg.rsrcId = blackPiecesRsrcId;
+        // } else {
+        //     pieceCfg.playerId = WHITE_PLAYER_ID;
+        //     pieceCfg.rsrcId = whitePiecesRsrcId;
+        // }
 
         for (int32_t col = 0; col < TILES_IN_COL; ++col) {
+            if (playerIds[row][col] == WHITE_PLAYER_ID) {
+                pieceCfg.playerId = WHITE_PLAYER_ID;
+                pieceCfg.rsrcId = whitePiecesRsrcId;
+            } else {
+                pieceCfg.playerId = BLACK_PLAYER_ID;
+                pieceCfg.rsrcId = blackPiecesRsrcId;         
+            }
+            
             pieceCfg.boardPos.col = col;
 
             pieceCfg.pieceType = allPieces[row][col];

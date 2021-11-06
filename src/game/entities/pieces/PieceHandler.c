@@ -11,6 +11,7 @@
 #include "game/proxies/GameProxy.h"
 #include "game/config/PieceHandlerCfg.h"
 #include "game/utils/BoardUtils.h"
+#include "game/utils/SaveFile.h"
 #include "game/entities/pieces/types/ChessPiece.h"
 #include "game/entities/pieces/PieceHandlerPopulator.h"
 #include "game/entities/pieces/ChessPieceResolver.h"
@@ -216,3 +217,57 @@ void invertPieces(struct Vector pieces[PLAYERS_COUNT]) {
     }
 }
 
+void savePieceStates(struct PieceHandler* self) {
+    PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
+    for (int32_t i = 0; i < TILES_IN_ROW; i++) {
+        for (int32_t j = 0; j < TILES_IN_COL; j++) {
+            pieceTypes[i][j] = NONE;
+        }
+    }
+
+    int32_t playerIds[TILES_IN_ROW][TILES_IN_COL] = { {0} };
+
+    for (size_t playerIdx = 0; playerIdx < PLAYERS_COUNT; playerIdx++) {
+        size_t size = getSizeVector(&self->pieces[playerIdx]);
+        for (size_t i = 0; i < size; i++) {
+            struct ChessPiece* currPiece = 
+                getElementVector(&self->pieces[playerIdx], i);
+            pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col] = currPiece->pieceType;
+            playerIds[currPiece->boardPos.row][currPiece->boardPos.col] = currPiece->playerId;
+        }
+    }
+    if (SUCCESS != saveFile(pieceTypes, playerIds)) {
+        LOGERR("Error, failed to save the game");
+    }
+}
+
+/*TODO: arrays not corresponding*/
+void loadPieceStates(struct PieceHandler* self) {
+    PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
+    for (int32_t i = 0; i < TILES_IN_ROW; i++) {
+        for (int32_t j = 0; j < TILES_IN_COL; j++) {
+            pieceTypes[i][j] = NONE;
+        }
+    }
+
+    int32_t playerIds[TILES_IN_ROW][TILES_IN_COL] = { {0} };
+
+    if (SUCCESS != loadFile(pieceTypes, playerIds)) {
+        LOGERR("Error, failed to load the previous game");
+    }
+
+    for (size_t playerIdx = 0; playerIdx < PLAYERS_COUNT; playerIdx++) {
+        size_t size = getSizeVector(&self->pieces[playerIdx]);
+        for (size_t i = 0; i < size; i++) {
+            struct ChessPiece* currPiece = 
+                getElementVector(&self->pieces[playerIdx], i);
+            LOGY("PIECETYPE: %d ", currPiece->pieceType);
+            if (pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col] == NONE){
+                continue;
+            }
+
+            currPiece->pieceType = pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col];
+            currPiece->playerId = playerIds[currPiece->boardPos.row][currPiece->boardPos.col];
+        }
+    }
+}

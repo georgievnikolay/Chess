@@ -21,7 +21,7 @@ enum PlayerId {
 };
 
 typedef enum {
-    KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN
+    KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, PIECE_TYPE_COUNT, NONE = -1
 } PieceType;
 
 typedef enum {
@@ -64,7 +64,6 @@ enum PieceHandlerDefines {
     TILES_IN_ROW = 8,
     TILES_IN_COL = 8,
     BOARD_MID = 4,
-    NONE = -1
 };
 
 #endif /* INCLUDE_GAME_DEFINES_CHESSDEFINES_H_ */

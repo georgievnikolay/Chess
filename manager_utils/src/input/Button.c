@@ -22,6 +22,7 @@ void createButton(struct Button *self, int32_t rsrcId, const struct Point *pos) 
 
 void resetButton(struct Button *self) {
     resetImage(&self->img);
+    self->isInputUnlocked = true;
 }
 
 void destroyButton(struct Button *self) {
@@ -36,7 +37,7 @@ void destroyButton(struct Button *self) {
 }
 
 void drawButton(struct Button *self) {
-drawImage(&self->img);
+    drawImage(&self->img);
 }
 
 void lockInputButton(struct Button *self) {

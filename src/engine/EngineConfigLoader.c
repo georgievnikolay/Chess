@@ -18,8 +18,11 @@
 
 /*        Defines       */
 
-static const int32_t SCREEN_WIDTH = 1024;
+static const int32_t SCREEN_WIDTH = 1280;
 static const int32_t SCREEN_HEIGHT = 800;
+
+static const int32_t START_GAME_IMAGE_WIDTH = 1280;
+static const int32_t START_GAME_IMAGE_HEIGHT = 800;
 
 static const int32_t CHESS_BOARD_IMG_WIDTH_HEIGHT = 800;
 
@@ -32,11 +35,18 @@ static const int32_t MOVE_TILES_FRAME_WIDTH_HEIGHT = 100;
 static const int32_t PROMOTION_BUTTON_FRAMES_COUNT = 2;
 static const int32_t PROMOTION_BUTTON_FRAME_WIDTH_HEIGHT = 104;
 
+static const int32_t GAME_BUTTONS_FRAMES_COUNT = 3;
+static const int32_t GAME_BUTTONS_FRAME_WIDTH = 229;
+static const int32_t GAME_BUTTONS_FRAME_HEIGHT = 66;
+
 static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
 static const int32_t ANGELINE_VINTAGE_FONT = 20;
 
 static const int64_t ENGINE_TARGET_FRAMES = 30;
+
+//TODO: nice idea for one populate function
+// #define GET_PARAMS(name) name ## FRAMES_COUNT
 
 static void populateResourceLocation(char* buffer, char* relativePath) {
 #ifdef RELEASE_BUILD
@@ -61,7 +71,7 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     struct Rectangle* frame;
 
 //TODO: find better way to populate
-    //Chess Board
+//Chess Board
     frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
     frame->x = 0;
     frame->y = 0;
@@ -73,7 +83,7 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     insertImageConfig(cfg, CHESS_BOARD_TEXTURE_ID, &imgCfg);
     clearElementsVector(&imgCfg.frames);
 
-    //Target
+//Target
     frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
     frame->x = 0;
     frame->y = 0;
@@ -85,17 +95,17 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
     insertImageConfig(cfg, TARGET_TEXTURE_ID, &imgCfg);
     clearElementsVector(&imgCfg.frames);
 
-    //Chess Pieces
+//Chess Pieces
 #define PLAYERS_COUNT 2
-    char* buttonLocation[PLAYERS_COUNT] = {
+    char* piecesLocation[PLAYERS_COUNT] = {
         "resources/images/Whites.png",
         "resources/images/Blacks.png"};
 
-    const int32_t buttonIds[PLAYERS_COUNT] = {
+    const int32_t piecesIds[PLAYERS_COUNT] = {
         WHITE_PIECES_TEXTURE_ID,
         BLACK_PIECES_TEXTURE_ID};
 
-    for (int32_t buttonId = 0; buttonId < PLAYERS_COUNT; buttonId++) {
+    for (int32_t pieceId = 0; pieceId < PLAYERS_COUNT; pieceId++) {
         for (int32_t i = 0; i < CHESS_PIECE_FRAMES_COUNT; i++) {
             frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
             frame->x = 0 + (CHESS_PIECE_FRAME_WIDTH_HEIGHT * i);
@@ -106,13 +116,13 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
             pushElementVector(&imgCfg.frames, frame);
         }
 
-        populateResourceLocation(imgCfg.location, buttonLocation[buttonId]);
-        insertImageConfig(cfg, buttonIds[buttonId], &imgCfg);
+        populateResourceLocation(imgCfg.location, piecesLocation[pieceId]);
+        insertImageConfig(cfg, piecesIds[pieceId], &imgCfg);
         clearElementsVector(&imgCfg.frames);
     }
-#undef BUTTONS_COUNT
+#undef PLAYERS_COUNT
 
-    //Move Tiles
+//Move Tiles
     for (int32_t i = 0; i < MOVE_TILES_FRAMES_COUNT; i++) {
             frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
             frame->x = 0 + (MOVE_TILES_FRAME_WIDTH_HEIGHT * i);
@@ -126,7 +136,7 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
         insertImageConfig(cfg, MOVE_TILES_TEXTURE_ID, &imgCfg);
         clearElementsVector(&imgCfg.frames);
 
-    //Piece prom button
+//Piece prom button
     for (int32_t i = 0; i < PROMOTION_BUTTON_FRAMES_COUNT; i++) {
             frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
             frame->x = 0 + (PROMOTION_BUTTON_FRAME_WIDTH_HEIGHT * i);
@@ -139,6 +149,49 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
         populateResourceLocation(imgCfg.location, "resources/images/piecePromoteButtonBgr1.png");
         insertImageConfig(cfg, PIECE_PROMOTION_BUTTON_TEXTURE_ID, &imgCfg);
         clearElementsVector(&imgCfg.frames);
+
+//Game Buttons
+#define GAME_BUTTONS_COUNT 4
+    char* buttonsLocation[GAME_BUTTONS_COUNT] = {
+        "resources/buttons/start_game_button.png",
+        "resources/buttons/continue_game_button.png",
+        "resources/buttons/exit_game_button.png",
+        "resources/buttons/quit_game_button.png"};
+
+    const int32_t buttonIds[GAME_BUTTONS_COUNT] = {
+        START_GAME_BUTTON_TEXTURE_ID,
+        CONTINUE_GAME_BUTTON_TEXTURE_ID,
+        EXIT_GAME_BUTTON_TEXTURE_ID,
+        QUIT_GAME_BUTTON_TEXTURE_ID};
+
+    for (int32_t buttonId = 0; buttonId < GAME_BUTTONS_COUNT; buttonId++) {
+        for (int32_t i = 0; i < GAME_BUTTONS_FRAMES_COUNT; i++) {
+            frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
+            frame->x = 0 + (GAME_BUTTONS_FRAME_WIDTH * i);
+            frame->y = 0;
+            frame->w = GAME_BUTTONS_FRAME_WIDTH;
+            frame->h = GAME_BUTTONS_FRAME_HEIGHT;
+
+            pushElementVector(&imgCfg.frames, frame);
+        }
+
+        populateResourceLocation(imgCfg.location, buttonsLocation[buttonId]);
+        insertImageConfig(cfg, buttonIds[buttonId], &imgCfg);
+        clearElementsVector(&imgCfg.frames);
+    }        
+#undef GAME_BUTTONS_COUNT
+
+//Start Game Image
+    frame = (struct Rectangle*)malloc(sizeof(struct Rectangle));
+    frame->x = 0;
+    frame->y = 0;
+    frame->w = START_GAME_IMAGE_WIDTH;
+    frame->h = START_GAME_IMAGE_HEIGHT;
+    pushElementVector(&imgCfg.frames, frame);
+    
+    populateResourceLocation(imgCfg.location, "resources/images/chess_start_screen1.jpg");
+    insertImageConfig(cfg, START_SCREEN_TEXTURE_ID, &imgCfg);
+    clearElementsVector(&imgCfg.frames);
 
     freeVector(&imgCfg.frames);
 }
@@ -157,6 +210,21 @@ static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
     
     cfg->drawMgrCfg.maxFrames = ENGINE_TARGET_FRAMES;
 }
+static void populateGameStatePanelCfg(struct GameStatePanelCfg* cfg) {
+    cfg->startButtonRsrcId = START_GAME_BUTTON_TEXTURE_ID;
+    cfg->continueButtonRsrcId = CONTINUE_GAME_BUTTON_TEXTURE_ID;
+    cfg->exitButtonRsrcId = EXIT_GAME_BUTTON_TEXTURE_ID;
+    cfg->quitButtonRsrcId = QUIT_GAME_BUTTON_TEXTURE_ID;
+    cfg->startScreenRsrcId = START_SCREEN_TEXTURE_ID;
+
+    cfg->gameScreenWidth = SCREEN_WIDTH;
+    cfg->gameScreenHeight = SCREEN_HEIGHT;
+    
+    cfg->gameBoardWidth_Height = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+
+    cfg->buttonWidth = GAME_BUTTONS_FRAME_WIDTH;
+    cfg->buttonHeight = GAME_BUTTONS_FRAME_HEIGHT;
+}
 
 static void populatePiecePromotionPanelCfg(struct PiecePromotionPanelCfg* cfg) {
     cfg->whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
@@ -169,6 +237,7 @@ static void populatePiecePromotionPanelCfg(struct PiecePromotionPanelCfg* cfg) {
     cfg->buttonBgrWidth = PROMOTION_BUTTON_FRAME_WIDTH_HEIGHT;
     cfg->buttonBgrHeight = PROMOTION_BUTTON_FRAME_WIDTH_HEIGHT;
 
+    //TODO: use TARGET as blinker when button is pressed?
     cfg->buttonWidth = TARGET_WIDTH_HEIGHT;
     cfg->buttonHeight = TARGET_WIDTH_HEIGHT;
 }
@@ -180,8 +249,8 @@ static void populateGameCfg(struct GameCfg* cfg) {
     
     cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
     cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
-    // cfg->pieceHandlerCfg.notReadyFontId = ANGELINE_VINTAGE_20_FONT_ID;
-
+    
+    populateGameStatePanelCfg(&cfg->gameStatePanelCfg);
     populatePiecePromotionPanelCfg(&cfg->piecePromotionPanelCfg);
 }
 

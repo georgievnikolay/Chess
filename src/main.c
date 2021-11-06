@@ -20,7 +20,6 @@
 
 static int32_t runApplication() {
     struct Engine engine;
-    //TODO: Move all memsets to init functions
     memset(&engine, 0, sizeof(struct Engine));
 
     const struct EngineConfig cfg = loadEngineConfig();

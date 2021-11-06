@@ -8,6 +8,8 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "game/entities/GameStatePanel.h"
+#include "game/entities/pieces/types/ChessPiece.h"
 #include "game/defines/ChessDefines.h"
 #include "game/proxies/GameProxy.h"
 #include "utils/drawing/Color.h"
@@ -42,6 +44,11 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
+    if (SUCCESS != initGameStatePanel(&self->gameStatePanel, 
+            &cfg->gameStatePanelCfg, (void*)self)) {
+        LOGERR("Error, initGameStatePanel() failed");
+        return FAILURE;
+    }
     return SUCCESS;
 }
 
@@ -52,6 +59,8 @@ void deinitGame(struct Game* self) {
 }
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
+    handleEventGameStatePanel(&self->gameStatePanel, event);
+    //TODO: check here if panels are active
     if (self->piecePromotionPanel.isActive) {
         handleEventPiecePromotionPanel(&self->piecePromotionPanel, event);
         return;
@@ -64,9 +73,13 @@ void drawGame(struct Game* self) {
     drawGameBoard(&self->gameBoard);
     drawPieceHandler(&self->pieceHandler);
     drawPiecePromotionPanel(&self->piecePromotionPanel);
+    drawGameStatePanel(&self->gameStatePanel);
 }
 
 /*Proxies*/
+
+/*Piece handler communicate with the game 
+that the turn is over*/
 void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
@@ -76,6 +89,7 @@ void finishTurnGameProxy(void* proxy) {
 
 }
 
+/*Communicate with the Panel that it should activate*/
 void activatePawnPromotionGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     LOGC("Piece prom active for playerId: %d", 
@@ -85,9 +99,30 @@ void activatePawnPromotionGameProxy(void* proxy) {
                                 self->gameLogic.activePlayerId);
 }
 
+/*Communicate with the game what type of 
+piece was selected on the PiecePromotionPanel*/
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType) {
     struct Game* self = (struct Game*)proxy;
     promotePiecePieceHandler(&self->pieceHandler, pieceType);
 
-    LOGC("Recieved piedeType: %d, %d", pieceType, self->pieceHandler.selectedPieceId);
+    LOGC("Recieved pieceType: %d, %d", pieceType, self->pieceHandler.selectedPieceId);
+}
+
+/*Communicate with Game
+to save current state of the pieces*/
+void onGameSavedGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+
+    savePieceStates(&self->pieceHandler);
+}
+
+// void onGameStartedGameProxy(void *proxy) {
+//     struct Game* self = (struct Game*)proxy;
+
+// }
+
+void onGameContinueGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+
+    loadPieceStates(&self->pieceHandler);
 }
