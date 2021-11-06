@@ -10,16 +10,17 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "game/config/PieceHandlerCfg.h"
 #include "game/defines/ChessDefines.h"
 #include "utils/containers/Vector.h"
 
 /* Forward declarations */
 struct InputEvent;
-struct PieceHandlerCfg;
 
 /*        Defines       */
 
 struct PieceHandler {
+    struct PieceHandlerCfg cfg;
     struct Vector pieces[PLAYERS_COUNT];
     void* gameBoardProxy;
     void* gameProxy;
@@ -31,7 +32,8 @@ struct PieceHandler {
 int32_t initPieceHandler(struct PieceHandler* self, 
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
-                         void* gameProxy, void* gameBoardProxy);
+                         void* gameProxy, void* gameBoardProxy,
+                         char* fileName);
 
 void deinitPieceHandler(struct PieceHandler* self);
 

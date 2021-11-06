@@ -3,6 +3,7 @@
 
 /*    System includes   */
 #include <stdio.h>
+#include <string.h>
 
 /* Third party includes */
 
@@ -30,42 +31,29 @@ SEPARATOR -> /
 
 */
 
-#define WKING 'K'
-#define BKING 'b'
-
-#define WQUEEN 'Q'
-#define BQUEEN 'q'
-
-#define WPAWN 'P'
-#define BPAWN 'p'
-
-#define WKNIGHT 'N'
-#define BKNIGHT 'n'
-
-#define WROOK 'R'
-#define BROOK 'r'
-
-#define WBISHOP 'B'
-#define BBISHOP 'b'
-
 #define NO_PIECE '.'
 #define SEPARATOR '\n'
 
 char* map = "KQBNRPkqbnrp";
 
 int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
-                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL]) {
+                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], char* fileName) {
     
     FILE* fp = NULL;
-    const char* fileName = NULL;
+    char* back = "../";
+    char* folder = "resources/";
+    char filePath[50];
 #ifdef RELEASE_BUILD
-    fileName = "resources/newGame.txt";
+    strcpy(filePath, folder);
+    strcat(filePath, fileName);
 #else
-    fileName = "../resources/newGame.txt";
+    strcpy(filePath, back);
+    strcat(filePath, folder);
+    strcat(filePath, fileName);
 #endif
 
-    if ((fp = fopen(fileName, "r")) == NULL) {
-        LOGERR("Error, did not load file: %s", fileName);
+    if ((fp = fopen(filePath, "r")) == NULL) {
+        LOGERR("Error, did not load file: %s", filePath);
         return FAILURE;
     }
 

@@ -110,7 +110,8 @@ static void handlePieceNoGrabbedEvent(struct PieceHandler* self,
 int32_t initPieceHandler(struct PieceHandler* self, 
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
-                         void* gameProxy, void* gameBoardProxy) {
+                         void* gameProxy, void* gameBoardProxy,
+                         char* fileName) {
     
     if (NULL == gameBoardProxy) {
         LOGERR("Error, NULL provided for gameBoardProxy");
@@ -125,14 +126,16 @@ int32_t initPieceHandler(struct PieceHandler* self,
     self->gameProxy = gameProxy;
 
     if (SUCCESS != populatePieces(self->pieces, cfg->whitePiecesRsrcId, 
-                                  cfg->blackPiecesRsrcId, gameProxy)) {
-        LOGERR("populatePieces() failed");
+                                  cfg->blackPiecesRsrcId, gameProxy, fileName)) {
+        LOGERR("Error, populatePieces() failed");
         return FAILURE;
     }
 
     self->isPieceGrabbed = false;
     self->selectedPieceId = 0;
+    
     self->currPlayerId = startingPlayerId;
+    self->cfg = *cfg;
 
     return SUCCESS;
 }
@@ -242,32 +245,33 @@ void savePieceStates(struct PieceHandler* self) {
 }
 
 /*TODO: arrays not corresponding*/
-void loadPieceStates(struct PieceHandler* self) {
-    PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
-    for (int32_t i = 0; i < TILES_IN_ROW; i++) {
-        for (int32_t j = 0; j < TILES_IN_COL; j++) {
-            pieceTypes[i][j] = NONE;
-        }
-    }
+// void loadPieceStates(struct PieceHandler* self) {
+//     PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
+//     for (int32_t i = 0; i < TILES_IN_ROW; i++) {
+//         for (int32_t j = 0; j < TILES_IN_COL; j++) {
+//             pieceTypes[i][j] = NONE;
+//         }
+//     }
 
-    int32_t playerIds[TILES_IN_ROW][TILES_IN_COL] = { {0} };
+//     int32_t playerIds[TILES_IN_ROW][TILES_IN_COL] = { {0} };
 
-    if (SUCCESS != loadFile(pieceTypes, playerIds)) {
-        LOGERR("Error, failed to load the previous game");
-    }
+//     //TODO: there is better way
+//     if (SUCCESS != loadFile(pieceTypes, playerIds, "savedGame.txt")) {
+//         LOGERR("Error, failed to load the previous game");
+//     }
 
-    for (size_t playerIdx = 0; playerIdx < PLAYERS_COUNT; playerIdx++) {
-        size_t size = getSizeVector(&self->pieces[playerIdx]);
-        for (size_t i = 0; i < size; i++) {
-            struct ChessPiece* currPiece = 
-                getElementVector(&self->pieces[playerIdx], i);
-            LOGY("PIECETYPE: %d ", currPiece->pieceType);
-            if (pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col] == NONE){
-                continue;
-            }
+//     for (size_t playerIdx = 0; playerIdx < PLAYERS_COUNT; playerIdx++) {
+//         size_t size = getSizeVector(&self->pieces[playerIdx]);
+//         for (size_t i = 0; i < size; i++) {
+//             struct ChessPiece* currPiece = 
+//                 getElementVector(&self->pieces[playerIdx], i);
+//             LOGY("PIECETYPE: %d ", currPiece->pieceType);
+//             if (pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col] == NONE){
+//                 continue;
+//             }
 
-            currPiece->pieceType = pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col];
-            currPiece->playerId = playerIds[currPiece->boardPos.row][currPiece->boardPos.col];
-        }
-    }
-}
+//             currPiece->pieceType = pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col];
+//             currPiece->playerId = playerIds[currPiece->boardPos.row][currPiece->boardPos.col];
+//         }
+//     }
+// }

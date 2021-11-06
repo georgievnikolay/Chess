@@ -22,4 +22,8 @@ int32_t initGameLogic(struct GameLogic* self);
 
 void finishTurn(struct GameLogic* self);
 
+int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName);
+
+int32_t saveGameLogic(const struct GameLogic* gameLogic);
+
 #endif /* INCLUDE_GAME_LOGIC_GAMELOGIC_H_ */

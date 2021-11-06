@@ -26,8 +26,8 @@ void onGameButtonSelectedGameProxy(void* proxy, GameButtonType buttonType);
 
 void onGameSavedGameProxy(void* proxy);
 
-void onGameStartedGameProxy(void* proxy);
+int32_t onGameStartedGameProxy(void* proxy);
 
-void onGameContinueGameProxy(void* proxy);
+int32_t onGameContinueGameProxy(void* proxy);
 
 #endif /* INCLUDE_GAME_PROXIES_GAMEPROXY_H_ */

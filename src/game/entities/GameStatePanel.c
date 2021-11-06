@@ -26,7 +26,7 @@ int32_t initGameStatePanel(struct GameStatePanel* self,
     self->gameProxy = gameProxy;
 
     struct GameButtonCfg buttonCfg;
-    buttonCfg.panelProxy = (void*)self;
+    // buttonCfg.panelProxy = (void*)self;
 
     buttonCfg.buttonWidth = cfg->buttonWidth;
     buttonCfg.buttonHeight = cfg->buttonHeight;
@@ -110,7 +110,8 @@ void startGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = false;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = false;
 
-    // onGameStartedGameProxy(self->gameProxy);
+    //TODO: add check
+    onGameStartedGameProxy(self->gameProxy);
 }
 
 void exitGameGamePanelProxy(void* proxy) {
@@ -130,6 +131,7 @@ void quitGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = true;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = true;
     
+    //TODO: add check
     onGameSavedGameProxy(self->gameProxy);
 }
 
@@ -141,5 +143,6 @@ void continueGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = false;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = false;    
 
+     //TODO: add check
     onGameContinueGameProxy(self->gameProxy);
 }

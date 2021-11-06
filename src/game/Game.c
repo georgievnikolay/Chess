@@ -33,7 +33,7 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
     }
 
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg, 
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard)) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
@@ -56,6 +56,7 @@ void deinitGame(struct Game* self) {
     deinitGameBoard(&self->gameBoard);
     deinitPieceHandler(&self->pieceHandler);
     deinitPiecePromotionPanel(&self->piecePromotionPanel);
+    // TODO: deinit GameStatePanel
 }
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
@@ -114,15 +115,43 @@ void onGameSavedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
     savePieceStates(&self->pieceHandler);
+    saveGameLogic(&self->gameLogic);
 }
 
-// void onGameStartedGameProxy(void *proxy) {
-//     struct Game* self = (struct Game*)proxy;
-
-// }
-
-void onGameContinueGameProxy(void* proxy) {
+int32_t onGameStartedGameProxy(void *proxy) {
     struct Game* self = (struct Game*)proxy;
 
-    loadPieceStates(&self->pieceHandler);
+    if (SUCCESS != loadGameLogic(&self->gameLogic, "gameLogic.txt")) {
+        LOGERR("Error, loadGameLogic() failed");
+        return FAILURE;
+    }
+
+    deinitPieceHandler(&self->pieceHandler);
+    if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
+        LOGERR("Error, initChessPiece() failed");
+        return FAILURE;
+    }
+
+    return SUCCESS;
 }
+
+int32_t onGameContinueGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+
+    if (SUCCESS != loadGameLogic(&self->gameLogic, "savedGameLogic.txt")) {
+        LOGERR("Error, loadGameLogic() failed");
+        return FAILURE;
+    }
+    
+    deinitPieceHandler(&self->pieceHandler);
+    if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "savedGame.txt")) {
+        LOGERR("Error, initChessPiece() failed");
+        return FAILURE;
+    }
+
+    return SUCCESS;
+}
+
+// TODO: gameExitGameProxy to deinit game when exits

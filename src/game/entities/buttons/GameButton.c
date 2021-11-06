@@ -45,8 +45,6 @@ void handleEventGameButton(struct GameButton* self, struct InputEvent* event) {
         setFrameImage(&self->base.img, CLICKED);
     } else if (event->type == TOUCH_RELEASE) {
         setFrameImage(&self->base.img, UNCLICKED);
-        //comunicate with panel proxy
-        //onButtonPressedGameProxy(self->proxy, self->buttonId);
         LOGY("BUTTON: %d", self->buttonId);
         switch (self->buttonId) {
             case START_GAME_BUTTON_ID:
