@@ -117,14 +117,14 @@ int32_t saveFile(const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL],
             currPlayer = playerIds[row][col];
 
             if (currPiece == NONE) {
-                c = '.';
+                c = NO_PIECE;
             } else {
                 c = map[currPiece + PIECE_TYPE_COUNT*currPlayer];                 
             }
 
             fputc(c, fp);
         }
-        fputc('\n', fp);
+        fputc(SEPARATOR, fp);
     }
 
     fclose(fp);

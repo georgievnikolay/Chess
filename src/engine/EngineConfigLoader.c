@@ -41,7 +41,7 @@ static const int32_t GAME_BUTTONS_FRAME_HEIGHT = 66;
 
 static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
-static const int32_t ANGELINE_VINTAGE_FONT = 20;
+static const int32_t ANGELINE_VINTAGE_FONT = 30;
 
 static const int64_t ENGINE_TARGET_FRAMES = 30;
 
@@ -200,7 +200,7 @@ static void populateTextContainerConfig(struct TextContainerCfg* cfg) {
     struct FontConfig fontCfg;
     fontCfg.fontSize = ANGELINE_VINTAGE_FONT;
     populateResourceLocation(fontCfg.location, "resources/fonts/AngelineVintage.ttf");
-    insertFontConfig(cfg, ANGELINE_VINTAGE_20_FONT_ID, &fontCfg);
+    insertFontConfig(cfg, ANGELINE_VINTAGE_30_FONT_ID, &fontCfg);
 }
 
 static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
@@ -242,6 +242,15 @@ static void populatePiecePromotionPanelCfg(struct PiecePromotionPanelCfg* cfg) {
     cfg->buttonHeight = TARGET_WIDTH_HEIGHT;
 }
 
+static void populateGameLogicCfg(struct GameLogicCfg* cfg) {
+    cfg->fontId = ANGELINE_VINTAGE_30_FONT_ID;
+
+    cfg->screenWidth = SCREEN_WIDTH;
+    cfg->screenHeight = SCREEN_HEIGHT;
+
+    cfg->gameBoardWidth_Height = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+}
+
 static void populateGameCfg(struct GameCfg* cfg) {
     cfg->gameBoardRsrcId = CHESS_BOARD_TEXTURE_ID;
     cfg->targetRsrcId = TARGET_TEXTURE_ID;
@@ -249,7 +258,8 @@ static void populateGameCfg(struct GameCfg* cfg) {
     
     cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
     cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
-    
+
+    populateGameLogicCfg(&cfg->gameLogicCfg);
     populateGameStatePanelCfg(&cfg->gameStatePanelCfg);
     populatePiecePromotionPanelCfg(&cfg->piecePromotionPanelCfg);
 }
@@ -261,7 +271,7 @@ struct EngineConfig loadEngineConfig() {
     populateManagerHandlerCfg(&cfg.managerHandlerCfg);
     populateGameCfg(&cfg.gameCfg);
 
-    cfg.debugConsoleFontId = ANGELINE_VINTAGE_20_FONT_ID;
+    cfg.debugConsoleFontId = ANGELINE_VINTAGE_30_FONT_ID;
 
     return cfg;
 }

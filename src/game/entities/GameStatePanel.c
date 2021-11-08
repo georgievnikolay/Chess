@@ -92,7 +92,6 @@ void drawGameStatePanel(struct GameStatePanel* self) {
     }
 }
 
-//TODO- neznaam
 void activateGameStatePanel(struct GameStatePanel* self) {
     self->isActive = true;
 
@@ -117,9 +116,10 @@ void startGameGamePanelProxy(void* proxy) {
 void exitGameGamePanelProxy(void* proxy) {
     /* Proxy to the game to tell it to exit */
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
-    UNUSED(self);
 
-    /* That pretty much sums up my knowledge */
+    
+    /* TODO: That pretty much sums up my knowledge */
+    onGameExitedGameProxy(&self->gameProxy);
     exit(0);
 }
 

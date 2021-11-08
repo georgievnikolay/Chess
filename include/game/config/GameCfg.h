@@ -12,6 +12,7 @@
 #include "game/config/PieceHandlerCfg.h"
 #include "game/config/PiecePromotionPanelCfg.h"
 #include "game/config/GameStatePanelCfg.h"
+#include "game/config/GameLogicCfg.h"
 
 /* Forward declarations */
 
@@ -21,6 +22,7 @@ struct GameCfg {
     struct PieceHandlerCfg pieceHandlerCfg;
     struct PiecePromotionPanelCfg piecePromotionPanelCfg;
     struct GameStatePanelCfg gameStatePanelCfg;
+    struct GameLogicCfg gameLogicCfg;
     int32_t gameBoardRsrcId;
     int32_t targetRsrcId;
     int32_t moveSelectorRsrcId;

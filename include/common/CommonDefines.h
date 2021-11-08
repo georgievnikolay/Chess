@@ -31,7 +31,7 @@ typedef enum {
 Since size cannot be changed we encorporate the 
 size of the font in the enum value*/
 typedef enum {
-    ANGELINE_VINTAGE_20_FONT_ID,    //Angeline vintage font with size 20
+    ANGELINE_VINTAGE_30_FONT_ID,    //Angeline vintage font with size 20
     ANGELINE_VINTAGE_80_FONT_ID     //Angeline vintage font with size 80
 } FontIds;
 

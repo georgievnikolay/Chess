@@ -22,12 +22,12 @@ void activatePawnPromotionGameProxy(void* proxy);
 
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType);
 
-void onGameButtonSelectedGameProxy(void* proxy, GameButtonType buttonType);
-
 void onGameSavedGameProxy(void* proxy);
 
 int32_t onGameStartedGameProxy(void* proxy);
 
 int32_t onGameContinueGameProxy(void* proxy);
+
+void onGameExitedGameProxy(void* proxy);
 
 #endif /* INCLUDE_GAME_PROXIES_GAMEPROXY_H_ */

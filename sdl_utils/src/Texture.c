@@ -40,12 +40,14 @@ void freeSurface(SDL_Surface** surface) {
 }
 
 int32_t loadTextureFromSurface(SDL_Surface** surface, SDL_Texture** outTexture) {
-    if (*outTexture) { ///WTF
+    
+    if (*outTexture) {
         LOGERR("Error, texture is already populated. Memory leak prevented!");
         return FAILURE;
     }
 
     *outTexture = SDL_CreateTextureFromSurface(gRenderer, *surface);
+    
     if (*outTexture == NULL) {
         LOGERR("SDL_CeateTextureFromSurface() failed. SDL Error: %s", SDL_GetError());
         return FAILURE;

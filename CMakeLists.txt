@@ -29,12 +29,15 @@ add_executable(
         ${_INCLUDE_DIR}/game/proxies/GameBoardProxy.h
         ${_INCLUDE_DIR}/game/proxies/PiecePromotionPanelProxy.h
         ${_INCLUDE_DIR}/game/config/GameCfg.h
+        ${_INCLUDE_DIR}/game/config/GameLogicCfg.h
         ${_INCLUDE_DIR}/game/config/GameButtonCfg.h
         ${_INCLUDE_DIR}/game/config/GameStatePanelCfg.h
         ${_INCLUDE_DIR}/game/config/PieceHandlerCfg.h
         ${_INCLUDE_DIR}/game/config/PiecePromotionPanelCfg.h
         ${_INCLUDE_DIR}/game/config/PiecePromotionButtonCfg.h
         ${_INCLUDE_DIR}/game/defines/ChessDefines.h
+        ${_INCLUDE_DIR}/game/defines/GameDefines.h
+        ${_INCLUDE_DIR}/game/defines/GameLogicDefines.h
         ${_INCLUDE_DIR}/game/defines/ChessStructs.h
         ${_INCLUDE_DIR}/game/entities/PiecePromotionPanel.h
         ${_INCLUDE_DIR}/game/entities/GameStatePanel.h
@@ -91,7 +94,7 @@ add_executable(
 
 set_target_c_standard(${PROJECT_NAME} 11)
 enable_target_c_warnings(${PROJECT_NAME})
-enable_target_c_sanitizer(${PROJECT_NAME} "address")
+#enable_target_c_sanitizer(${PROJECT_NAME} "address")
 
 target_include_directories(
     ${PROJECT_NAME}

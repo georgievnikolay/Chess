@@ -21,7 +21,7 @@
 /*        Defines       */
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
-    if (SUCCESS != initGameLogic(&self->gameLogic)) {
+    if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg)) {
         LOGERR("Error, initGameLogic() failed");
         return FAILURE;
     }
@@ -32,7 +32,7 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
-    if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg, 
+    if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg, //TODO: make it const char* 
             self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
@@ -49,6 +49,7 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         LOGERR("Error, initGameStatePanel() failed");
         return FAILURE;
     }
+
     return SUCCESS;
 }
 
@@ -56,7 +57,8 @@ void deinitGame(struct Game* self) {
     deinitGameBoard(&self->gameBoard);
     deinitPieceHandler(&self->pieceHandler);
     deinitPiecePromotionPanel(&self->piecePromotionPanel);
-    // TODO: deinit GameStatePanel
+    deinitGameStatePanel(&self->gameStatePanel);
+    deinitGameLogic(&self->gameLogic);
 }
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
@@ -73,6 +75,7 @@ void handleEventGame(struct Game* self, struct InputEvent* event) {
 void drawGame(struct Game* self) {
     drawGameBoard(&self->gameBoard);
     drawPieceHandler(&self->pieceHandler);
+    drawGameLogic(&self->gameLogic);
     drawPiecePromotionPanel(&self->piecePromotionPanel);
     drawGameStatePanel(&self->gameStatePanel);
 }
@@ -115,6 +118,8 @@ void onGameSavedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
     savePieceStates(&self->pieceHandler);
+
+    stopGameLogic(&self->gameLogic);
     saveGameLogic(&self->gameLogic);
 }
 
@@ -132,6 +137,7 @@ int32_t onGameStartedGameProxy(void *proxy) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
+    startGameLogic(&self->gameLogic);
 
     return SUCCESS;
 }
@@ -150,8 +156,14 @@ int32_t onGameContinueGameProxy(void* proxy) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
-
+    startGameLogic(&self->gameLogic);
     return SUCCESS;
 }
 
-// TODO: gameExitGameProxy to deinit game when exits
+// TODO: gameExitGameProxy to deinit game when exits -> update Debug console leaks when this is done
+//TODO: find better way
+void onGameExitedGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+    UNUSED(self);
+    
+}
