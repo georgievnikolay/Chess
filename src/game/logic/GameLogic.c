@@ -19,11 +19,19 @@
 
 /*        Defines       */
 
-static void updateTimerTextColor(struct Text* timerText, int32_t timeUnits[TIME_UNITS_COUNT]) {
-    if (11 >= timeUnits[SECONDS] && timeUnits[SECONDS] >= 0) {
+static const char* whitePlayerText = "WHITES";
+static const char* blackPlayerText = "BLACKS";
+
+static const char* initialTimerText = "01:00";
+
+#define TIMER_FORMAT "%02d:%02d"
+
+/* BEGIN Text utility functions specific for GameLogic */
+static void updateTimerTextColor(struct Text* timerText, int32_t seconds) {
+    if (11 >= seconds && seconds >= 0) {
         setColorText(timerText, &COLOR_RED);
         return;
-    } else if (21 >= timeUnits[SECONDS] && timeUnits[SECONDS] >= 11) {
+    } else if (21 >= seconds && seconds >= 11) {
         setColorText(timerText, &COLOR_ORANGE);
         return;
     } else {
@@ -31,29 +39,43 @@ static void updateTimerTextColor(struct Text* timerText, int32_t timeUnits[TIME_
     }
 }
 
-static void updateTimerText(struct Text* timerText, int32_t timeUnits[TIME_UNITS_COUNT]) {
+static void updateTimerText(struct Text* timerText, int32_t seconds) {
     char buffer[20];
+    int32_t minute = seconds / 60;
+    seconds = seconds % 60;
 
-    snprintf(buffer, 20, "%02d:%02d", timeUnits[MINUTES], timeUnits[SECONDS]);
+    snprintf(buffer, 20, TIMER_FORMAT, minute, seconds);
     setText(timerText, buffer);
 }
 
+static void centreTextXAxis(struct Text* text, const struct GameLogicCfg* cfg ) {
+    int32_t textWidth = text->widget.drawParams.width;
+
+    int32_t startX = cfg->gameBoardWidth_Height + 
+                (((cfg->screenWidth - cfg->gameBoardWidth_Height) - textWidth )/ 2);
+    int32_t startY = cfg->screenHeight - 100;
+
+    struct Point pos = { .x = startX, .y = startY};
+    text->widget.drawParams.pos = pos;
+}
+
+static void moveTextYAxis(struct Text* text, int32_t offset) {
+    text->widget.drawParams.pos.y += offset;
+}
+/* END  Text utility functions specific for GameLogic */
+
+/* Timer callback */
 static void onTimerTimeout(void* clientProxy, int32_t timerId) {
     struct GameLogic* self = (struct GameLogic*)clientProxy;
 
-    // LOGY("%02d : %02d", self->timeUnits[MINUTES], self->timeUnits[SECONDS])
-    // setColorText(&self->gameLogicTexts[TIMER_TEXT], &COLOR_RED);
-    updateTimerTextColor(&self->gameLogicTexts[TIMER_TEXT], self->timeUnits);
+    updateTimerTextColor(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
     if (timerId == ONE_SECOND_TIMER) {
-        self->timeUnits[SECONDS] -= 1;
+        self->turnSeconds -= 1;
             
-        if (self->timeUnits[SECONDS] < 0) {
-            self->timeUnits[MINUTES] = 1;
-            self->timeUnits[SECONDS] = 0;
-            updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->timeUnits);
+        updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
+        
+        if (self->turnSeconds == 0) {
             finishTurnGameProxy(self->gameProxy);
-        } else {
-            updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->timeUnits);
         }
     }
 }
@@ -66,26 +88,23 @@ int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, vo
     }
     self->gameProxy = gameProxy;
 
-    self->timeUnits[MINUTES] = 0;
-    self->timeUnits[SECONDS] = 60;
+    self->turnSeconds = 60;
     self->activePlayerId = WHITE_PLAYER_ID;
     self->numberOfMoves = 0;
 
     createTimer(&self->timerClent[ONE_SECOND_TIMER], self, onTimerTimeout);
 
-    createText(&self->gameLogicTexts[TIMER_TEXT], "01:00", cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
-    int32_t textWidth = self->gameLogicTexts[TIMER_TEXT].widget.drawParams.width;
 
-    int32_t startX = cfg->gameBoardWidth_Height + 
-                (((cfg->screenWidth - cfg->gameBoardWidth_Height) - textWidth )/ 2);
-    int32_t startY = cfg->screenHeight - 100;
+    createText(&self->gameLogicTexts[TIMER_TEXT], initialTimerText, 
+               cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
+    centreTextXAxis(&self->gameLogicTexts[TIMER_TEXT], cfg);
 
-    struct Point pos = { .x = startX, .y = startY};
-    self->gameLogicTexts[TIMER_TEXT].widget.drawParams.pos = pos;
 
-    pos.y -= 100;
-    createText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], "WHITES", cfg->fontId, &COLOR_BLACK, &pos);
-    
+    createText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], whitePlayerText, 
+               cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
+    centreTextXAxis(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], cfg);
+    moveTextYAxis(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], -100);
+
     return SUCCESS;
 }
 
@@ -104,27 +123,25 @@ void drawGameLogic(struct GameLogic* self) {
 }
 
 void finishTurn(struct GameLogic* self) {
-    self->timeUnits[MINUTES] = 0;
-    self->timeUnits[SECONDS] = 60;
+    self->turnSeconds = 60;
 
     if (self->activePlayerId == WHITE_PLAYER_ID) {
         self->activePlayerId = BLACK_PLAYER_ID;
-        setText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], "BLACKS");
+        setText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], blackPlayerText);
     } else {
         self->activePlayerId = WHITE_PLAYER_ID;
-        setText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], "WHITES");
+        setText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], whitePlayerText);
     }
 }
 
 void startGameLogic(struct GameLogic* self) {
-
     int64_t oneSecondInMiliseconds = 1000;
 
+    updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
+    updateTimerTextColor(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
+    
     startTimer(&self->timerClent[ONE_SECOND_TIMER], 
         oneSecondInMiliseconds, ONE_SECOND_TIMER, PULSE_TIMER);
-
-    self->timeUnits[MINUTES] = 0;
-    self->timeUnits[SECONDS] = 60;
 }
 
 void stopGameLogic(struct GameLogic* self) {
@@ -132,7 +149,7 @@ void stopGameLogic(struct GameLogic* self) {
     stopTimer(ONE_SECOND_TIMER);
 }
 
-int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName) {
+int32_t loadGameLogic(struct GameLogic* self, char* fileName) {
 
     FILE* fp;
 
@@ -153,10 +170,9 @@ int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName) {
         return FAILURE;
     }
 
-    fscanf(fp, "%d/%d/%d/%d", &gameLogic->activePlayerId, 
-                              &gameLogic->numberOfMoves, 
-                              &gameLogic->timeUnits[MINUTES], 
-                              &gameLogic->timeUnits[SECONDS]);
+    fscanf(fp, "%d/%d/%d", &self->activePlayerId, 
+                           &self->numberOfMoves, 
+                           &self->turnSeconds);
 
     fclose(fp);
     fp = NULL;
@@ -164,7 +180,7 @@ int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName) {
     return SUCCESS;
 }
 
-int32_t saveGameLogic(const struct GameLogic* gameLogic) {
+int32_t saveGameLogic(const struct GameLogic* self) {
 
     FILE* fp;
     const char* filePath = NULL;
@@ -179,10 +195,9 @@ int32_t saveGameLogic(const struct GameLogic* gameLogic) {
         return FAILURE;
     }
 
-    fprintf(fp, "%d/%d/%d/%d", gameLogic->activePlayerId, 
-                               gameLogic->numberOfMoves, 
-                               gameLogic->timeUnits[MINUTES], 
-                               gameLogic->timeUnits[SECONDS]);
+    fprintf(fp, "%d/%d/%d", self->activePlayerId, 
+                            self->numberOfMoves, 
+                            self->turnSeconds);
 
     fclose(fp);
     fp = NULL;    

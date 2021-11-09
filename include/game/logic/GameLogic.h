@@ -21,7 +21,7 @@ struct GameLogicCfg;
 struct GameLogic {
     struct Text gameLogicTexts[TEXTS_COUNT];
     struct TimerClient timerClent[TIMERS_COUNT];
-    int32_t timeUnits[TIME_UNITS_COUNT];
+    int32_t turnSeconds;
     void* gameProxy;
     int32_t activePlayerId;
     int32_t numberOfMoves;

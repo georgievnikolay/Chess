@@ -41,7 +41,8 @@ static const int32_t GAME_BUTTONS_FRAME_HEIGHT = 66;
 
 static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
-static const int32_t ANGELINE_VINTAGE_FONT = 30;
+static const int32_t SERIFNCB_FONT_50 = 50;
+static const int32_t SERIFNCB_FONT_70 = 70;
 
 static const int64_t ENGINE_TARGET_FRAMES = 30;
 
@@ -198,9 +199,14 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
 
 static void populateTextContainerConfig(struct TextContainerCfg* cfg) {
     struct FontConfig fontCfg;
-    fontCfg.fontSize = ANGELINE_VINTAGE_FONT;
-    populateResourceLocation(fontCfg.location, "resources/fonts/AngelineVintage.ttf");
-    insertFontConfig(cfg, ANGELINE_VINTAGE_30_FONT_ID, &fontCfg);
+
+    fontCfg.fontSize = SERIFNCB_FONT_50;
+    populateResourceLocation(fontCfg.location, "resources/fonts/SERIFNCB.TTF");
+    insertFontConfig(cfg, SERIFNCB_50_FONT_ID, &fontCfg);
+
+    fontCfg.fontSize = SERIFNCB_FONT_70;
+    populateResourceLocation(fontCfg.location, "resources/fonts/SERIFNCB.TTF");
+    insertFontConfig(cfg, SERIFNCB_70_FONT_ID, &fontCfg);
 }
 
 static void populateManagerHandlerCfg(struct ManagerHandlerCfg* cfg) {
@@ -243,7 +249,7 @@ static void populatePiecePromotionPanelCfg(struct PiecePromotionPanelCfg* cfg) {
 }
 
 static void populateGameLogicCfg(struct GameLogicCfg* cfg) {
-    cfg->fontId = ANGELINE_VINTAGE_30_FONT_ID;
+    cfg->fontId = SERIFNCB_50_FONT_ID;
 
     cfg->screenWidth = SCREEN_WIDTH;
     cfg->screenHeight = SCREEN_HEIGHT;
@@ -271,7 +277,7 @@ struct EngineConfig loadEngineConfig() {
     populateManagerHandlerCfg(&cfg.managerHandlerCfg);
     populateGameCfg(&cfg.gameCfg);
 
-    cfg.debugConsoleFontId = ANGELINE_VINTAGE_30_FONT_ID;
+    cfg.debugConsoleFontId = SERIFNCB_50_FONT_ID;
 
     return cfg;
 }

@@ -19,12 +19,6 @@ enum TimerDefines{
     TIMERS_COUNT
 };
 
-enum TimeUnitsDefines {
-    MINUTES,
-    SECONDS,
-    TIME_UNITS_COUNT
-};
-
 enum TextDefines {
     TIMER_TEXT,
     ACTIVE_PLAYER_TEXT,

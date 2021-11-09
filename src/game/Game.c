@@ -63,7 +63,7 @@ void deinitGame(struct Game* self) {
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
     handleEventGameStatePanel(&self->gameStatePanel, event);
-    //TODO: check here if panels are active
+
     if (self->piecePromotionPanel.isActive) {
         handleEventPiecePromotionPanel(&self->piecePromotionPanel, event);
         return;
@@ -156,10 +156,11 @@ int32_t onGameContinueGameProxy(void* proxy) {
         return FAILURE;
     }
     startGameLogic(&self->gameLogic);
+
     return SUCCESS;
 }
 
-// TODO: gameExitGameProxy to deinit game when exits -> update Debug console leaks when this is done
+//TODO: gameExitGameProxy to deinit game when exits -> update Debug console leaks when this is done
 //TODO: find better way
 void onGameExitedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
