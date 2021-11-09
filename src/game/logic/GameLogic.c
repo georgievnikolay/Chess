@@ -154,7 +154,7 @@ int32_t loadGameLogic(struct GameLogic* self, char* fileName) {
     FILE* fp;
 
     char* back = "../";
-    char* folder = "resources/";
+    char* folder = "resources/gameFiles/";
     char filePath[50];
 #ifdef RELEASE_BUILD
     strcpy(filePath, folder);
@@ -185,9 +185,9 @@ int32_t saveGameLogic(const struct GameLogic* self) {
     FILE* fp;
     const char* filePath = NULL;
 #ifdef RELEASE_BUILD
-    filePath = "resources/savedGameLogic.txt";
+    filePath = "resources/gameFiles/savedGameLogic.txt";
 #else
-    filePath = "../resources/savedGameLogic.txt";
+    filePath = "../resources/gameFiles/savedGameLogic.txt";
 #endif
 
     if ((fp = fopen(filePath, "w")) == NULL) {

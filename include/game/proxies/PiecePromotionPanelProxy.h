@@ -9,6 +9,7 @@
 
 /* Own library includes */
 #include "game/defines/ChessDefines.h"
+
 /* Forward declarations */
 
 /*        Defines       */

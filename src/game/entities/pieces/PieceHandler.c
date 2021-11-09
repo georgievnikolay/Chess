@@ -209,7 +209,7 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
     pieceCfg.boardPos = currPiece->boardPos;
     pieceCfg.playerId = currPiece->playerId;
 
-    //TODO: how to get the texture?
+    //TODO: how to get the texture id?
     pieceCfg.rsrcId = currPlayerId;
     
     deinitChessPieceResolver(currPiece);
@@ -245,34 +245,52 @@ void savePieceStates(struct PieceHandler* self) {
     }
 }
 
-/*TODO: arrays not corresponding*/
-// void loadPieceStates(struct PieceHandler* self) {
-//     PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
-//     for (int32_t i = 0; i < TILES_IN_ROW; i++) {
-//         for (int32_t j = 0; j < TILES_IN_COL; j++) {
-//             pieceTypes[i][j] = NONE;
-//         }
-//     }
 
-//     int32_t playerIds[TILES_IN_ROW][TILES_IN_COL] = { {0} };
 
-//     //TODO: there is better way
-//     if (SUCCESS != loadFile(pieceTypes, playerIds, "savedGame.txt")) {
-//         LOGERR("Error, failed to load the previous game");
-//     }
+#include "game/defines/ChessStructs.h"
+// NOTE: memory leaks
+bool isInCheckKing(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]) {
+    
+    const int32_t opponentId = getOpponentId(currPlayerId);
 
-//     for (size_t playerIdx = 0; playerIdx < PLAYERS_COUNT; playerIdx++) {
-//         size_t size = getSizeVector(&self->pieces[playerIdx]);
-//         for (size_t i = 0; i < size; i++) {
-//             struct ChessPiece* currPiece = 
-//                 getElementVector(&self->pieces[playerIdx], i);
-//             LOGY("PIECETYPE: %d ", currPiece->pieceType);
-//             if (pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col] == NONE){
-//                 continue;
-//             }
+    struct ChessPiece* currPiece = NULL;
+    struct ChessPiece* king = NULL;
+    UNUSED(king);
+    
+    struct Vector enemyMoveTiles;
 
-//             currPiece->pieceType = pieceTypes[currPiece->boardPos.row][currPiece->boardPos.col];
-//             currPiece->playerId = playerIds[currPiece->boardPos.row][currPiece->boardPos.col];
-//         }
-//     }
-// }
+    size_t size = getSizeVector(&pieces[currPlayerId]);
+    for (size_t i = 0; i < size; i++) {
+        currPiece = getElementVector(&pieces[currPlayerId], i);
+        if (currPiece->pieceType == KING) {
+            king = currPiece;
+            break;
+        }
+    }
+    if (king == NULL) {
+        return false;
+    }
+
+    size = getSizeVector(&pieces[opponentId]);
+    for (size_t i = 0; i < size; i++) {
+        currPiece = getElementVector(&pieces[opponentId], i);
+
+        enemyMoveTiles = getMoveTilesPieceResolver(currPiece, pieces);
+
+        size_t tilesSize = getSizeVector(&enemyMoveTiles);
+        for (size_t j = 0; j < tilesSize; j++) {
+            struct TileData* currTile = getElementVector(&enemyMoveTiles, j);
+
+            if (currTile->tileType == TAKE_TILE) {
+                if (currPiece->playerId == WHITE_PLAYER_ID) {
+                    LOGY("White King in check from pieceType: %d", currPiece->pieceType);
+                } else {
+                    LOGY("Black King in check from pieceType: %d", currPiece->pieceType);
+                }
+                return true;
+            }
+        }
+    }
+
+    return false;
+}

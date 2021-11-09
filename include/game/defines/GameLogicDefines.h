@@ -13,12 +13,6 @@
 
 /*        Defines       */
 
-enum TimerDefines{
-    ONE_MINUTE_TIMER,
-    ONE_SECOND_TIMER,
-    TIMERS_COUNT
-};
-
 enum TextDefines {
     TIMER_TEXT,
     ACTIVE_PLAYER_TEXT,

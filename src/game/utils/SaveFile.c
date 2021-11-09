@@ -41,7 +41,7 @@ int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
     
     FILE* fp = NULL;
     char* back = "../";
-    char* folder = "resources/";
+    char* folder = "resources/gameFiles/";
     char filePath[50];
 #ifdef RELEASE_BUILD
     strcpy(filePath, folder);
@@ -97,9 +97,9 @@ int32_t saveFile(const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL],
     
     const char* fileName = NULL;
 #ifdef RELEASE_BUILD
-    fileName = "resources/savedGame.txt";
+    fileName = "resources/gameFiles/savedGame.txt";
 #else
-    fileName = "../resources/savedGame.txt";
+    fileName = "../resources/gameFiles/savedGame.txt";
 #endif
 
     if ((fp = fopen(fileName, "w")) == NULL) {

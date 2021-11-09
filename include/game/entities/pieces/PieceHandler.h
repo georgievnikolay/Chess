@@ -49,4 +49,7 @@ void savePieceStates(struct PieceHandler* self);
 
 void loadPieceStates(struct PieceHandler* self);
 
+
+bool isInCheckKing(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
+
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLER_H_ */

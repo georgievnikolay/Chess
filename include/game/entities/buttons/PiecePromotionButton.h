@@ -26,8 +26,8 @@ struct PiecePromotionButton {
 };
 
 int32_t initPiecePromotionButton(struct PiecePromotionButton *self,
-                                const struct PiecePromotionButtonCfg *cfg,
-                                void* panelProxy);
+                                 const struct PiecePromotionButtonCfg *cfg,
+                                 void* panelProxy);
 
 void deinitPiecePromotionButton(struct PiecePromotionButton *self);
 

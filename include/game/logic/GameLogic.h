@@ -9,6 +9,7 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "common/TimerDefines.h"
 #include "game/defines/GameLogicDefines.h"
 #include "manager_utils/time/TimerClient.h"
 #include "manager_utils/drawing/Text.h"
@@ -19,8 +20,8 @@ struct GameLogicCfg;
 /*        Defines       */
 
 struct GameLogic {
-    struct Text gameLogicTexts[TEXTS_COUNT];
     struct TimerClient timerClent[TIMERS_COUNT];
+    struct Text gameLogicTexts[TEXTS_COUNT];
     int32_t turnSeconds;
     void* gameProxy;
     int32_t activePlayerId;

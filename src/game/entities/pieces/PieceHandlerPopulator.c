@@ -43,8 +43,7 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT],
 
     PieceType allPieces[TILES_IN_ROW][TILES_IN_COL];
     int32_t playerIds[TILES_IN_ROW][TILES_IN_COL];
-
-    //TODO: pass it to the function wether its newGame or Saved Game 
+    
     loadFile(allPieces, playerIds, fileName);
 
     struct ChessPieceCfg pieceCfg;

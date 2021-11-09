@@ -22,7 +22,7 @@ enum KingDefines {
 };
 
 static void getBoardMoves(const struct ChessPiece* piece,
-                               struct BoardMoveHelper* moveHelper) {
+                          struct BoardMoveHelper* moveHelper) {
     struct BoardPos* pos = NULL;
     struct BoardPos futurePos;
 

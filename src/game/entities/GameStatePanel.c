@@ -26,7 +26,6 @@ int32_t initGameStatePanel(struct GameStatePanel* self,
     self->gameProxy = gameProxy;
 
     struct GameButtonCfg buttonCfg;
-    // buttonCfg.panelProxy = (void*)self;
 
     buttonCfg.buttonWidth = cfg->buttonWidth;
     buttonCfg.buttonHeight = cfg->buttonHeight;
@@ -56,9 +55,11 @@ int32_t initGameStatePanel(struct GameStatePanel* self,
             return FAILURE;
         }
     }
+
     resetImage(&self->panelImg);
     createImage(&self->panelImg, cfg->startScreenRsrcId, &POINT_ZERO);
     self->isActive = true;
+    
     return SUCCESS;
 }
 

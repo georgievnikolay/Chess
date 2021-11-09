@@ -15,8 +15,6 @@
 /*        Defines       */
 
 struct GameButtonCfg {
-    //TODO: remove panelProxy, its already in the button
-    // void* panelProxy;
     struct Point buttonPos;
     int32_t buttonRsrcId;
     int32_t buttonWidth;

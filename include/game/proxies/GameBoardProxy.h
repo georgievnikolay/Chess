@@ -17,7 +17,7 @@ struct Vector;
 /*        Defines       */
 
 void onPieceGrabbedGameBoardProxy(void* proxy, const struct BoardPos* boardPos,
-                    const struct Vector* moveTiles);
+                                  const struct Vector* moveTiles);
 
 void onPieceUngrabbedGameBoardProxy(void* proxy);
 

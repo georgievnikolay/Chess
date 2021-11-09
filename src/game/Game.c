@@ -88,6 +88,7 @@ void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
     finishTurn(&self->gameLogic);
+    isInCheckKing(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
     invertPieces(self->pieceHandler.pieces);
     self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
 }
