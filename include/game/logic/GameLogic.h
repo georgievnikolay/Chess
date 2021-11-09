@@ -19,12 +19,12 @@ struct GameLogicCfg;
 /*        Defines       */
 
 struct GameLogic {
-    struct TimerClient timerClent[TIMERS_COUNT];
     struct Text gameLogicTexts[TEXTS_COUNT];
+    struct TimerClient timerClent[TIMERS_COUNT];
     int32_t timeUnits[TIME_UNITS_COUNT];
+    void* gameProxy;
     int32_t activePlayerId;
     int32_t numberOfMoves;
-    void* gameProxy;
 };
 
 int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, void* gameProxy);
