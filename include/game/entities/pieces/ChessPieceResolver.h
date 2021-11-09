@@ -29,11 +29,16 @@ void setBoardPosChessPieceResolver(struct ChessPiece* piece,
 void deinitChessPieceResolver(struct ChessPiece* piece);
 
 struct Vector getMoveTilesPieceResolver(struct ChessPiece* piece, 
-                                        const struct Vector pieces[PLAYERS_COUNT]);
+                                        struct Vector pieces[PLAYERS_COUNT]);
 
 void drawChessPieceResolver(struct ChessPiece* piece);
 
 int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
                                        struct ChessPiece** outPiece);
+
+bool doCollideWithPieceChessPieceResolver(const struct BoardPos *selectedPos,
+                                          struct ChessPiece* piece,
+                                          const struct Vector *pieces,
+                                          int32_t *outCollisionRelativeId);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_TYPES_CHESSPIECERESOLVER_H_ */

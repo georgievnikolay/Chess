@@ -18,6 +18,9 @@
 
 struct Pawn {
     struct ChessPiece base;
+    int32_t movesCount;
+    int32_t enPassantActivatedMove;
+    bool isInEnPassant;
     void* gameProxy;
 };
 
@@ -27,6 +30,10 @@ int32_t initPawn(struct Pawn* self, const struct ChessPieceCfg* cfg,
 void setBoardPosPawn(struct Pawn* self, const struct BoardPos* boardPos);
 
 struct Vector getMoveTilesPawn(const struct ChessPiece* self, 
-                               const struct Vector pieces[PLAYERS_COUNT]);
+                               struct Vector pieces[PLAYERS_COUNT]);
+
+bool doCollideWithPiecePawn(const struct BoardPos *selectedPos,
+                            const struct Vector *pieces,
+                            int32_t *outCollisionRelativeId);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_TYPES_PAWN_H_ */

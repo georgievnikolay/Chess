@@ -21,7 +21,7 @@
 /*        Defines       */
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
-    if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg)) {
+    if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg, (void*)self)) {
         LOGERR("Error, initGameLogic() failed");
         return FAILURE;
     }
@@ -82,7 +82,7 @@ void drawGame(struct Game* self) {
 
 /*Proxies*/
 
-/*Piece handler communicate with the game 
+/*Piece Handler communicate with the game 
 that the turn is over*/
 void finishTurnGameProxy(void* proxy) {
     //activate animator
@@ -90,7 +90,6 @@ void finishTurnGameProxy(void* proxy) {
     finishTurn(&self->gameLogic);
     invertPieces(self->pieceHandler.pieces);
     self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
-
 }
 
 /*Communicate with the Panel that it should activate*/
@@ -166,4 +165,14 @@ void onGameExitedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     UNUSED(self);
     
+}
+
+int32_t getNumberOfMovesGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+    return self->gameLogic.numberOfMoves;
+}
+
+void increaseNumberOfMovesGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+    self->gameLogic.numberOfMoves += 1;
 }

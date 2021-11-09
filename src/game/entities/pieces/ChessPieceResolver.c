@@ -14,8 +14,10 @@
 #include "game/entities/pieces/types/King.h"
 #include "game/entities/pieces/types/Knight.h"
 #include "game/utils/BoardPos.h"
+#include "game/utils/BoardUtils.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
+
 /* Forward declarations */
 
 /*        Defines       */
@@ -78,7 +80,7 @@ void drawChessPieceResolver(struct ChessPiece* piece) {
 }
 
 struct Vector getMoveTilesPieceResolver(
-    struct ChessPiece* piece, const struct Vector pieces[PLAYERS_COUNT]) {
+    struct ChessPiece* piece, struct Vector pieces[PLAYERS_COUNT]) {
 
     switch (piece->pieceType) {
         case ROOK:
@@ -201,4 +203,29 @@ int32_t promoteChessPiecePieceResolver(const struct ChessPieceCfg* cfg,
     }
 
     return SUCCESS;
+}
+
+bool doCollideWithPieceChessPieceResolver(const struct BoardPos *selectedPos,
+                                          struct ChessPiece* piece,
+                                          const struct Vector *pieces,
+                                          int32_t *outCollisionRelativeId) {
+    
+    switch (piece->pieceType) {
+        case PAWN:
+            return doCollideWithPiecePawn(selectedPos, pieces, outCollisionRelativeId);
+            break;
+
+        case KING:
+        case QUEEN:
+        case BISHOP:
+        case KNIGHT:
+        case ROOK:
+            return doCollideWithPiece(selectedPos, pieces, outCollisionRelativeId);
+            break;
+        default:
+            LOGERR("Error, recieved unsupported pieceType: %d", piece->pieceType);
+            break;
+    }
+
+    return false;    
 }

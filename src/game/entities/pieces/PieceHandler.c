@@ -23,15 +23,34 @@
 
 /*        Defines       */
 
+static void mirrorBoardPos(struct BoardPos* currBoardPos) {
+    const int32_t boardColsAndRows = BOARD_ROWS_COLS;
+    currBoardPos->row = boardColsAndRows - currBoardPos->row;
+    currBoardPos->col = boardColsAndRows - currBoardPos->col;
+}
+
+void invertPieces(struct Vector pieces[PLAYERS_COUNT]) {
+    for (int32_t playerId = 0; playerId < PLAYERS_COUNT; playerId++) {
+        const size_t size = getSizeVector(&pieces[playerId]);
+        for (size_t i = 0; i < size; i++) {
+            struct ChessPiece* currPiece = 
+                (struct ChessPiece*)getElementVector(&pieces[playerId], i);
+            mirrorBoardPos(&currPiece->boardPos);
+            setBoardPosChessPiece(currPiece, &currPiece->boardPos);
+        }
+    }
+}
+
 static void doMovePiece(struct PieceHandler* self, 
                         struct ChessPiece* piece,
                         const struct BoardPos* selectedBoardPos) {
 
+    increaseNumberOfMovesGameProxy(self->gameProxy);
     setBoardPosChessPieceResolver(piece, selectedBoardPos);
     const int32_t opponentId = getOpponentId(piece->playerId);
     int32_t foundIdx = -1;
 
-    if (doCollideWithPiece(selectedBoardPos, &self->pieces[opponentId], &foundIdx)) {
+    if (doCollideWithPieceChessPieceResolver(selectedBoardPos, piece, &self->pieces[opponentId], &foundIdx)) {
         struct ChessPiece* enemyPiece = 
                 getElementVector(&self->pieces[opponentId], foundIdx);
         deinitChessPieceResolver(enemyPiece);
@@ -200,24 +219,6 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
     promoteChessPiecePieceResolver(&pieceCfg, &currPiece);
 
     pushElementVector(&self->pieces[currPlayerId], currPiece);
-}
-
-static void mirrorBoardPos(struct BoardPos* currBoardPos) {
-    const int32_t boardColsAndRows = BOARD_ROWS_COLS;
-    currBoardPos->row = boardColsAndRows - currBoardPos->row;
-    currBoardPos->col = boardColsAndRows - currBoardPos->col;
-}
-
-void invertPieces(struct Vector pieces[PLAYERS_COUNT]) {
-    for (int32_t playerId = 0; playerId < PLAYERS_COUNT; playerId++) {
-        const size_t size = getSizeVector(&pieces[playerId]);
-        for (size_t i = 0; i < size; i++) {
-            struct ChessPiece* currPiece = 
-                (struct ChessPiece*)getElementVector(&pieces[playerId], i);
-            mirrorBoardPos(&currPiece->boardPos);
-            setBoardPosChessPiece(currPiece, &currPiece->boardPos);
-        }
-    }
 }
 
 void savePieceStates(struct PieceHandler* self) {

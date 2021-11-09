@@ -23,9 +23,11 @@ struct GameLogic {
     struct Text gameLogicTexts[TEXTS_COUNT];
     int32_t timeUnits[TIME_UNITS_COUNT];
     int32_t activePlayerId;
+    int32_t numberOfMoves;
+    void* gameProxy;
 };
 
-int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg);
+int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, void* gameProxy);
 
 void deinitGameLogic(struct GameLogic* self);
 

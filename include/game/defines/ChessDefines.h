@@ -56,8 +56,10 @@ typedef enum {
 enum PieceHandlerDefines {
     PLAYER_END_PAWN_ROW = 0,
     
-    WHITE_PLAYER_START_PAWN_ROW = 6,
+    PLAYER_START_PAWN_ROW = 6,
     BLACK_PLAYER_START_PAWN_ROW = 1,
+
+    PLAYER_EN_PASSANT_ROW = 4,
 
     BOARD_ROWS_COLS = 7,
     STARTING_PIECES_COUNT = 16,

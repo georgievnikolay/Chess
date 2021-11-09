@@ -8,6 +8,7 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "game/proxies/GameProxy.h"
 #include "game/defines/ChessDefines.h"
 #include "game/config/GameLogicCfg.h"
 #include "utils/drawing/Color.h"
@@ -21,41 +22,63 @@
 static void updateTimerText(struct Text* timerText, int32_t minutes, int32_t seconds) {
     char buffer[20];
 
-    snprintf(buffer, 20, "%02d : %02d", minutes, seconds);
+    snprintf(buffer, 20, "%02d:%02d", minutes, seconds);
     setText(timerText, buffer);
 }
+
+// static void updateMinutes(int32_t timerUnits[TIME_UNITS_COUNT]) {
+
+// }
 
 static void onTimerTimeout(void* clientProxy, int32_t timerId) {
     struct GameLogic* self = (struct GameLogic*)clientProxy;
 
-    int32_t minutes = self->timeUnits[MINUTES];
-    int32_t seconds = self->timeUnits[SECONDS];
+    // int32_t minutes = self->timeUnits[MINUTES];
+    // int32_t seconds = self->timeUnits[SECONDS];
     LOGY("%02d : %02d", self->timeUnits[MINUTES], self->timeUnits[SECONDS])
 
     if (timerId == ONE_MINUTE_TIMER) {
-        minutes = 1;
-        seconds = 0;
-        updateTimerText(&self->gameLogicTexts[TIMER_TEXT], minutes, seconds);
+        self->timeUnits[MINUTES] = 1;
+        self->timeUnits[SECONDS] = 0;
+        finishTurnGameProxy(self->gameProxy);
+        updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->timeUnits[MINUTES], self->timeUnits[SECONDS]);
         return;
     } else if (timerId == ONE_SECOND_TIMER) {
-        minutes = 0;
-        if (seconds == 0) {
-            seconds = 59;
+        self->timeUnits[MINUTES] = 0;
+        if (self->timeUnits[SECONDS] == 0) {
+            self->timeUnits[SECONDS] = 59;
         } else {
-            seconds -= 1;
+            self->timeUnits[SECONDS] -= 1;
         }
-        updateTimerText(&self->gameLogicTexts[TIMER_TEXT], minutes, seconds);
+        updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->timeUnits[MINUTES], self->timeUnits[SECONDS]);
     } else {
         LOGERR("Error, recieved unsupported timerId");
     }
 
-    self->timeUnits[MINUTES] = minutes;
-    self->timeUnits[SECONDS] = seconds;  
+    // self->timeUnits[MINUTES] = minutes;
+    // self->timeUnits[SECONDS] = seconds;  
 }
 
-int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg) {
+int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, void* gameProxy) {
     
-    createText(&self->gameLogicTexts[TIMER_TEXT], "NULL", cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
+    if (NULL == gameProxy) {
+        LOGERR("Error, NULL provided for gameProxy");
+        return FAILURE;
+    }
+    self->gameProxy = gameProxy;
+
+    self->timeUnits[MINUTES] = 0;
+    self->timeUnits[SECONDS] = 59;
+    self->activePlayerId = WHITE_PLAYER_ID;
+    self->numberOfMoves = 0;
+
+    char buffer[20];
+    snprintf(buffer, 20, "%02d:%02d", self->timeUnits[MINUTES], self->timeUnits[SECONDS]);
+
+    createTimer(&self->timerClent[ONE_MINUTE_TIMER], self, onTimerTimeout);
+    createTimer(&self->timerClent[ONE_SECOND_TIMER], self, onTimerTimeout);
+
+    createText(&self->gameLogicTexts[TIMER_TEXT], buffer, cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
     int32_t textWidth = self->gameLogicTexts[TIMER_TEXT].widget.drawParams.width;
 
     int32_t startX = cfg->gameBoardWidth_Height + 
@@ -67,13 +90,6 @@ int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg) {
 
     pos.y -= 100;
     createText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT], "WHITES", cfg->fontId, &COLOR_BLACK, &pos);
-
-    self->timeUnits[MINUTES] = 1;
-    self->timeUnits[SECONDS] = 0;
-    self->activePlayerId = WHITE_PLAYER_ID;
-    
-    createTimer(&self->timerClent[ONE_MINUTE_TIMER], self, onTimerTimeout);
-    createTimer(&self->timerClent[ONE_SECOND_TIMER], self, onTimerTimeout);
     
     return SUCCESS;
 }
@@ -82,8 +98,11 @@ void deinitGameLogic(struct GameLogic* self) {
     destroyText(&self->gameLogicTexts[TIMER_TEXT]);
     destroyText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT]);
 
-    stopTimer(ONE_MINUTE_TIMER);
-    stopTimer(ONE_SECOND_TIMER);
+    if (isActiveTimerId(ONE_MINUTE_TIMER)) {
+        stopTimer(ONE_MINUTE_TIMER);
+    } else if (isActiveTimerId(ONE_SECOND_TIMER)) {
+        stopTimer(ONE_SECOND_TIMER);
+    }
 }
 
 void drawGameLogic(struct GameLogic* self) {
@@ -140,11 +159,10 @@ int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName) {
         return FAILURE;
     }
 
-    char c;
-    c = fgetc(fp);
-
-    int32_t activePlayer = c - '0';
-    gameLogic->activePlayerId = activePlayer;
+    fscanf(fp, "%d/%d/%d/%d", &gameLogic->activePlayerId, 
+                              &gameLogic->numberOfMoves, 
+                              &gameLogic->timeUnits[MINUTES], 
+                              &gameLogic->timeUnits[SECONDS]);
 
     fclose(fp);
     fp = NULL;
@@ -167,8 +185,10 @@ int32_t saveGameLogic(const struct GameLogic* gameLogic) {
         return FAILURE;
     }
 
-    int32_t playerId = gameLogic->activePlayerId + '0';
-    fputc(playerId, fp);
+    fprintf(fp, "%d/%d/%d/%d", gameLogic->activePlayerId, 
+                               gameLogic->numberOfMoves, 
+                               gameLogic->timeUnits[MINUTES], 
+                               gameLogic->timeUnits[SECONDS]);
 
     fclose(fp);
     fp = NULL;    

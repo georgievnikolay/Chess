@@ -18,7 +18,7 @@
 struct TimerMgr* gTimerMgr = NULL;
 
 static void onTimerTimeout(struct TimerMgr* self, int32_t timerId, 
-                                   struct TimerData* timerData) {
+                           struct TimerData* timerData) {
     timerData->tcInstance->onTimeoutCb(timerData->tcInstance, timerId);
     if (timerData->timerType == ONESHOT_TIMER) {
         self->stoppedFrameTimers[timerId] = true;

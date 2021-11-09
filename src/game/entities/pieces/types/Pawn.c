@@ -25,8 +25,93 @@ enum PawnDefines {
     MAX_PAWN_MOVES = 4
 };
 
+/* BEGIN EN PASSANT SPECIFIC FUNTIONS */
+
+/* Before we take  the moveTiles for the current move of the Pawn 
+we want to reset the enemy Pawn(if any) that was in En Passant 2 moves ago*/
+static void resetPawnsEnPassantStats(struct Vector* enemyPieces) {
+    struct ChessPiece* piece = NULL;
+    size_t size = getSizeVector(enemyPieces);
+
+    for (size_t i = 0; i < size; i++) {
+        piece = getElementVector(enemyPieces, i);
+        
+        if (piece->pieceType == PAWN) {
+            struct Pawn* pawn = (struct Pawn*)piece;
+
+            /* if En Passant was activated 2 moves ago, deactivate it*/
+            if (pawn->enPassantActivatedMove + 2 == 
+                    getNumberOfMovesGameProxy(pawn->gameProxy)) {
+                pawn->isInEnPassant = false;
+                return;        
+            }
+        }
+    }
+}
+
+/* If on the left or the right side of the curr Pawn 
+there is another Pawn that is in en passant 
+then we want to make the UP_LEFT/UP_RIGHT tileType = TAKE_TILE */
+static bool hasAdjacentEnPassantPawn(const struct BoardPos* currAttackedBoardPos, const struct Vector* enemyPieces) {
+    const struct BoardPos adjacentEnemy = { .col = currAttackedBoardPos->col,
+                                            .row = (currAttackedBoardPos->row + 1) };
+
+    const size_t size = getSizeVector(enemyPieces);
+    struct ChessPiece* currEnemyPiece = NULL;
+    for (size_t i = 0; i < size; i++) {
+        currEnemyPiece = getElementVector(enemyPieces, i);
+
+        if (currEnemyPiece->pieceType == PAWN) {
+            struct Pawn* pawn = (struct Pawn*)currEnemyPiece;
+            if (pawn->isInEnPassant) {
+                if (areBoardPosEqual(&pawn->base.boardPos, &adjacentEnemy)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+bool doCollideWithPiecePawn(const struct BoardPos *selectedPos,
+                            const struct Vector *pieces,
+                            int32_t *outCollisionRelativeId) {
+    
+    const struct ChessPiece* piece = NULL;
+    const size_t size = getSizeVector(pieces);
+    for (size_t i = 0; i < size; i++) {
+        piece = (const struct ChessPiece*)getElementVector(pieces, i);
+
+        if (areBoardPosEqual(selectedPos, &piece->boardPos)) {
+            *outCollisionRelativeId = (int32_t)i;
+            return true;
+        }
+
+        /* If enemy Pawn is in En Passant and selectedPos is the tile behind it
+        *  Then we can take it and return its index so it can be deinitialised
+        */
+        if (piece->pieceType == PAWN) {
+            const struct Pawn* pawn = (const struct Pawn*)piece;
+            if (pawn->isInEnPassant) {
+                const struct BoardPos enPassantPos = { .col = pawn->base.boardPos.col,
+                                                       .row = (pawn->base.boardPos.row - 1)};
+                if (areBoardPosEqual(selectedPos, &enPassantPos)) {
+                    if (getNumberOfMovesGameProxy(pawn->gameProxy) == (pawn->enPassantActivatedMove + 1)) {
+                        *outCollisionRelativeId = (int32_t)i;
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    *outCollisionRelativeId = -1;
+    return false;
+}
+/* END EN PASSANT SPECIFIC FUNTIONS */
+
 static void getBoardMoves(const struct ChessPiece* piece,
-                               struct BoardMoveHelper* moveHelper) {
+                          struct BoardMoveHelper* moveHelper) {
     struct BoardPos* pos = NULL;
     struct BoardPos futurePos;
 
@@ -42,11 +127,10 @@ static void getBoardMoves(const struct ChessPiece* piece,
         pos = (struct BoardPos*)malloc(sizeof(struct BoardPos));
         *pos = futurePos;
         pushElementVector(&moveHelper->moveDirs[currDir], pos);
-
     }
 
     //Double pawn move
-    if (WHITE_PLAYER_START_PAWN_ROW == piece->boardPos.row) {
+    if (PLAYER_START_PAWN_ROW == piece->boardPos.row) {
         futurePos = getAdjacentPos(UP, &futurePos);
         pos = (struct BoardPos*)malloc(sizeof(struct BoardPos));
         *pos = futurePos;
@@ -55,7 +139,7 @@ static void getBoardMoves(const struct ChessPiece* piece,
 }
 
 static struct Vector getMoveTiles(
-        const struct ChessPiece* piece, const struct Vector pieces[PLAYERS_COUNT]) {
+        const struct ChessPiece* piece, struct Vector pieces[PLAYERS_COUNT]) {
     struct BoardMoveHelper moveHelper;
     initBoardMoveHelper(&moveHelper);
     getBoardMoves(piece, &moveHelper);
@@ -88,7 +172,11 @@ static struct Vector getMoveTiles(
         }
     }
 
-    const Direction dirs[PAWN_ALLOWED_DIAG_DIRS] = {UP_LEFT, UP_RIGHT };
+    /* Reset enemy Pawn with obsolite En Passant 
+    before getting diagonal moveTiles*/
+    resetPawnsEnPassantStats(&pieces[opponentId]);
+
+    const Direction dirs[PAWN_ALLOWED_DIAG_DIRS] = { UP_LEFT, UP_RIGHT };
     for (int32_t dir = 0; dir < PAWN_ALLOWED_DIAG_DIRS; dir++) {
         const Direction currDir = dirs[dir];
         currMoveDir = &moveHelper.moveDirs[currDir];
@@ -97,8 +185,13 @@ static struct Vector getMoveTiles(
         for (size_t i = 0; i < dirElems; i++) {
             currBoardPos = (struct BoardPos*)getElementVector(currMoveDir, i);
 
-            const TileType tileType = 
-                    getTileType(currBoardPos, &pieces[piece->playerId], &pieces[opponentId]);
+            TileType tileType;
+            if (hasAdjacentEnPassantPawn(currBoardPos, &pieces[opponentId])) {
+                tileType = TAKE_TILE;
+            } else {
+                tileType = 
+                    getTileType(currBoardPos, &pieces[piece->playerId], &pieces[opponentId]);   
+            }
 
             if (tileType == MOVE_TILE) {
                 break;
@@ -129,6 +222,16 @@ int32_t initPawn(struct Pawn* self, const struct ChessPieceCfg* cfg,
     }
     self->gameProxy = gameProxy;
 
+    /*
+    * movesCount: stores how many moves Pawn has made
+    * isInEnPassant: tells if Pawn is in En Passant
+    * enPassantActivatedMove: stores on which move of the game 
+    *                         the En Passant for the specific Pawn was activated
+    */
+    self->movesCount = 0;
+    self->isInEnPassant =false;
+    self->enPassantActivatedMove = 0;
+
     return SUCCESS;
 }
 
@@ -139,9 +242,21 @@ void setBoardPosPawn(struct Pawn* self, const struct BoardPos* boardPos) {
         activatePawnPromotionGameProxy(self->gameProxy);
         return;
     }
+
+    self->movesCount += 1;
+    
+    if (PLAYER_EN_PASSANT_ROW == self->base.boardPos.row 
+        && self->movesCount == 1) {
+            
+        self->enPassantActivatedMove = 
+            getNumberOfMovesGameProxy(self->gameProxy);
+        self->isInEnPassant = true;
+    } else {
+        self->isInEnPassant = false;
+    }
 }
 
 struct Vector getMoveTilesPawn(const struct ChessPiece* self, 
-                               const struct Vector pieces[PLAYERS_COUNT]) {
+                               struct Vector pieces[PLAYERS_COUNT]) {
     return getMoveTiles(self, pieces);
 }

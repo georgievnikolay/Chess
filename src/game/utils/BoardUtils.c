@@ -159,8 +159,8 @@ struct BoardPos getAdjacentPos(Direction dir, const struct BoardPos *currPos) {
 }
 
 bool doCollideWithPiece(const struct BoardPos *selectedPos,
-                                        const struct Vector *pieces,
-                                        int32_t *outCollisionRelativeId) {
+                        const struct Vector *pieces,
+                        int32_t *outCollisionRelativeId) {
     
     const struct ChessPiece* piece = NULL;
     const size_t size = getSizeVector(pieces);
