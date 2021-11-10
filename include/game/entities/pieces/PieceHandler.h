@@ -49,7 +49,8 @@ void savePieceStates(struct PieceHandler* self);
 
 void loadPieceStates(struct PieceHandler* self);
 
-
-bool isInCheckKing(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
+/*TODO : MOVE THESE In some kind of helper file */
+bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
+bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLER_H_ */

@@ -87,8 +87,9 @@ that the turn is over*/
 void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
+    isOpponentKingInCheckmate(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
+    isOpponentKingInCheck(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
     finishTurn(&self->gameLogic);
-    isInCheckKing(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
     invertPieces(self->pieceHandler.pieces);
     self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
 }

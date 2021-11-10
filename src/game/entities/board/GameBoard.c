@@ -59,7 +59,7 @@ void drawGameBoard(struct GameBoard* self) {
 
 /*Proxies*/
 void onPieceGrabbedGameBoardProxy(void* proxy, const struct BoardPos* boardPos,
-                    const struct Vector* moveTiles) {
+                                  const struct Vector* moveTiles) {
     struct GameBoard* self = (struct GameBoard*)proxy;
     showWidget(&self->targetImg.widget);
     const struct Point absPos = getAbsPos(boardPos);
