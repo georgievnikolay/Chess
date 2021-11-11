@@ -95,8 +95,8 @@ void drawGameStatePanel(struct GameStatePanel* self) {
 
 void activateGameStatePanel(struct GameStatePanel* self) {
     self->isActive = true;
-
-    for (int32_t i = 0; i < GAME_BUTTONS_COUNT; i++) {
+    
+    for (int32_t i = 0; i < GAME_BUTTONS_COUNT - 1; i++) {
         self->gameButtons[i].base.img.widget.isVisible = true;
     }
 }

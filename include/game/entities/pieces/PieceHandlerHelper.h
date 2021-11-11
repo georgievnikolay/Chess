@@ -10,6 +10,7 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "manager_utils/time/TimerClient.h"
 #include "manager_utils/drawing/Text.h"
 #include "game/defines/ChessDefines.h"
 #include "utils/containers/Vector.h"
@@ -28,6 +29,7 @@ enum KindStateDefines {
 
 struct PieceHandlerHelper {
     struct Text kingStateTexts[KING_STATES_COUNT];
+    struct TimerClient timerClient;
 };
 
 int32_t initPieceHandlerHelper(struct PieceHandlerHelper* self, const struct PieceHandlerHelperCfg* cfg);

@@ -58,7 +58,10 @@ static void doMovePiece(struct PieceHandler* self,
         deleteElementVector(&self->pieces[opponentId], foundIdx);
     }
 
-    //showOpponentKingState(&self->pieceHandlerHelper, self->currPlayerId, self->pieces);
+    if (IN_CHECKMATE == showOpponentKingState(&self->pieceHandlerHelper, self->currPlayerId, self->pieces)) {
+        onGameEndedGameProxy(&self->gameProxy);
+        return;
+    }
 
     finishTurnGameProxy(self->gameProxy);
 }
@@ -72,7 +75,6 @@ static void handlePieceGrabbed(struct PieceHandler* self,
             getMoveTilesPieceResolver(selectedPiece, self->pieces);
     
     onPieceGrabbedGameBoardProxy(self->gameBoardProxy, &boardPos, &moveTile);
-    hideOpponentKingState(&self->pieceHandlerHelper);
 }
 
 static void handlePieceGrabbedEvent(struct PieceHandler* self, 

@@ -16,9 +16,9 @@
 /*Unique IDs for all the different timers 
 our application is goint to use*/
 typedef enum {
-    ONE_MINUTE_TIMER,
-    ONE_SECOND_TIMER,
-    TIMERS_COUNT
+    GAMELOGIC_ONE_SECOND_TIMER,
+    PIECE_HANDLER_HELPER_TIMER
+    
 } TimerIds;
 
 #endif /* INCLUDE_COMMON_TIMERDEFINES_H_ */

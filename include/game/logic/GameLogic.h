@@ -20,7 +20,7 @@ struct GameLogicCfg;
 /*        Defines       */
 
 struct GameLogic {
-    struct TimerClient timerClent[TIMERS_COUNT];
+    struct TimerClient timerClent;
     struct Text gameLogicTexts[TEXTS_COUNT];
     int32_t turnSeconds;
     void* gameProxy;

@@ -34,4 +34,6 @@ int32_t getNumberOfMovesGameProxy(void* proxy);
 
 void increaseNumberOfMovesGameProxy(void* proxy);
 
+int32_t onGameEndedGameProxy(void* proxy);
+
 #endif /* INCLUDE_GAME_PROXIES_GAMEPROXY_H_ */

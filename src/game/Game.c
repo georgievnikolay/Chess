@@ -84,11 +84,9 @@ void drawGame(struct Game* self) {
 
 /*Piece Handler communicate with the game 
 that the turn is over*/
-#include "game/entities/pieces/PieceHandlerHelper.h"
 void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
-    showOpponentKingState(&self->pieceHandler.pieceHandlerHelper, self->gameLogic.activePlayerId, self->pieceHandler.pieces);
     finishTurn(&self->gameLogic);
     invertPieces(self->pieceHandler.pieces);
     self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;
@@ -178,4 +176,19 @@ int32_t getNumberOfMovesGameProxy(void* proxy) {
 void increaseNumberOfMovesGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     self->gameLogic.numberOfMoves += 1;
+}
+
+int32_t onGameEndedGameProxy(void* proxy) {
+    struct Game* self = (struct Game*)proxy;
+
+    // deinitPieceHandler(&self->pieceHandler);
+    // if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
+    //         self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
+    //     LOGERR("Error, initChessPiece() failed");
+    //     return FAILURE;
+    // }
+
+    activateGameStatePanel(&self->gameStatePanel);
+
+    return SUCCESS;
 }

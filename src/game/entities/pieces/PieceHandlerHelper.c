@@ -7,6 +7,7 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "common/TimerDefines.h"
 #include "game/config/PieceHandlerHelperCfg.h"
 #include "game/defines/ChessStructs.h"
 #include "game/utils/BoardUtils.h"
@@ -44,11 +45,18 @@ static void generateText(struct Text* text, const char* textContent,
 
     text->widget.isVisible = false;
 }
+static void onTimerTimeout(void* clientProxy, int32_t timerId) {
+    struct PieceHandlerHelper* self = (struct PieceHandlerHelper*)clientProxy;
+
+    if (timerId == PIECE_HANDLER_HELPER_TIMER) {
+        hideOpponentKingState(self);
+    }
+}
 
 int32_t initPieceHandlerHelper(struct PieceHandlerHelper* self, 
                                const struct PieceHandlerHelperCfg* cfg) {
     
-
+    createTimer(&self->timerClient, self, onTimerTimeout);
     generateText(&self->kingStateTexts[IN_CHECK], "CHECK", &COLOR_DARKER_RED, cfg);
     generateText(&self->kingStateTexts[IN_CHECKMATE], "CHECKMATE", &COLOR_DARKER_RED, cfg);
 
@@ -57,6 +65,9 @@ int32_t initPieceHandlerHelper(struct PieceHandlerHelper* self,
 
 void deinitPieceHandlerHelper(struct PieceHandlerHelper* self) {
     for (int32_t i = 0; i < KING_STATES_COUNT; i++) {
+        if (self->kingStateTexts[i].widget.isDestroyed) {
+            continue;
+        }
         destroyText(&self->kingStateTexts[i]);
     }
 }
@@ -105,13 +116,6 @@ static bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLA
             if (currTile->tileType == TAKE_TILE &&
                 areBoardPosEqual(&currTile->boardPos, &opponentKing->boardPos)) { 
                 
-                /*TODO: maybe romove it was just for testing purposes*/
-                if (currPiece->playerId == WHITE_PLAYER_ID) {
-                    LOGY("Black King in check from pieceType: %d", currPiece->pieceType);
-                } else {
-                    LOGY("White King in check from pieceType: %d", currPiece->pieceType);
-                }
-
                 isInCheck = true;
             }
             free(currTile);
@@ -150,7 +154,7 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
     for (size_t i = 0; i < size; i++) {
         currPiece = getElementVector(&pieces[currPlayerId], i);
         
-        
+
         opponentKing->boardPos.col = -3;
         currPieceMoveTIles = getMoveTilesPieceResolver(currPiece, pieces);
         opponentKing->boardPos = kingPos;
@@ -195,15 +199,6 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
     }
     freeVector(&opponentKingMoveTiles);
 
-    if (isInCheckmate) {
-        /*TODO: maybe romove it was just for testing purposes*/
-        if (currPiece->playerId == WHITE_PLAYER_ID) {
-            LOGY("Black King in checkmate");
-        } else {
-            LOGY("White King in checkmate");
-        }
-    }
-
     return isInCheckmate;
 }
 
@@ -212,9 +207,12 @@ int32_t showOpponentKingState(struct PieceHandlerHelper* self, int32_t currPlaye
     if (isOpponentKingInCheck(currPlayerId, pieces)) {
         if (isOpponentKingInCheckmate(currPlayerId, pieces)) {
             showWidget(&self->kingStateTexts[IN_CHECKMATE].widget);
+            startTimer(&self->timerClient, 2500, PIECE_HANDLER_HELPER_TIMER, ONESHOT_TIMER);
             return IN_CHECKMATE;
         }
+        
         showWidget(&self->kingStateTexts[IN_CHECK].widget);
+        startTimer(&self->timerClient, 2500, PIECE_HANDLER_HELPER_TIMER, ONESHOT_TIMER);
         return IN_CHECK;
     }
 
@@ -224,4 +222,5 @@ int32_t showOpponentKingState(struct PieceHandlerHelper* self, int32_t currPlaye
 void hideOpponentKingState(struct PieceHandlerHelper* self) {
     hideWidget(&self->kingStateTexts[IN_CHECKMATE].widget);
     hideWidget(&self->kingStateTexts[IN_CHECK].widget);
+    stopTimer(PIECE_HANDLER_HELPER_TIMER);
 }

@@ -69,7 +69,7 @@ static void onTimerTimeout(void* clientProxy, int32_t timerId) {
     struct GameLogic* self = (struct GameLogic*)clientProxy;
 
     updateTimerTextColor(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
-    if (timerId == ONE_SECOND_TIMER) {
+    if (timerId == GAMELOGIC_ONE_SECOND_TIMER) {
         self->turnSeconds -= 1;
             
         updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
@@ -92,7 +92,7 @@ int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, vo
     self->activePlayerId = WHITE_PLAYER_ID;
     self->numberOfMoves = 0;
 
-    createTimer(&self->timerClent[ONE_SECOND_TIMER], self, onTimerTimeout);
+    createTimer(&self->timerClent, self, onTimerTimeout);
 
 
     createText(&self->gameLogicTexts[TIMER_TEXT], initialTimerText, 
@@ -112,8 +112,8 @@ void deinitGameLogic(struct GameLogic* self) {
     destroyText(&self->gameLogicTexts[TIMER_TEXT]);
     destroyText(&self->gameLogicTexts[ACTIVE_PLAYER_TEXT]);
 
-    if (isActiveTimerId(ONE_SECOND_TIMER)) {
-        stopTimer(ONE_SECOND_TIMER);
+    if (isActiveTimerId(GAMELOGIC_ONE_SECOND_TIMER)) {
+        stopTimer(GAMELOGIC_ONE_SECOND_TIMER);
     }
 }
 
@@ -140,13 +140,13 @@ void startGameLogic(struct GameLogic* self) {
     updateTimerText(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
     updateTimerTextColor(&self->gameLogicTexts[TIMER_TEXT], self->turnSeconds);
     
-    startTimer(&self->timerClent[ONE_SECOND_TIMER], 
-        oneSecondInMiliseconds, ONE_SECOND_TIMER, PULSE_TIMER);
+    startTimer(&self->timerClent, oneSecondInMiliseconds, 
+               GAMELOGIC_ONE_SECOND_TIMER, PULSE_TIMER);
 }
 
 void stopGameLogic(struct GameLogic* self) {
     UNUSED(self);
-    stopTimer(ONE_SECOND_TIMER);
+    stopTimer(GAMELOGIC_ONE_SECOND_TIMER);
 }
 
 int32_t loadGameLogic(struct GameLogic* self, char* fileName) {
