@@ -9,12 +9,14 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "game/config/PieceHandlerHelperCfg.h"
 
 /* Forward declarations */
 
 /*        Defines       */
 
 struct PieceHandlerCfg {
+    struct PieceHandlerHelperCfg pieceHandlerHelperCfg;
     int32_t whitePiecesRsrcId;
     int32_t blackPiecesRsrcId;
 };

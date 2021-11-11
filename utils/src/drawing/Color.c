@@ -11,6 +11,7 @@
 
 /*        Defines       */
 const struct Color COLOR_RED = { .rgba.r = 255, .rgba.g = 0, .rgba.b = 0, .rgba.a = 255 };
+const struct Color COLOR_DARKER_RED = { .rgba.r = 128, .rgba.g = 0, .rgba.b = 0, .rgba.a = 255 };
 const struct Color COLOR_GREEN = { .rgba.r = 0, .rgba.g = 255, .rgba.b = 0, .rgba.a = 255 };
 const struct Color COLOR_BLUE = { .rgba.r = 0, .rgba.g = 0, .rgba.b = 255, .rgba.a = 255 };
 const struct Color COLOR_BLACK = { .rgba.r = 0, .rgba.g = 0, .rgba.b = 0, .rgba.a = 255 };

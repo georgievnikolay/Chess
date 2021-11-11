@@ -74,9 +74,9 @@ void handleEventGame(struct Game* self, struct InputEvent* event) {
 
 void drawGame(struct Game* self) {
     drawGameBoard(&self->gameBoard);
-    drawPieceHandler(&self->pieceHandler);
     drawGameLogic(&self->gameLogic);
     drawPiecePromotionPanel(&self->piecePromotionPanel);
+    drawPieceHandler(&self->pieceHandler);
     drawGameStatePanel(&self->gameStatePanel);
 }
 
@@ -84,11 +84,11 @@ void drawGame(struct Game* self) {
 
 /*Piece Handler communicate with the game 
 that the turn is over*/
+#include "game/entities/pieces/PieceHandlerHelper.h"
 void finishTurnGameProxy(void* proxy) {
     //activate animator
     struct Game* self = (struct Game*)proxy;
-    isOpponentKingInCheckmate(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
-    isOpponentKingInCheck(self->pieceHandler.currPlayerId, self->pieceHandler.pieces);
+    showOpponentKingState(&self->pieceHandler.pieceHandlerHelper, self->gameLogic.activePlayerId, self->pieceHandler.pieces);
     finishTurn(&self->gameLogic);
     invertPieces(self->pieceHandler.pieces);
     self->pieceHandler.currPlayerId = self->gameLogic.activePlayerId;

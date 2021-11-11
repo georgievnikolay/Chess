@@ -196,14 +196,22 @@ static void populateGameLogicCfg(struct GameLogicCfg* cfg) {
     cfg->gameBoardWidth_Height = CHESS_BOARD_IMG_WIDTH_HEIGHT;
 }
 
+static void populatePieceHandlerCfg(struct PieceHandlerCfg* cfg) {
+    cfg->whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
+    cfg->blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
+
+    cfg->pieceHandlerHelperCfg.fontId = SERIFNCB_70_FONT_ID;
+    cfg->pieceHandlerHelperCfg.gameBoardWidth = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+    cfg->pieceHandlerHelperCfg.gameBoardHeight = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+
+}
+
 static void populateGameCfg(struct GameCfg* cfg) {
     cfg->gameBoardRsrcId = CHESS_BOARD_TEXTURE_ID;
     cfg->targetRsrcId = TARGET_TEXTURE_ID;
     cfg->moveSelectorRsrcId = MOVE_TILES_TEXTURE_ID;
     
-    cfg->pieceHandlerCfg.whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
-    cfg->pieceHandlerCfg.blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
-
+    populatePieceHandlerCfg(&cfg->pieceHandlerCfg);
     populateGameLogicCfg(&cfg->gameLogicCfg);
     populateGameStatePanelCfg(&cfg->gameStatePanelCfg);
     populatePiecePromotionPanelCfg(&cfg->piecePromotionPanelCfg);

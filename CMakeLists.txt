@@ -46,6 +46,7 @@ add_executable(
         ${_INCLUDE_DIR}/game/entities/buttons/PiecePromotionButton.h
         ${_INCLUDE_DIR}/game/entities/buttons/GameButton.h
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandler.h
+        ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerHelper.h
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerPopulator.h
         ${_INCLUDE_DIR}/game/entities/pieces/ChessPieceResolver.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/ChessPiece.h
@@ -74,6 +75,7 @@ add_executable(
         ${_SOURCE_DIR}/game/entities/buttons/PiecePromotionButton.c
         ${_SOURCE_DIR}/game/entities/buttons/GameButton.c
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandler.c
+        ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerHelper.c
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerPopulator.c
         ${_SOURCE_DIR}/game/entities/pieces/ChessPieceResolver.c
         ${_SOURCE_DIR}/game/entities/pieces/types/ChessPiece.c

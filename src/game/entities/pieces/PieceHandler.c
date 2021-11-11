@@ -58,6 +58,8 @@ static void doMovePiece(struct PieceHandler* self,
         deleteElementVector(&self->pieces[opponentId], foundIdx);
     }
 
+    //showOpponentKingState(&self->pieceHandlerHelper, self->currPlayerId, self->pieces);
+
     finishTurnGameProxy(self->gameProxy);
 }
 
@@ -70,6 +72,7 @@ static void handlePieceGrabbed(struct PieceHandler* self,
             getMoveTilesPieceResolver(selectedPiece, self->pieces);
     
     onPieceGrabbedGameBoardProxy(self->gameBoardProxy, &boardPos, &moveTile);
+    hideOpponentKingState(&self->pieceHandlerHelper);
 }
 
 static void handlePieceGrabbedEvent(struct PieceHandler* self, 
@@ -150,6 +153,12 @@ int32_t initPieceHandler(struct PieceHandler* self,
         return FAILURE;
     }
 
+    if (SUCCESS != initPieceHandlerHelper(&self->pieceHandlerHelper, 
+                                          &cfg->pieceHandlerHelperCfg)) {
+        LOGERR("Error, initPieceHandlerHelper() failed");
+        return FAILURE;        
+    }
+
     self->isPieceGrabbed = false;
     self->selectedPieceId = 0;
     
@@ -172,6 +181,7 @@ void deinitPieceHandler(struct PieceHandler* self) {
         }
         freeVector(&self->pieces[i]);
     }
+    deinitPieceHandlerHelper(&self->pieceHandlerHelper);
 }
 
 void handleEventPieceHandler(struct PieceHandler* self, const struct InputEvent* event) {
@@ -193,6 +203,8 @@ void drawPieceHandler(struct PieceHandler* self) {
             drawChessPieceResolver(currPiece);
         }
     }
+
+    drawPieceHandlerHelper(&self->pieceHandlerHelper);
 }
 
 
@@ -250,138 +262,3 @@ void savePieceStates(struct PieceHandler* self) {
 
 
 
-#include "game/defines/ChessStructs.h"
-#include "game/entities/board/GameBoard.h"
-bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]) {
-    
-    const int32_t opponentId = getOpponentId(currPlayerId);
-    bool isInCheck = false;
-
-    struct ChessPiece* currPiece = NULL;
-    struct ChessPiece* opponentKing = NULL;
-
-    struct Vector currPlayerMoveTIles;
-    
-    /* Get opponent King figure */
-    size_t size = getSizeVector(&pieces[opponentId]);
-    for (size_t i = 0; i < size; i++) {
-        currPiece = getElementVector(&pieces[opponentId], i);
-        if (currPiece->pieceType == KING) {
-            opponentKing = currPiece;
-            break;
-        }
-    }
-    
-    /* Loop through all the pieces of the current player */
-    size = getSizeVector(&pieces[currPlayerId]);
-    for (size_t i = 0; i < size; i++) {
-        currPiece = getElementVector(&pieces[currPlayerId], i);
-        
-        currPlayerMoveTIles = getMoveTilesPieceResolver(currPiece, pieces);
-
-        /* Loop through move tiles of the current Piece */
-        size_t tilesSize = getSizeVector(&currPlayerMoveTIles);
-        for (size_t j = 0; j < tilesSize; j++) {
-            struct TileData* currTile = 
-                (struct TileData*)getElementVector(&currPlayerMoveTIles, j);
-            
-            /*  If TAKE_TILE of the current piece has the same position 
-            *   as the opponent King then it's a Check 
-            */
-            if (currTile->tileType == TAKE_TILE &&
-                areBoardPosEqual(&currTile->boardPos, &opponentKing->boardPos)) { 
-                
-                /*TODO: maybe romove it was just for testing purposes*/
-                if (currPiece->playerId == WHITE_PLAYER_ID) {
-                    LOGY("Black King in check from pieceType: %d", currPiece->pieceType);
-                } else {
-                    LOGY("White King in check from pieceType: %d", currPiece->pieceType);
-                }
-
-                isInCheck = true;
-            }
-            free(currTile);
-        }
-        freeVector(&currPlayerMoveTIles);
-    }   
-
-    return isInCheck;
-}
-
-bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]) {
-    const int32_t opponentId = getOpponentId(currPlayerId);
-    bool isInCheckmate = true;
-
-    struct ChessPiece* currPiece = NULL;
-    struct ChessPiece* opponentKing = NULL;
-
-    struct Vector opponentKingMoveTiles;
-    struct Vector currPlayerMoveTIles;
-
-    /* Get opponent King figure and it's moveTiles */
-    size_t size = getSizeVector(&pieces[opponentId]);
-    for (size_t i = 0; i < size; i++) {
-        currPiece = getElementVector(&pieces[opponentId], i);
-        if (currPiece->pieceType == KING) {
-            opponentKing = currPiece;
-            break;
-        }
-    }
-    opponentKingMoveTiles = getMoveTilesPieceResolver(opponentKing, pieces);
-    size_t kingMoveTilesSize = getSizeVector(&opponentKingMoveTiles);
-
-    /* Loop through all the pieces of the current player */
-    size = getSizeVector(&pieces[currPlayerId]);
-    for (size_t i = 0; i < size; i++) {
-        currPiece = getElementVector(&pieces[currPlayerId], i);
-        
-        currPlayerMoveTIles = getMoveTilesPieceResolver(currPiece, pieces);
-        
-        /* Loop through move tiles of the current Piece */
-        size_t tilesSize = getSizeVector(&currPlayerMoveTIles);
-        for (size_t j = 0; j < tilesSize; j++) {
-            struct TileData* currTilePiece = 
-                (struct TileData*)getElementVector(&currPlayerMoveTIles, j);
-
-            /* For every moveTile of the current player 
-            *  check all the moveTIles for the opponent King
-            */
-            for (size_t k = 0; k < kingMoveTilesSize; k++) {
-                struct TileData* currTileKing = 
-                    (struct TileData*)getElementVector(&opponentKingMoveTiles, k);
-                
-                /* If both moveTiles are equal we delete the one in the King's Vector */
-                if (areBoardPosEqual(&currTilePiece->boardPos, &currTileKing->boardPos)) {
-                    kingMoveTilesSize -= 1;
-                    deleteElementVector(&opponentKingMoveTiles, k);
-                    free(currTileKing);
-                }
-            }
-            free(currTilePiece);
-        } 
-        freeVector(&currPlayerMoveTIles);       
-    }
-
-    /* If the opponent King has no more MOVE_TILEs left it's Checkmate */
-    for (size_t i = 0; i < kingMoveTilesSize; i++) {
-        struct TileData* currTileKing = 
-            (struct TileData*)getElementVector(&opponentKingMoveTiles, i);
-
-        if (currTileKing->tileType == MOVE_TILE) {
-            isInCheckmate = false;
-        }  
-        free(currTileKing);  
-    }
-    freeVector(&opponentKingMoveTiles);
-
-    if (isInCheckmate) {
-        /*TODO: maybe romove it was just for testing purposes*/
-        if (currPiece->playerId == WHITE_PLAYER_ID) {
-            LOGY("Black King in checkmate");
-        } else {
-            LOGY("White King in checkmate");
-        }
-    }
-
-    return isInCheckmate;
-}

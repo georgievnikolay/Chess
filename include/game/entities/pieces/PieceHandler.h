@@ -12,6 +12,7 @@
 /* Own library includes */
 #include "game/config/PieceHandlerCfg.h"
 #include "game/defines/ChessDefines.h"
+#include "game/entities/pieces/PieceHandlerHelper.h"
 #include "utils/containers/Vector.h"
 
 /* Forward declarations */
@@ -21,6 +22,7 @@ struct InputEvent;
 
 struct PieceHandler {
     struct PieceHandlerCfg cfg;
+    struct PieceHandlerHelper pieceHandlerHelper;
     struct Vector pieces[PLAYERS_COUNT];
     void* gameBoardProxy;
     void* gameProxy;

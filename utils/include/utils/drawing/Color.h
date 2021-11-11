@@ -27,6 +27,7 @@ struct Color {
 };
 
 extern const struct Color COLOR_RED;
+extern const struct Color COLOR_DARKER_RED;
 extern const struct Color COLOR_GREEN;
 extern const struct Color COLOR_BLUE;
 extern const struct Color COLOR_BLACK;
