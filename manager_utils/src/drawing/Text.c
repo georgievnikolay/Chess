@@ -65,6 +65,10 @@ void destroyText(struct Text *self) {
                 self->widget.drawParams.textId);
         return;        
     }
+    
+    if (gRsrcMgr != NULL) {
+        unloadTextRsrcMgr(gRsrcMgr, self->widget.drawParams.textId);
+    }
 
     if (self->textContent) {
         free(self->textContent);

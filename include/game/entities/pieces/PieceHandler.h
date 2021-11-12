@@ -37,7 +37,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
                          void* gameProxy, void* gameBoardProxy,
-                         char* fileName);
+                         char* gameFileName, char* logFileName);
 
 void deinitPieceHandler(struct PieceHandler* self);
 

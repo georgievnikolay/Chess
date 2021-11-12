@@ -29,12 +29,16 @@ struct LogPanel {
     int32_t size;
 };
 
-int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg);
+int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, char* fileName);
 
 void drawLogPanel(struct LogPanel* self);
 
 void addNewLog(struct LogPanel* self, const struct ChessPiece* movedPiece);
 
 void deinitLogPanel(struct LogPanel* self);
+
+int32_t loadLogPanel(struct LogPanel* self, const char* fileName);
+
+int32_t saveLogPanel(struct LogPanel* self);
 
 #endif /* INCLUDE_GAME_ENTITIES_LOGPANEL_H_ */

@@ -96,6 +96,10 @@ static bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLA
             break;
         }
     }
+    if (opponentKing == NULL) {
+        isInCheck = true;
+        return isInCheck;
+    }
     
     /* Loop through all the pieces of the current player */
     size = getSizeVector(&pieces[currPlayerId]);
@@ -144,6 +148,10 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
             opponentKing = currPiece;
             break;
         }
+    }
+    if (opponentKing == NULL) {
+        isInCheckmate = true;
+        return isInCheckmate;
     }
     struct BoardPos kingPos = opponentKing->boardPos;
     opponentKingMoveTiles = getMoveTilesPieceResolver(opponentKing, pieces);

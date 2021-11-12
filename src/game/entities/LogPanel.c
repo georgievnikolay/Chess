@@ -2,6 +2,8 @@
 #include "game/entities/LogPanel.h"
 
 /*    System includes   */
+#include "stdio.h"
+#include <stdlib.h>
 #include <string.h>
 
 /* Third party includes */
@@ -96,7 +98,7 @@ static void setTextPosition(struct Text* text, int32_t offsetMultiplier, const s
     text->widget.drawParams.pos.y = startY;
 }
 
-int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg) {
+int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, char* fileName) {
     
     self->cfg = *cfg;
     self->size = 0;
@@ -106,14 +108,15 @@ int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg) {
         createText(&self->moveLogs[i], NO_TEXT, cfg->fontId, &COLOR_BLACK, &POINT_UNDEFINED);
         setTextPosition(&self->moveLogs[i], i, cfg);
     }
+    loadLogPanel(self, fileName);
 
     return SUCCESS;
 }
 
 void addNewLog(struct LogPanel* self, const struct ChessPiece* movedPiece) {
-    char newLog[30] = {0};
-    char prevLog[30] = {0};
-    char currLog[30] = {0};
+    char newLog[30] = "";
+    char prevLog[30] = "";
+    char currLog[30] = "";
 
     translatePieceInformation(&movedPiece->boardPos, movedPiece->pieceType, 
                               movedPiece->playerId, newLog);
@@ -147,7 +150,72 @@ void deinitLogPanel(struct LogPanel* self) {
     for (int32_t i = 0; i < MAX_LOGS; i++) {
         destroyText(&self->moveLogs[i]);
     }
+    self->size = 0;
 }
 
+int32_t loadLogPanel(struct LogPanel* self, const char* fileName) {
+    
+    FILE* fp;
+    
+    char* back = "../";
+    char* folder = "resources/gameFiles/";
+    char filePath[50];
+#ifdef RELEASE_BUILD
+    strcpy(filePath, folder);
+    strcat(filePath, fileName);
+#else
+    strcpy(filePath, back);
+    strcat(filePath, folder);
+    strcat(filePath, fileName);
+#endif
 
+    if ((fp = fopen(filePath, "r")) == NULL) {
+        LOGERR("Error, did not load file: %s", filePath);
+        return FAILURE;
+    }
 
+    char line[30] = "";
+
+    for (int32_t i = 0; i < MAX_LOGS; i++) {
+
+        fgets(line, 30, fp);
+        line[strlen(line) - 1] = '\0';
+
+        setText(&self->moveLogs[i], line);
+        setTextPosition(&self->moveLogs[i], i, &self->cfg);
+
+        if (0 == (strcmp(NO_TEXT, line))) {
+            continue;
+        }
+        self->size++;
+    }
+
+    fclose(fp);
+    fp = NULL;
+
+    return SUCCESS;    
+}
+
+int32_t saveLogPanel(struct LogPanel* self) {
+    FILE* fp;
+    const char* filePath = NULL;
+#ifdef RELEASE_BUILD
+    filePath = "resources/gameFiles/savedLogPanel.txt";
+#else
+    filePath = "../resources/gameFiles/savedLogPanel.txt";
+#endif
+
+    if ((fp = fopen(filePath, "w")) == NULL) {
+        LOGERR("Error, did not load file: %s", filePath);
+        return FAILURE;
+    }
+
+    for (int32_t i = 0; i < MAX_LOGS; i++) {
+        fprintf(fp, "%s\n", self->moveLogs[i].textContent);
+    }
+
+    fclose(fp);
+    fp = NULL;
+
+    return SUCCESS;    
+}

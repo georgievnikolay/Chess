@@ -22,11 +22,6 @@
 /*        Defines       */
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
-    if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg, (void*)self)) {
-        LOGERR("Error, initGameLogic() failed");
-        return FAILURE;
-    }
-
     if (SUCCESS != initGameBoard(&self->gameBoard, cfg->gameBoardRsrcId, 
             cfg->targetRsrcId, cfg->moveSelectorRsrcId)) {
         LOGERR("Error, initGameBoard() failed");
@@ -34,7 +29,7 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
     }
 
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg, //TODO: make it const char* 
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt", "newLogPanel.txt")) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
@@ -51,6 +46,11 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
+    if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg, (void*)self)) {
+        LOGERR("Error, initGameLogic() failed");
+        return FAILURE;
+    }
+
     return SUCCESS;
 }
 
@@ -64,7 +64,7 @@ void deinitGame(struct Game* self) {
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
     handleEventGameStatePanel(&self->gameStatePanel, event);
-
+    
     if (self->piecePromotionPanel.isActive) {
         handleEventPiecePromotionPanel(&self->piecePromotionPanel, event);
         return;
@@ -126,15 +126,15 @@ void onGameSavedGameProxy(void* proxy) {
 int32_t onGameStartedGameProxy(void *proxy) {
     struct Game* self = (struct Game*)proxy;
 
-    if (SUCCESS != loadGameLogic(&self->gameLogic, "gameLogic.txt")) {
-        LOGERR("Error, loadGameLogic() failed");
-        return FAILURE;
-    }
-
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt", "newLogPanel.txt")) {
         LOGERR("Error, initChessPiece() failed");
+        return FAILURE;
+    }
+    
+    if (SUCCESS != loadGameLogic(&self->gameLogic, "gameLogic.txt")) {
+        LOGERR("Error, loadGameLogic() failed");
         return FAILURE;
     }
     startGameLogic(&self->gameLogic);
@@ -145,15 +145,15 @@ int32_t onGameStartedGameProxy(void *proxy) {
 int32_t onGameContinueGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
-    if (SUCCESS != loadGameLogic(&self->gameLogic, "savedGameLogic.txt")) {
-        LOGERR("Error, loadGameLogic() failed");
-        return FAILURE;
-    }
-    
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "savedGame.txt")) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "savedGame.txt", "savedLogPanel.txt")) {
         LOGERR("Error, initChessPiece() failed");
+        return FAILURE;
+    }
+
+    if (SUCCESS != loadGameLogic(&self->gameLogic, "savedGameLogic.txt")) {
+        LOGERR("Error, loadGameLogic() failed");
         return FAILURE;
     }
     startGameLogic(&self->gameLogic);
@@ -181,6 +181,7 @@ void increaseNumberOfMovesGameProxy(void* proxy) {
 
 int32_t onGameEndedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
+    UNUSED(self);
 
     // deinitPieceHandler(&self->pieceHandler);
     // if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
@@ -189,7 +190,7 @@ int32_t onGameEndedGameProxy(void* proxy) {
     //     return FAILURE;
     // }
 
-    activateGameStatePanel(&self->gameStatePanel);
+    //activateGameStatePanel(&self->gameStatePanel);
 
     return SUCCESS;
 }

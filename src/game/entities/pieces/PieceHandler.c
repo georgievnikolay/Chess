@@ -136,7 +136,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
                          void* gameProxy, void* gameBoardProxy,
-                         char* fileName) {
+                         char* gameFileName, char* logFileName) {
     
     if (NULL == gameBoardProxy) {
         LOGERR("Error, NULL provided for gameBoardProxy");
@@ -151,7 +151,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
     self->gameProxy = gameProxy;
 
     if (SUCCESS != populatePieces(self->pieces, cfg->whitePiecesRsrcId, 
-                                  cfg->blackPiecesRsrcId, gameProxy, fileName)) {
+                                  cfg->blackPiecesRsrcId, gameProxy, gameFileName)) {
         LOGERR("Error, populatePieces() failed");
         return FAILURE;
     }
@@ -162,7 +162,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
         return FAILURE;        
     }
 
-    if (SUCCESS != initLogPanel(&self->logPanel, &cfg->logPanelCfg)) {
+    if (SUCCESS != initLogPanel(&self->logPanel, &cfg->logPanelCfg, logFileName)) {
         LOGERR("Error, initLogPanel() failed");
         return FAILURE;
     }
@@ -189,6 +189,7 @@ void deinitPieceHandler(struct PieceHandler* self) {
         }
         freeVector(&self->pieces[i]);
     }
+    
     deinitPieceHandlerHelper(&self->pieceHandlerHelper);
     deinitLogPanel(&self->logPanel);
 }
@@ -267,6 +268,10 @@ void savePieceStates(struct PieceHandler* self) {
     }
     if (SUCCESS != saveFile(pieceTypes, playerIds)) {
         LOGERR("Error, failed to save the game");
+    }
+
+    if (SUCCESS != saveLogPanel(&self->logPanel)) {
+        LOGERR("Error, failed to save the logPanel");
     }
 }
 
