@@ -42,6 +42,7 @@ static const int32_t GAME_BUTTONS_FRAME_HEIGHT = 66;
 static const int32_t TARGET_FRAMES_COUNT = 1;
 static const int32_t TARGET_WIDTH_HEIGHT = 101;
 
+static const int32_t SERIFNCB_FONT_20 = 20;
 static const int32_t SERIFNCB_FONT_50 = 50;
 static const int32_t SERIFNCB_FONT_70 = 70;
 

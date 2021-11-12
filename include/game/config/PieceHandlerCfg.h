@@ -10,6 +10,7 @@
 
 /* Own library includes */
 #include "game/config/PieceHandlerHelperCfg.h"
+#include "game/config/LogPanelCfg.h"
 
 /* Forward declarations */
 
@@ -17,6 +18,7 @@
 
 struct PieceHandlerCfg {
     struct PieceHandlerHelperCfg pieceHandlerHelperCfg;
+    struct LogPanelCfg logPanelCfg;
     int32_t whitePiecesRsrcId;
     int32_t blackPiecesRsrcId;
 };

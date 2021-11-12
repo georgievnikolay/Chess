@@ -47,6 +47,7 @@ static void doMovePiece(struct PieceHandler* self,
 
     increaseNumberOfMovesGameProxy(self->gameProxy);
     setBoardPosChessPieceResolver(piece, selectedBoardPos);
+    addNewLog(&self->logPanel, piece);
     const int32_t opponentId = getOpponentId(piece->playerId);
     int32_t foundIdx = -1;
 
@@ -161,6 +162,11 @@ int32_t initPieceHandler(struct PieceHandler* self,
         return FAILURE;        
     }
 
+    if (SUCCESS != initLogPanel(&self->logPanel, &cfg->logPanelCfg)) {
+        LOGERR("Error, initLogPanel() failed");
+        return FAILURE;
+    }
+
     self->isPieceGrabbed = false;
     self->selectedPieceId = 0;
     
@@ -184,6 +190,7 @@ void deinitPieceHandler(struct PieceHandler* self) {
         freeVector(&self->pieces[i]);
     }
     deinitPieceHandlerHelper(&self->pieceHandlerHelper);
+    deinitLogPanel(&self->logPanel);
 }
 
 void handleEventPieceHandler(struct PieceHandler* self, const struct InputEvent* event) {
@@ -207,6 +214,7 @@ void drawPieceHandler(struct PieceHandler* self) {
     }
 
     drawPieceHandlerHelper(&self->pieceHandlerHelper);
+    drawLogPanel(&self->logPanel);
 }
 
 

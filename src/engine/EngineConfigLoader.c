@@ -139,6 +139,10 @@ static void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
 static void populateTextContainerConfig(struct TextContainerCfg* cfg) {
     struct FontConfig fontCfg;
 
+    fontCfg.fontSize = SERIFNCB_FONT_20;
+    populateResourceLocation(fontCfg.location, "resources/fonts/SERIFNCB.TTF");
+    insertFontConfig(cfg, SERIFNCB_20_FONT_ID, &fontCfg);
+
     fontCfg.fontSize = SERIFNCB_FONT_50;
     populateResourceLocation(fontCfg.location, "resources/fonts/SERIFNCB.TTF");
     insertFontConfig(cfg, SERIFNCB_50_FONT_ID, &fontCfg);
@@ -196,6 +200,16 @@ static void populateGameLogicCfg(struct GameLogicCfg* cfg) {
     cfg->gameBoardWidth_Height = CHESS_BOARD_IMG_WIDTH_HEIGHT;
 }
 
+static void populateLogPanelCfg(struct LogPanelCfg* cfg) {
+    cfg->fontId = SERIFNCB_20_FONT_ID;
+
+    cfg->screenWidth = SCREEN_WIDTH;
+    cfg->screenHeight = SCREEN_HEIGHT;
+
+    cfg->gameBoardWidth = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+    cfg->gameBoardHeight = CHESS_BOARD_IMG_WIDTH_HEIGHT;
+}
+
 static void populatePieceHandlerCfg(struct PieceHandlerCfg* cfg) {
     cfg->whitePiecesRsrcId = WHITE_PIECES_TEXTURE_ID;
     cfg->blackPiecesRsrcId = BLACK_PIECES_TEXTURE_ID;
@@ -204,6 +218,7 @@ static void populatePieceHandlerCfg(struct PieceHandlerCfg* cfg) {
     cfg->pieceHandlerHelperCfg.gameBoardWidth = CHESS_BOARD_IMG_WIDTH_HEIGHT;
     cfg->pieceHandlerHelperCfg.gameBoardHeight = CHESS_BOARD_IMG_WIDTH_HEIGHT;
 
+    populateLogPanelCfg(&cfg->logPanelCfg);
 }
 
 static void populateGameCfg(struct GameCfg* cfg) {

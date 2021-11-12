@@ -35,12 +35,14 @@ add_executable(
         ${_INCLUDE_DIR}/game/config/PieceHandlerCfg.h
         ${_INCLUDE_DIR}/game/config/PiecePromotionPanelCfg.h
         ${_INCLUDE_DIR}/game/config/PiecePromotionButtonCfg.h
+        ${_INCLUDE_DIR}/game/config/LogPanelCfg.h
         ${_INCLUDE_DIR}/game/defines/ChessDefines.h
         ${_INCLUDE_DIR}/game/defines/GameDefines.h
         ${_INCLUDE_DIR}/game/defines/GameLogicDefines.h
         ${_INCLUDE_DIR}/game/defines/ChessStructs.h
         ${_INCLUDE_DIR}/game/entities/PiecePromotionPanel.h
         ${_INCLUDE_DIR}/game/entities/GameStatePanel.h
+        ${_INCLUDE_DIR}/game/entities/LogPanel.h
         ${_INCLUDE_DIR}/game/entities/board/GameBoard.h
         ${_INCLUDE_DIR}/game/entities/board/MoveSelector.h
         ${_INCLUDE_DIR}/game/entities/buttons/PiecePromotionButton.h
@@ -70,6 +72,7 @@ add_executable(
         
         ${_SOURCE_DIR}/game/entities/PiecePromotionPanel.c
         ${_SOURCE_DIR}/game/entities/GameStatePanel.c
+        ${_SOURCE_DIR}/game/entities/LogPanel.c
         ${_SOURCE_DIR}/game/entities/board/GameBoard.c
         ${_SOURCE_DIR}/game/entities/board/MoveSelector.c
         ${_SOURCE_DIR}/game/entities/buttons/PiecePromotionButton.c
