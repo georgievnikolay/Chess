@@ -144,6 +144,6 @@ void continueGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = false;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = false;    
 
-     //TODO: add check
+     //TODO: add chec
     onGameContinueGameProxy(self->gameProxy);
 }
