@@ -22,8 +22,9 @@ add_executable(
         ${_INCLUDE_DIR}/common/TimerDefines.h
 
         ${_INCLUDE_DIR}/engine/Engine.h
-        ${_INCLUDE_DIR}/engine/config/EngineConfig.h
         ${_INCLUDE_DIR}/engine/EngineConfigLoader.h
+        ${_INCLUDE_DIR}/engine/FramePopulator.h
+        ${_INCLUDE_DIR}/engine/config/EngineConfig.h
         
         ${_INCLUDE_DIR}/game/proxies/GameProxy.h
         ${_INCLUDE_DIR}/game/proxies/GameBoardProxy.h
@@ -68,6 +69,7 @@ add_executable(
 
         ${_SOURCE_DIR}/main.c
         ${_SOURCE_DIR}/engine/Engine.c
+        ${_SOURCE_DIR}/engine/FramePopulator.c
         ${_SOURCE_DIR}/engine/EngineConfigLoader.c
         
         ${_SOURCE_DIR}/game/entities/PiecePromotionPanel.c
