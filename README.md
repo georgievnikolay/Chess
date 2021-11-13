@@ -31,6 +31,7 @@ At the momement this project runs only on Linux
 - Timer that gives each player one minute for turn is drawn in game
 - Movement Log that is visualised in game
 - Game and it's current state can be saved then loaded
+- Game starts with one of three different screen images
 
 <br>
 

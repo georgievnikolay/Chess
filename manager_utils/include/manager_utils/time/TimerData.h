@@ -16,8 +16,8 @@ struct TimerClient;
 /*        Defines       */
 
 typedef enum {
-    ONESHOT_TIMER,  //One time timer
-    PULSE_TIMER,     //Repetative timer
+    ONESHOT_TIMER,      //One time timer
+    PULSE_TIMER,        //Repetative timer
     UNKNOWN_TIMER
 } TimerType;
 

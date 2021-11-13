@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stdio.h>
+#include <time.h>
+
 /* Third party includes */
 
 /* Own library includes */
@@ -24,6 +27,18 @@ void populateResourceLocation(char* buffer, const char* relativePath) {
     strcat(buffer, relativePath);
 #endif
     configurePath(buffer);
+}
+
+static void setRandomImage(char* imagePath) {
+    srand(time(0));
+    int32_t randomImadeIdx = (rand() % (3) + 1);
+
+    int32_t len = strlen(imagePath);
+    for (int32_t i = 0; i < len; i++) {
+        if (imagePath[i] == '.') {
+            imagePath[i - 1] = randomImadeIdx + '0';
+        }
+    }
 }
 
 static void populateFrames(struct ImageConfig* imgCfg, struct ImageContainerCfg* cfg,
@@ -116,7 +131,9 @@ void populateImageContainerConfig(struct ImageContainerCfg* cfg) {
 #undef GAME_BUTTONS_COUNT
 
 //Start Game Image
-    populateFrames(&imgCfg, cfg, "resources/images/chess_start_screen1.jpg", 
+    char imageBuffer[50] = "resources/images/chess_start_screen0.jpg";
+    setRandomImage(imageBuffer);
+    populateFrames(&imgCfg, cfg, imageBuffer, 
                     START_GAME_IMAGE_WIDTH, 
                     START_GAME_IMAGE_HEIGHT, 
                     START_GAME_IMAGE_FRAMES_COUNT, START_SCREEN_TEXTURE_ID);
