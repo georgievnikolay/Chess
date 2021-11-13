@@ -247,7 +247,7 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType) {
     pushElementVector(&self->pieces[currPlayerId], currPiece);
 }
 
-void savePieceStates(struct PieceHandler* self) {
+int32_t savePieceStates(struct PieceHandler* self) {
     PieceType pieceTypes[TILES_IN_ROW][TILES_IN_COL];
     for (int32_t i = 0; i < TILES_IN_ROW; i++) {
         for (int32_t j = 0; j < TILES_IN_COL; j++) {
@@ -266,13 +266,18 @@ void savePieceStates(struct PieceHandler* self) {
             playerIds[currPiece->boardPos.row][currPiece->boardPos.col] = currPiece->playerId;
         }
     }
+    
     if (SUCCESS != saveFile(pieceTypes, playerIds)) {
         LOGERR("Error, failed to save the game");
+        return FAILURE;
     }
 
     if (SUCCESS != saveLogPanel(&self->logPanel)) {
         LOGERR("Error, failed to save the logPanel");
+        return FAILURE;
     }
+
+    return SUCCESS;
 }
 
 

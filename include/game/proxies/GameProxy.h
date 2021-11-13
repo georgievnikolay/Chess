@@ -22,7 +22,7 @@ void activatePawnPromotionGameProxy(void* proxy);
 
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType);
 
-void onGameSavedGameProxy(void* proxy);
+int32_t onGameSavedGameProxy(void* proxy);
 
 int32_t onGameStartedGameProxy(void* proxy);
 

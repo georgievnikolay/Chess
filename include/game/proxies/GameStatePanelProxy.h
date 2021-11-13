@@ -4,6 +4,7 @@
 /*      Own include     */
 
 /*    System includes   */
+#include <stdint.h>
 
 /* Third party includes */
 
@@ -13,12 +14,12 @@
 
 /*        Defines       */
 
-void startGameGamePanelProxy(void* proxy);
+int32_t startGameGamePanelProxy(void* proxy);
 
 void exitGameGamePanelProxy(void* proxy);
 
-void quitGameGamePanelProxy(void* proxy);
+int32_t quitGameGamePanelProxy(void* proxy);
 
-void continueGameGamePanelProxy(void* proxy);
+int32_t continueGameGamePanelProxy(void* proxy);
 
 #endif /* INCLUDE_GAME_PROXIES_GAMESTATEPANELPROXY_H_ */

@@ -86,8 +86,8 @@ void handleEventGame(struct Game* self, struct InputEvent* event) {
 void drawGame(struct Game* self) {
     drawGameBoard(&self->gameBoard);
     drawGameLogic(&self->gameLogic);
-    drawPiecePromotionPanel(&self->piecePromotionPanel);
     drawPieceHandler(&self->pieceHandler);
+    drawPiecePromotionPanel(&self->piecePromotionPanel);
     drawGameStatePanel(&self->gameStatePanel);
 }
 
@@ -106,8 +106,6 @@ void finishTurnGameProxy(void* proxy) {
 /*Communicate with the Panel that it should activate*/
 void activatePawnPromotionGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
-    LOGC("Piece prom active for playerId: %d", 
-         self->gameLogic.activePlayerId);
     
     activatePiecePromotionPanel(&self->piecePromotionPanel, 
                                 self->gameLogic.activePlayerId);
@@ -118,19 +116,26 @@ piece was selected on the PiecePromotionPanel*/
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType) {
     struct Game* self = (struct Game*)proxy;
     promotePiecePieceHandler(&self->pieceHandler, pieceType);
-
-    LOGC("Recieved pieceType: %d, %d", pieceType, self->pieceHandler.selectedPieceId);
 }
 
 /*Communicate with Game
 to save current state of the pieces*/
-void onGameSavedGameProxy(void* proxy) {
+int32_t onGameSavedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
-    savePieceStates(&self->pieceHandler);
+    if (SUCCESS != savePieceStates(&self->pieceHandler)) {
+        LOGERR("savePieceStates() failed.");
+        return FAILURE;
+    }
 
     stopGameLogic(&self->gameLogic);
-    saveGameLogic(&self->gameLogic);
+    
+    if(SUCCESS != saveGameLogic(&self->gameLogic)) {
+        LOGERR("saveGameLogic() failed.");
+        return FAILURE;
+    }
+
+    return SUCCESS;
 }
 
 int32_t onGameStartedGameProxy(void *proxy) {
@@ -189,14 +194,6 @@ void increaseNumberOfMovesGameProxy(void* proxy) {
 
 int32_t onGameEndedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
-
-    // deinitPieceHandler(&self->pieceHandler);
-    // if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
-    //         self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt")) {
-    //     LOGERR("Error, initChessPiece() failed");
-    //     return FAILURE;
-    // }
-
     activateGameStatePanel(&self->gameStatePanel);
 
     return SUCCESS;

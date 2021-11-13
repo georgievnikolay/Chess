@@ -49,8 +49,6 @@ void promotePiecePieceHandler(struct PieceHandler* self, PieceType pieceType);
 
 void invertPieces(struct Vector pieces[PLAYERS_COUNT]);
 
-void savePieceStates(struct PieceHandler* self);
-
-void loadPieceStates(struct PieceHandler* self);
+int32_t savePieceStates(struct PieceHandler* self);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLER_H_ */

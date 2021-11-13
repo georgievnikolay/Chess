@@ -102,7 +102,7 @@ void activateGameStatePanel(struct GameStatePanel* self) {
 }
 
 /* Proxies */
-void startGameGamePanelProxy(void* proxy) {
+int32_t startGameGamePanelProxy(void* proxy) {
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
     self->isActive = false;
 
@@ -110,31 +110,37 @@ void startGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = false;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = false;
 
-    //TODO: add check
-    onGameStartedGameProxy(self->gameProxy);
+    if (SUCCESS != onGameStartedGameProxy(self->gameProxy)) {
+        LOGERR("onGameStartedGameProxy() failed.");
+        return FAILURE;
+    }
+
+    return SUCCESS;
 }
 
 void exitGameGamePanelProxy(void* proxy) {
     /* Proxy to the game to tell it to exit */
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
-
-    
     onGameExitedGameProxy(self->gameProxy);
 }
 
-void quitGameGamePanelProxy(void* proxy) {
+int32_t quitGameGamePanelProxy(void* proxy) {
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
     self->isActive = true;
 
     self->gameButtons[START_GAME_BUTTON_ID].base.isInputUnlocked = true;
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = true;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = true;
-    
-    //TODO: add check
-    onGameSavedGameProxy(self->gameProxy);
+
+    if (SUCCESS != onGameSavedGameProxy(self->gameProxy)) {
+        LOGERR("onGameSavedGameProxy() failed.");
+        return FAILURE;    
+    }
+
+    return SUCCESS;
 }
 
-void continueGameGamePanelProxy(void* proxy) {
+int32_t continueGameGamePanelProxy(void* proxy) {
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
     self->isActive = false; 
 
@@ -142,6 +148,10 @@ void continueGameGamePanelProxy(void* proxy) {
     self->gameButtons[CONTINUE_GAME_BUTTON_ID].base.isInputUnlocked = false;
     self->gameButtons[EXIT_GAME_BUTTON_ID].base.isInputUnlocked = false;    
 
-     //TODO: add chec
-    onGameContinueGameProxy(self->gameProxy);
+    if (SUCCESS != onGameContinueGameProxy(self->gameProxy)) {
+        LOGERR("onGameContinueGameProxy() failed.");
+        return FAILURE;
+    }
+
+    return SUCCESS;
 }
