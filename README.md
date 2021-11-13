@@ -1,5 +1,5 @@
 # Chess Game
 
-####By Nikolay Georgiev
+####By _Nikolay Georgiev
 <br>
 
