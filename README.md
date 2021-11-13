@@ -37,7 +37,6 @@ At the momement this project runs only on Linux
 ## Known issues and things to improve:
 - Castle feauture not implememnted
 - Dead position not implemented
-- `Exit Game` button can be improved to exit properly
 - Checkmate feauture can be improved to cover more cases
 - Start Panel not showing when game has ended in Checkmate
 
