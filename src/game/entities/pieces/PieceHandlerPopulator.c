@@ -10,7 +10,7 @@
 #include "game/config/PieceHandlerCfg.h"
 #include "game/entities/pieces/ChessPieceResolver.h"
 #include "game/entities/pieces/types/ChessPiece.h"
-#include "game/utils/SaveFile.h"
+#include "game/entities/pieces/SavePiecesState.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
 

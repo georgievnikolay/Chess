@@ -11,7 +11,7 @@
 #include "game/proxies/GameProxy.h"
 #include "game/config/PieceHandlerCfg.h"
 #include "game/utils/BoardUtils.h"
-#include "game/utils/SaveFile.h"
+#include "game/entities/pieces/SavePiecesState.h"
 #include "game/entities/pieces/types/ChessPiece.h"
 #include "game/entities/pieces/PieceHandlerPopulator.h"
 #include "game/entities/pieces/ChessPieceResolver.h"
@@ -266,7 +266,7 @@ int32_t savePieceStates(struct PieceHandler* self) {
             playerIds[currPiece->boardPos.row][currPiece->boardPos.col] = currPiece->playerId;
         }
     }
-    
+
     if (SUCCESS != saveFile(pieceTypes, playerIds)) {
         LOGERR("Error, failed to save the game");
         return FAILURE;

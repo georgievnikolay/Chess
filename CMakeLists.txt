@@ -51,6 +51,7 @@ add_executable(
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerHelper.h
         ${_INCLUDE_DIR}/game/entities/pieces/PieceHandlerPopulator.h
         ${_INCLUDE_DIR}/game/entities/pieces/ChessPieceResolver.h
+        ${_INCLUDE_DIR}/game/entities/pieces/SavePiecesState.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/ChessPiece.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Rook.h
         ${_INCLUDE_DIR}/game/entities/pieces/types/Pawn.h
@@ -62,7 +63,6 @@ add_executable(
         ${_INCLUDE_DIR}/game/utils/BoardPos.h
         ${_INCLUDE_DIR}/game/utils/BoardUtils.h
         ${_INCLUDE_DIR}/game/utils/BoardMoveHelper.h
-        ${_INCLUDE_DIR}/game/utils/SaveFile.h
         ${_INCLUDE_DIR}/game/Game.h
 
 
@@ -81,6 +81,7 @@ add_executable(
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerHelper.c
         ${_SOURCE_DIR}/game/entities/pieces/PieceHandlerPopulator.c
         ${_SOURCE_DIR}/game/entities/pieces/ChessPieceResolver.c
+        ${_SOURCE_DIR}/game/entities/pieces/SavePiecesState.c
         ${_SOURCE_DIR}/game/entities/pieces/types/ChessPiece.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Rook.c
         ${_SOURCE_DIR}/game/entities/pieces/types/Pawn.c
@@ -92,7 +93,6 @@ add_executable(
         ${_SOURCE_DIR}/game/utils/BoardPos.c
         ${_SOURCE_DIR}/game/utils/BoardUtils.c
         ${_SOURCE_DIR}/game/utils/BoardMoveHelper.c
-        ${_SOURCE_DIR}/game/utils/SaveFile.c
         ${_SOURCE_DIR}/game/Game.c
 
 )
