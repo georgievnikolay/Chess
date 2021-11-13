@@ -21,6 +21,7 @@
 /*        Defines       */
 
 static const char* NO_TEXT = "-";
+
 static void translateBoardPos(const struct BoardPos* boardPos, int32_t playerId, char* buffer) {
 
     char localBuffer[3];
@@ -121,7 +122,7 @@ void addNewLog(struct LogPanel* self, const struct ChessPiece* movedPiece) {
     translatePieceInformation(&movedPiece->boardPos, movedPiece->pieceType, 
                               movedPiece->playerId, newLog);
 
-    if (self->size < 10) {
+    if (self->size < MAX_LOGS) {
         self->size++;
     }
 

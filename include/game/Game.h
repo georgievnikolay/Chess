@@ -27,6 +27,7 @@ struct Game {
     struct PiecePromotionPanel piecePromotionPanel;
     struct GameStatePanel gameStatePanel;
     struct GameLogic gameLogic;
+    bool gameExited;
 };
 
 int32_t initGame(struct Game* self, const struct GameCfg* cfg);

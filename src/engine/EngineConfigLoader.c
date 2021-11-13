@@ -11,6 +11,7 @@
 #include "common/TimerDefines.h"
 #include "common/CommonDefines.h"
 #include "sdl_utils/config/ImageContainerCfg.h"
+#include "utils/path/PathConfigurator.h"
 #include "utils/drawing/Rectangle.h"
 #include "utils/ErrorCodes.h"
 
@@ -28,6 +29,7 @@ static void populateResourceLocation(char* buffer, const char* relativePath) {
     strcpy(buffer, "../");
     strcat(buffer, relativePath);
 #endif
+    configurePath(buffer);
 }
 
 static void populateWindowCfg(struct MonitorWindowCfg* cfg) {

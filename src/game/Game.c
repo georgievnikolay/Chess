@@ -51,6 +51,8 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
+    self->gameExited = false;
+
     return SUCCESS;
 }
 
@@ -165,8 +167,7 @@ int32_t onGameContinueGameProxy(void* proxy) {
 //TODO: find better way
 void onGameExitedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
-    UNUSED(self);
-    
+    self->gameExited = true;
 }
 
 int32_t getNumberOfMovesGameProxy(void* proxy) {
@@ -181,7 +182,6 @@ void increaseNumberOfMovesGameProxy(void* proxy) {
 
 int32_t onGameEndedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
-    UNUSED(self);
 
     // deinitPieceHandler(&self->pieceHandler);
     // if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
@@ -190,7 +190,7 @@ int32_t onGameEndedGameProxy(void* proxy) {
     //     return FAILURE;
     // }
 
-    //activateGameStatePanel(&self->gameStatePanel);
+    activateGameStatePanel(&self->gameStatePanel);
 
     return SUCCESS;
 }

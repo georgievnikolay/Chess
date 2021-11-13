@@ -119,9 +119,7 @@ void exitGameGamePanelProxy(void* proxy) {
     struct GameStatePanel* self = (struct GameStatePanel*)proxy;
 
     
-    /* TODO: That pretty much sums up my knowledge */
-    onGameExitedGameProxy(&self->gameProxy);
-    exit(0);
+    onGameExitedGameProxy(self->gameProxy);
 }
 
 void quitGameGamePanelProxy(void* proxy) {

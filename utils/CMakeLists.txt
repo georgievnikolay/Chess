@@ -18,6 +18,7 @@ add_library(
         ${_HEADERS_DIR}/input/EventDefines.h
         ${_HEADERS_DIR}/time/Time.h
         ${_HEADERS_DIR}/thread/Thread.h
+        ${_HEADERS_DIR}/path/PathConfigurator.h
 
         ${_SOURCE_DIR}/containers/Vector.c
         ${_SOURCE_DIR}/drawing/Point.c
@@ -26,6 +27,7 @@ add_library(
         ${_SOURCE_DIR}/drawing/DrawParams.c
         ${_SOURCE_DIR}/time/Time.c
         ${_SOURCE_DIR}/thread/Thread.c
+        ${_SOURCE_DIR}/path/PathConfigurator.c
 )
 
 set_target_c_standard(${PROJECT_NAME} 11)

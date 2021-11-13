@@ -23,9 +23,10 @@
 
 /*        Defines       */
 
-static void processEngine(struct Engine* self) {
-    UNUSED(self);
+static bool processEngine(struct Engine* self) {
     processManagerHandler();
+
+    return self->game.gameExited;
 }
 
 static void handleEvent(struct Engine* engine) {
@@ -92,8 +93,11 @@ static bool processFrame(struct Engine* self) {
         handleEvent(self);
     }
 
-    processEngine(self);
+    if (processEngine(self)) {
+        return true;
+    }
     drawFrame(self);
+
     return false;
 }
 
