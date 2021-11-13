@@ -40,7 +40,7 @@ void startGameLogic(struct GameLogic* self);
 
 void stopGameLogic(struct GameLogic* self);
 
-int32_t loadGameLogic(struct GameLogic* gameLogic, char* fileName);
+int32_t loadGameLogic(struct GameLogic* gameLogic, const char* fileName);
 
 int32_t saveGameLogic(const struct GameLogic* gameLogic);
 

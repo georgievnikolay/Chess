@@ -19,9 +19,6 @@
 
 /*        Defines       */
 
-//TODO: nice idea for one populate function
-// #define GET_PARAMS(name) name ## FRAMES_COUNT
-
 static void populateResourceLocation(char* buffer, const char* relativePath) {
 #ifdef RELEASE_BUILD
     strcpy(buffer, relativePath);

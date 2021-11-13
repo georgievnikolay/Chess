@@ -37,7 +37,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
                          void* gameProxy, void* gameBoardProxy,
-                         char* gameFileName, char* logFileName);
+                         const char* gameFileName, const char* logFileName);
 
 void deinitPieceHandler(struct PieceHandler* self);
 
@@ -52,9 +52,5 @@ void invertPieces(struct Vector pieces[PLAYERS_COUNT]);
 void savePieceStates(struct PieceHandler* self);
 
 void loadPieceStates(struct PieceHandler* self);
-
-/*TODO : MOVE THESE In some kind of helper file */
-bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
-bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
 
 #endif /* INCLUDE_GAME_ENTITIES_PIECES_PIECEHANDLER_H_ */

@@ -149,7 +149,7 @@ void stopGameLogic(struct GameLogic* self) {
     stopTimer(GAMELOGIC_ONE_SECOND_TIMER);
 }
 
-int32_t loadGameLogic(struct GameLogic* self, char* fileName) {
+int32_t loadGameLogic(struct GameLogic* self, const char* fileName) {
 
     FILE* fp;
 

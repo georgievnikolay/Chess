@@ -29,7 +29,7 @@ struct LogPanel {
     int32_t size;
 };
 
-int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, char* fileName);
+int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, const char* fileName);
 
 void drawLogPanel(struct LogPanel* self);
 

@@ -20,7 +20,7 @@
 /*        Defines       */
 
 int32_t initManagerHandler(const struct ManagerHandlerCfg* cfg) {
-    //TODO: put in function?
+
     gDrawMgr = (struct DrawMgr*)malloc(sizeof(struct DrawMgr));
     if (gDrawMgr == NULL) {
         LOGERR("Bad allocation for DrawMgr");

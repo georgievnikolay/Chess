@@ -99,7 +99,7 @@ static void setTextPosition(struct Text* text, int32_t offsetMultiplier, const s
     text->widget.drawParams.pos.y = startY;
 }
 
-int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, char* fileName) {
+int32_t initLogPanel(struct LogPanel* self, const struct LogPanelCfg* cfg, const char* fileName) {
     
     self->cfg = *cfg;
     self->size = 0;

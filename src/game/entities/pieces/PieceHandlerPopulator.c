@@ -36,7 +36,7 @@ int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT],
                        int32_t whitePiecesRsrcId, 
                        int32_t blackPiecesRsrcId, 
                        void* gameProxy,
-                       char* fileName) {
+                       const char* fileName) {
 
     initVector(&pieces[WHITE_PLAYER_ID], STARTING_PIECES_COUNT);
     initVector(&pieces[BLACK_PLAYER_ID], STARTING_PIECES_COUNT);

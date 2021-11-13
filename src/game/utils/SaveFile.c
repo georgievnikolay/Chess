@@ -37,7 +37,7 @@ SEPARATOR -> /
 char* map = "KQBNRPkqbnrp";
 
 int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
-                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], char* fileName) {
+                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], const char* fileName) {
     
     FILE* fp = NULL;
     char* back = "../";

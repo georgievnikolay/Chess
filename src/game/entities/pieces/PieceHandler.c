@@ -136,7 +136,7 @@ int32_t initPieceHandler(struct PieceHandler* self,
                          const struct PieceHandlerCfg* cfg,
                          int32_t startingPlayerId,
                          void* gameProxy, void* gameBoardProxy,
-                         char* gameFileName, char* logFileName) {
+                         const char* gameFileName, const char* logFileName) {
     
     if (NULL == gameBoardProxy) {
         LOGERR("Error, NULL provided for gameBoardProxy");

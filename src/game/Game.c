@@ -21,6 +21,14 @@
 
 /*        Defines       */
 
+static const char* newGameFile = "newGame.txt";
+static const char* newLogPanelFile = "newLogPanel.txt";
+static const char* newGameLogicFile = "newGameLogic.txt";
+
+static const char* savedGameFile = "savedGame.txt";
+static const char* savedLogPanelFile = "savedLogPanel.txt";
+static const char* savedGameLogicFile = "savedGameLogic.txt";
+
 int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
     if (SUCCESS != initGameBoard(&self->gameBoard, cfg->gameBoardRsrcId, 
             cfg->targetRsrcId, cfg->moveSelectorRsrcId)) {
@@ -28,8 +36,8 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
-    if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg, //TODO: make it const char* 
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt", "newLogPanel.txt")) {
+    if (SUCCESS != initPieceHandler(&self->pieceHandler, &cfg->pieceHandlerCfg,
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, newGameFile, newLogPanelFile)) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
@@ -130,12 +138,12 @@ int32_t onGameStartedGameProxy(void *proxy) {
 
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "newGame.txt", "newLogPanel.txt")) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, newGameFile, newLogPanelFile)) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
     
-    if (SUCCESS != loadGameLogic(&self->gameLogic, "gameLogic.txt")) {
+    if (SUCCESS != loadGameLogic(&self->gameLogic, newGameLogicFile)) {
         LOGERR("Error, loadGameLogic() failed");
         return FAILURE;
     }
@@ -149,12 +157,12 @@ int32_t onGameContinueGameProxy(void* proxy) {
 
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
-            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, "savedGame.txt", "savedLogPanel.txt")) {
+            self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, savedGameFile, savedLogPanelFile)) {
         LOGERR("Error, initChessPiece() failed");
         return FAILURE;
     }
 
-    if (SUCCESS != loadGameLogic(&self->gameLogic, "savedGameLogic.txt")) {
+    if (SUCCESS != loadGameLogic(&self->gameLogic, savedGameLogicFile)) {
         LOGERR("Error, loadGameLogic() failed");
         return FAILURE;
     }
@@ -163,8 +171,7 @@ int32_t onGameContinueGameProxy(void* proxy) {
     return SUCCESS;
 }
 
-//TODO: gameExitGameProxy to deinit game when exits -> update Debug console leaks when this is done
-//TODO: find better way
+
 void onGameExitedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     self->gameExited = true;
