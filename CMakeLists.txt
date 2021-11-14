@@ -41,9 +41,9 @@ add_executable(
         ${_INCLUDE_DIR}/game/defines/GameDefines.h
         ${_INCLUDE_DIR}/game/defines/GameLogicDefines.h
         ${_INCLUDE_DIR}/game/defines/ChessStructs.h
-        ${_INCLUDE_DIR}/game/entities/PiecePromotionPanel.h
-        ${_INCLUDE_DIR}/game/entities/GameStatePanel.h
-        ${_INCLUDE_DIR}/game/entities/LogPanel.h
+        ${_INCLUDE_DIR}/game/entities/panels/PiecePromotionPanel.h
+        ${_INCLUDE_DIR}/game/entities/panels/GameStatePanel.h
+        ${_INCLUDE_DIR}/game/entities/panels/LogPanel.h
         ${_INCLUDE_DIR}/game/entities/board/GameBoard.h
         ${_INCLUDE_DIR}/game/entities/board/MoveSelector.h
         ${_INCLUDE_DIR}/game/entities/buttons/PiecePromotionButton.h
@@ -72,9 +72,9 @@ add_executable(
         ${_SOURCE_DIR}/engine/FramePopulator.c
         ${_SOURCE_DIR}/engine/EngineConfigLoader.c
         
-        ${_SOURCE_DIR}/game/entities/PiecePromotionPanel.c
-        ${_SOURCE_DIR}/game/entities/GameStatePanel.c
-        ${_SOURCE_DIR}/game/entities/LogPanel.c
+        ${_SOURCE_DIR}/game/entities/panels/PiecePromotionPanel.c
+        ${_SOURCE_DIR}/game/entities/panels/GameStatePanel.c
+        ${_SOURCE_DIR}/game/entities/panels/LogPanel.c
         ${_SOURCE_DIR}/game/entities/board/GameBoard.c
         ${_SOURCE_DIR}/game/entities/board/MoveSelector.c
         ${_SOURCE_DIR}/game/entities/buttons/PiecePromotionButton.c

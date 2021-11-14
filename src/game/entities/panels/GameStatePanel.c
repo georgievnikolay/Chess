@@ -1,5 +1,5 @@
 /*      Own include     */
-#include "game/entities/GameStatePanel.h"
+#include "game/entities/panels/GameStatePanel.h"
 
 /*    System includes   */
 #include <stdlib.h>

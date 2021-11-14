@@ -13,7 +13,7 @@
 #include "game/config/PieceHandlerCfg.h"
 #include "game/defines/ChessDefines.h"
 #include "game/entities/pieces/PieceHandlerHelper.h"
-#include "game/entities/LogPanel.h"
+#include "game/entities/panels/LogPanel.h"
 #include "utils/containers/Vector.h"
 
 /* Forward declarations */

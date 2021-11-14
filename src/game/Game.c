@@ -8,8 +8,8 @@
 /* Third party includes */
 
 /* Own library includes */
-#include "game/entities/GameStatePanel.h"
-#include "game/entities/LogPanel.h"
+#include "game/entities/panels/GameStatePanel.h"
+#include "game/entities/panels/LogPanel.h"
 #include "game/entities/pieces/types/ChessPiece.h"
 #include "game/defines/ChessDefines.h"
 #include "game/proxies/GameProxy.h"

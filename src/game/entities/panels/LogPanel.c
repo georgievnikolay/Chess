@@ -1,5 +1,5 @@
 /*      Own include     */
-#include "game/entities/LogPanel.h"
+#include "game/entities/panels/LogPanel.h"
 
 /*    System includes   */
 #include "stdio.h"
@@ -10,7 +10,6 @@
 
 /* Own library includes */
 #include "game/entities/pieces/types/ChessPiece.h"
-#include "game/entities/LogPanel.h"
 #include "utils/path/PathConfigurator.h"
 #include "utils/drawing/Point.h"
 #include "utils/drawing/Color.h"

@@ -1,5 +1,5 @@
 /*      Own include     */
-#include "game/entities/PiecePromotionPanel.h"
+#include "game/entities/panels/PiecePromotionPanel.h"
 
 /*    System includes   */
 

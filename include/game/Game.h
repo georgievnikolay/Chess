@@ -10,8 +10,8 @@
 
 /* Own library includes */
 #include "game/config/GameCfg.h"
-#include "game/entities/PiecePromotionPanel.h"
-#include "game/entities/GameStatePanel.h"
+#include "game/entities/panels/PiecePromotionPanel.h"
+#include "game/entities/panels/GameStatePanel.h"
 #include "game/entities/board/GameBoard.h"
 #include "game/entities/pieces/PieceHandler.h"
 #include "game/logic/GameLogic.h"
