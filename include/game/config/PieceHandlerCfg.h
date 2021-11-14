@@ -19,6 +19,7 @@
 struct PieceHandlerCfg {
     struct PieceHandlerHelperCfg pieceHandlerHelperCfg;
     struct LogPanelCfg logPanelCfg;
+    
     int32_t whitePiecesRsrcId;
     int32_t blackPiecesRsrcId;
 };

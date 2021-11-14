@@ -32,7 +32,7 @@ int32_t initPiecePromotionButton(struct PiecePromotionButton *self,
 void deinitPiecePromotionButton(struct PiecePromotionButton *self);
 
 void handleEventPiecePromotionButton(struct PiecePromotionButton *self,
-                                    const struct InputEvent *event);
+                                     const struct InputEvent *event);
 
 void drawPiecePiecePromotionButton(struct PiecePromotionButton *self);
 

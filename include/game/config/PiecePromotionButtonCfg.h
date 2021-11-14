@@ -18,14 +18,19 @@
 
 struct PiecePromotionButtonCfg {
     void* panelProxy;
+
     struct Point bgrPos;
+
     int32_t buttonBgrRsrcId;
     int32_t buttonWhitePieceRsrcId;
     int32_t buttonBlackPieceRsrcId;
+
     int32_t bgrWidth;
     int32_t bgrHeight;
+
     int32_t width;
     int32_t height;
+    
     PieceType pieceType;
 };
 

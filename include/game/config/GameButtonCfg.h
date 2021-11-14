@@ -16,7 +16,9 @@
 
 struct GameButtonCfg {
     struct Point buttonPos;
+
     int32_t buttonRsrcId;
+    
     int32_t buttonWidth;
     int32_t buttonHeight;
 };

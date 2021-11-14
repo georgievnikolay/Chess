@@ -32,14 +32,16 @@ struct PieceHandlerHelper {
     struct TimerClient timerClient;
 };
 
-int32_t initPieceHandlerHelper(struct PieceHandlerHelper* self, const struct PieceHandlerHelperCfg* cfg);
+int32_t initPieceHandlerHelper(struct PieceHandlerHelper* self, 
+                               const struct PieceHandlerHelperCfg* cfg);
 
 void deinitPieceHandlerHelper(struct PieceHandlerHelper* self);
 
 void drawPieceHandlerHelper(struct PieceHandlerHelper* self);
 
 int32_t showOpponentKingState(struct PieceHandlerHelper* self, 
-                              int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]);
+                              int32_t currPlayerId, 
+                              struct Vector pieces[PLAYERS_COUNT]);
 
 void hideOpponentKingState(struct PieceHandlerHelper* self);
 

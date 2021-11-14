@@ -22,7 +22,8 @@
 
 static const char* NO_TEXT = "-";
 
-static void translateBoardPos(const struct BoardPos* boardPos, int32_t playerId, char* buffer) {
+static void translateBoardPos(const struct BoardPos* boardPos, 
+                              int32_t playerId, char* buffer) {
 
     char localBuffer[15];
     int32_t row;
@@ -80,14 +81,17 @@ static void translatePlayerId(int32_t playerId, char* buffer) {
     }
 }
 
-static void translatePieceInformation(const struct BoardPos* boardPos, const PieceType pieceType, int32_t playerId, char* newLog) {
+static void translatePieceInformation(const struct BoardPos* boardPos, 
+                                      const PieceType pieceType, 
+                                      int32_t playerId, char* newLog) {
     translatePlayerId(playerId, newLog);
     translatePieceType(pieceType, newLog);
     translateBoardPos(boardPos, playerId, newLog);
 }
 
 
-static void setTextPosition(struct Text* text, int32_t offsetMultiplier, const struct LogPanelCfg* cfg) {
+static void setTextPosition(struct Text* text, int32_t offsetMultiplier, 
+                            const struct LogPanelCfg* cfg) {
     int32_t offsetYInPixels = 35;
     int32_t firstTextPos = 200;
 
@@ -138,7 +142,6 @@ void addNewLog(struct LogPanel* self, const struct ChessPiece* movedPiece) {
 
     setText(&self->moveLogs[0], newLog);
     setTextPosition(&self->moveLogs[0], 0, &self->cfg);
-
 }
 
 void drawLogPanel(struct LogPanel* self) {

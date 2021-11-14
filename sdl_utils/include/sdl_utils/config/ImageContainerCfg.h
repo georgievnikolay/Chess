@@ -29,6 +29,6 @@ struct ImageContainerCfg {
 };
 
 void insertImageConfig(struct ImageContainerCfg* self, int32_t idx,
-                        const struct ImageConfig* imgCfg);
+                       const struct ImageConfig* imgCfg);
 
 #endif /* SDL_UTILS_INCLUDE_SDL_UTILS_CONFIG_IMAGECONTAINERCFG_H_ */

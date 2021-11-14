@@ -24,7 +24,8 @@ struct Pawn {
     void* gameProxy;
 };
 
-int32_t initPawn(struct Pawn* self, const struct ChessPieceCfg* cfg, 
+int32_t initPawn(struct Pawn* self, 
+                 const struct ChessPieceCfg* cfg, 
                  void* gameProxy);
 
 void setBoardPosPawn(struct Pawn* self, const struct BoardPos* boardPos);

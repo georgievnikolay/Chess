@@ -23,11 +23,14 @@ struct GamePanels {
     struct GameStatePanel gameStatePanel;
 };
 
-int32_t initGamePanels(struct GamePanels* self, const struct GamePanelsCfg* cfg, void* proxy);
+int32_t initGamePanels(struct GamePanels* self, 
+                       const struct GamePanelsCfg* cfg, 
+                       void* proxy);
 
 void deinitGamePanels(struct GamePanels* self);
 
-void handleEventGameStatePanels(struct GamePanels* self, struct InputEvent* event);
+void handleEventGameStatePanels(struct GamePanels* self, 
+                                struct InputEvent* event);
 
 void drawGamePanels(struct GamePanels* self);
 

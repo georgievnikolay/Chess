@@ -45,6 +45,8 @@ static void generateText(struct Text* text, const char* textContent,
 
     text->widget.isVisible = false;
 }
+
+/* Timer callback */
 static void onTimerTimeout(void* clientProxy, int32_t timerId) {
     struct PieceHandlerHelper* self = (struct PieceHandlerHelper*)clientProxy;
 
@@ -96,6 +98,8 @@ static bool isOpponentKingInCheck(int32_t currPlayerId, struct Vector pieces[PLA
             break;
         }
     }
+    
+    /* If for some reason the opponent does not have King figure */
     if (opponentKing == NULL) {
         isInCheck = true;
         return isInCheck;
@@ -149,10 +153,13 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
             break;
         }
     }
+
+    /* If for some reason the opponent does not have King figure */
     if (opponentKing == NULL) {
         isInCheckmate = true;
         return isInCheckmate;
     }
+
     struct BoardPos kingPos = opponentKing->boardPos;
     opponentKingMoveTiles = getMoveTilesPieceResolver(opponentKing, pieces);
     size_t kingMoveTilesSize = getSizeVector(&opponentKingMoveTiles);
@@ -162,7 +169,7 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
     for (size_t i = 0; i < size; i++) {
         currPiece = getElementVector(&pieces[currPlayerId], i);
         
-
+        /* Virtually remove the King from the board to get more cases covered */
         opponentKing->boardPos.col = -3;
         currPieceMoveTIles = getMoveTilesPieceResolver(currPiece, pieces);
         opponentKing->boardPos = kingPos;
@@ -192,7 +199,7 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
         freeVector(&currPieceMoveTIles);       
     }
 
-    /* If the opponent King has no more MOVE_TILEs left it's Checkmate */  
+    /* If the opponent King has no more MOVE_TILEs of TAKE_TILEs left it's Checkmate */  
     for (size_t i = 0; i < kingMoveTilesSize; i++) {
         struct TileData* currTileKing = 
             (struct TileData*)getElementVector(&opponentKingMoveTiles, i);
@@ -212,6 +219,7 @@ static bool isOpponentKingInCheckmate(int32_t currPlayerId, struct Vector pieces
 
 int32_t showOpponentKingState(struct PieceHandlerHelper* self, int32_t currPlayerId, struct Vector pieces[PLAYERS_COUNT]) {
 
+    /* If King is in Check we can then check for Checkmate and if True we show text for 2,5seconds */
     if (isOpponentKingInCheck(currPlayerId, pieces)) {
         if (isOpponentKingInCheckmate(currPlayerId, pieces)) {
             showWidget(&self->kingStateTexts[IN_CHECKMATE].widget);
@@ -227,6 +235,7 @@ int32_t showOpponentKingState(struct PieceHandlerHelper* self, int32_t currPlaye
     return NEUTRAL;    
 }
 
+/* After 2,5seconds hide the texts */
 void hideOpponentKingState(struct PieceHandlerHelper* self) {
     hideWidget(&self->kingStateTexts[IN_CHECKMATE].widget);
     hideWidget(&self->kingStateTexts[IN_CHECK].widget);

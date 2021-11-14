@@ -22,13 +22,17 @@ struct GameLogicCfg;
 struct GameLogic {
     struct TimerClient timerClent;
     struct Text gameLogicTexts[TEXTS_COUNT];
-    int32_t turnSeconds;
+
     void* gameProxy;
+    
+    int32_t turnSeconds;
     int32_t activePlayerId;
     int32_t numberOfMoves;
 };
 
-int32_t initGameLogic(struct GameLogic* self, const struct GameLogicCfg* cfg, void* gameProxy);
+int32_t initGameLogic(struct GameLogic* self, 
+                      const struct GameLogicCfg* cfg, 
+                      void* gameProxy);
 
 void deinitGameLogic(struct GameLogic* self);
 

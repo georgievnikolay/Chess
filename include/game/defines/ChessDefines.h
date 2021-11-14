@@ -54,15 +54,13 @@ typedef enum {
 } Direction;
 
 enum PieceHandlerDefines {
-    PLAYER_END_PAWN_ROW = 0,
-    
     PLAYER_START_PAWN_ROW = 6,
-    BLACK_PLAYER_START_PAWN_ROW = 1,
+    PLAYER_END_PAWN_ROW = 0,
 
     BOARD_ROWS_COLS = 7,
     STARTING_PIECES_COUNT = 16,
     TILES_IN_ROW = 8,
-    TILES_IN_COL = 8,
+    TILES_IN_COL = 8
 };
 
 #endif /* INCLUDE_GAME_DEFINES_CHESSDEFINES_H_ */

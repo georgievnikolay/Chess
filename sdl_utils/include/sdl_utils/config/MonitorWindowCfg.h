@@ -23,9 +23,12 @@ typedef enum {
 
 struct MonitorWindowCfg {
     struct Point windowPos;
+
     const char* windowName;
+
     int32_t width;
     int32_t height;
+    
     WindowMode mode;
 };
 

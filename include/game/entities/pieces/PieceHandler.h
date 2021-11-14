@@ -24,12 +24,17 @@ struct InputEvent;
 struct PieceHandler {
     struct PieceHandlerCfg cfg;
     struct PieceHandlerHelper pieceHandlerHelper;
+
     struct LogPanel logPanel;
+
     struct Vector pieces[PLAYERS_COUNT];
+
     void* gameBoardProxy;
     void* gameProxy;
+
     int32_t selectedPieceId;
     int32_t currPlayerId;
+
     bool isPieceGrabbed;
 };
 
@@ -41,7 +46,8 @@ int32_t initPieceHandler(struct PieceHandler* self,
 
 void deinitPieceHandler(struct PieceHandler* self);
 
-void handleEventPieceHandler(struct PieceHandler* self, const struct InputEvent* event);
+void handleEventPieceHandler(struct PieceHandler* self, 
+                             const struct InputEvent* event);
 
 void drawPieceHandler(struct PieceHandler* self);
 

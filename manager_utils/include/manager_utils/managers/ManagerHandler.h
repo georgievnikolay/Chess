@@ -12,6 +12,7 @@
 
 /* Forward declarations */
 struct ManagerHandlerCfg;
+
 /*        Defines       */
 
 int32_t initManagerHandler(const struct ManagerHandlerCfg* cfg);

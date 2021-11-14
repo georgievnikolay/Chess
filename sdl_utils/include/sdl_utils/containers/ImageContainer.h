@@ -25,7 +25,7 @@ struct ImageContainer {
 };
 
 int32_t initImageContainer(struct ImageContainer* self, 
-                            const struct ImageContainerCfg* cfg);
+                           const struct ImageContainerCfg* cfg);
 
 void deinitImageContainer(struct ImageContainer* self);
 

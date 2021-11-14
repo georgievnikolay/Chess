@@ -96,15 +96,15 @@ void activatePawnPromotionGameProxy(void* proxy) {
                                 self->gameLogic.activePlayerId);
 }
 
-/*Communicate with the game what type of 
-piece was selected on the PiecePromotionPanel*/
+/* Communicate with the game what type of 
+piece was selected on the PiecePromotionPanel */
 void onPiecePromotionSelectedGameProxy(void* proxy, PieceType pieceType) {
     struct Game* self = (struct Game*)proxy;
     promotePiecePieceHandler(&self->pieceHandler, pieceType);
 }
 
 /*Communicate with Game
-to save current state of the pieces*/
+to save current state of the pieces and the Logic */
 int32_t onGameSavedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
@@ -123,6 +123,7 @@ int32_t onGameSavedGameProxy(void* proxy) {
     return SUCCESS;
 }
 
+/* Communicate with the game to load new game logic and pieces states */
 int32_t onGameStartedGameProxy(void *proxy) {
     struct Game* self = (struct Game*)proxy;
 
@@ -143,6 +144,7 @@ int32_t onGameStartedGameProxy(void *proxy) {
     return SUCCESS;
 }
 
+/* Communicate with the game to load saved game logic and pieces states */
 int32_t onGameContinueGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
@@ -163,22 +165,33 @@ int32_t onGameContinueGameProxy(void* proxy) {
     return SUCCESS;
 }
 
-
+/* Communicate with the game that Exit button is pressed 
+*  so it can be propagated to the Engine 
+*/
 void onGameExitedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     self->gameExited = true;
 }
 
+/* Communicate with the game that a Piece needs to know 
+*  how many turns have happened during the game
+*/
 int32_t getNumberOfMovesGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     return self->gameLogic.numberOfMoves;
 }
 
+/* Communicate with the game that a piece was moved 
+*  so the number of moves is increased 
+*/
 void increaseNumberOfMovesGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     self->gameLogic.numberOfMoves += 1;
 }
 
+/* Communicate with the game that a Checkmate was made 
+*  so the GameStatePanel can be activated 
+*/
 int32_t onGameEndedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     activateGameStatePanel(&self->gamePanels.gameStatePanel);

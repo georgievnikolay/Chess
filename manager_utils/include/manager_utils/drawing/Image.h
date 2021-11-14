@@ -17,7 +17,9 @@ struct Vector;
 
 struct Image {
     struct Widget widget;
+    
     const struct Vector* frames;
+
     int32_t currFrame;
     int32_t maxFrames;
 };

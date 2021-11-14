@@ -32,6 +32,7 @@ static int32_t insertChessPiece(struct Vector* player, void* gameProxy,
     return SUCCESS;      
 }
 
+/* All pieces positions and playerIds are loaded from file weather it's prevously saved game or new game */
 int32_t populatePieces(struct Vector pieces[PLAYERS_COUNT], 
                        int32_t whitePiecesRsrcId, 
                        int32_t blackPiecesRsrcId, 

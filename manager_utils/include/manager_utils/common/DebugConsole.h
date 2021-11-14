@@ -29,9 +29,11 @@ struct DebugConsoleData {
 
 struct DebugConsole {
     struct Text debugTexts[DEBUG_TEXTS_COUNT];
+
     int32_t activeTimers;
     int64_t maxFrames;      //used to determine the current FPS
-    int32_t updateCounter; //used for skipping turns
+    int32_t updateCounter;  //used for skipping turns
+    
     bool isActive;
 };
 

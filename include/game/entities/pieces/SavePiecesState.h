@@ -16,7 +16,8 @@
 /*        Defines       */
 
 int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
-                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], const char* fileName);
+                 int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], 
+                 const char* fileName);
 
 int32_t saveFile(const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL],
                  int32_t playerIds[TILES_IN_ROW][TILES_IN_COL]);

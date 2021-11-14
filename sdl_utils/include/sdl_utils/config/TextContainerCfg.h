@@ -28,6 +28,6 @@ struct TextContainerCfg {
 };
 
 void insertFontConfig(struct TextContainerCfg* self, int32_t idx,
-                        const struct FontConfig* fontCfg);
+                      const struct FontConfig* fontCfg);
 
 #endif /* SDL_UTILS_INCLUDE_SDL_UTILS_CONFIG_TEXTCONTAINERCFG_H_ */

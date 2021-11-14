@@ -13,7 +13,7 @@
 #include "game/Game.h"
  
 /* Forward declarations */
-typedef struct EngineConfig EngineConfig;
+struct EngineConfig;
 
 /*        Defines       */
 

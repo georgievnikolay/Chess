@@ -21,6 +21,7 @@ enum ButtonStates {
 
 struct Button {
     struct Image img;
+    
     bool isInputUnlocked;
 };
 

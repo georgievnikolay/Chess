@@ -21,6 +21,7 @@ struct GameCfg {
     struct PieceHandlerCfg pieceHandlerCfg;
     struct GameLogicCfg gameLogicCfg;
     struct GamePanelsCfg gamePanelsCfg;
+    
     int32_t gameBoardRsrcId;
     int32_t targetRsrcId;
     int32_t moveSelectorRsrcId;
