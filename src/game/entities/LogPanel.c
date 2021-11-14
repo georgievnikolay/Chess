@@ -11,6 +11,7 @@
 /* Own library includes */
 #include "game/entities/pieces/types/ChessPiece.h"
 #include "game/entities/LogPanel.h"
+#include "utils/path/PathConfigurator.h"
 #include "utils/drawing/Point.h"
 #include "utils/drawing/Color.h"
 #include "utils/ErrorCodes.h"
@@ -24,7 +25,7 @@ static const char* NO_TEXT = "-";
 
 static void translateBoardPos(const struct BoardPos* boardPos, int32_t playerId, char* buffer) {
 
-    char localBuffer[3];
+    char localBuffer[15];
     int32_t row;
     int32_t col;
 
@@ -36,7 +37,7 @@ static void translateBoardPos(const struct BoardPos* boardPos, int32_t playerId,
         col = 'h' - boardPos->col;
     }
 
-    snprintf(localBuffer, 3, "%c%d", (char)col, row);
+    snprintf(localBuffer, 15, "%c%d", (char)col, row);
     strcat(buffer, localBuffer);
 }
 
@@ -158,17 +159,8 @@ int32_t loadLogPanel(struct LogPanel* self, const char* fileName) {
     
     FILE* fp;
     
-    char* back = "../";
-    char* folder = "resources/gameFiles/";
     char filePath[50];
-#ifdef RELEASE_BUILD
-    strcpy(filePath, folder);
-    strcat(filePath, fileName);
-#else
-    strcpy(filePath, back);
-    strcat(filePath, folder);
-    strcat(filePath, fileName);
-#endif
+    configurePath(fileName, filePath);
 
     if ((fp = fopen(filePath, "r")) == NULL) {
         LOGERR("Error, did not load file: %s", filePath);
@@ -179,7 +171,11 @@ int32_t loadLogPanel(struct LogPanel* self, const char* fileName) {
 
     for (int32_t i = 0; i < MAX_LOGS; i++) {
 
-        fgets(line, 30, fp);
+        if (fgets(line, 30, fp) == NULL) {
+            LOGERR("loadLogPanel() reached end of file earlier than expected");
+            return FAILURE;
+        }
+
         line[strlen(line) - 1] = '\0';
 
         setText(&self->moveLogs[i], line);
@@ -199,12 +195,10 @@ int32_t loadLogPanel(struct LogPanel* self, const char* fileName) {
 
 int32_t saveLogPanel(struct LogPanel* self) {
     FILE* fp;
-    const char* filePath = NULL;
-#ifdef RELEASE_BUILD
-    filePath = "resources/gameFiles/savedLogPanel.txt";
-#else
-    filePath = "../resources/gameFiles/savedLogPanel.txt";
-#endif
+    
+    char* fileName = "savedLogPanel.txt";
+    char filePath[50];    
+    configurePath(fileName, filePath);
 
     if ((fp = fopen(filePath, "w")) == NULL) {
         LOGERR("Error, did not load file: %s", filePath);

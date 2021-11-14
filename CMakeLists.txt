@@ -101,7 +101,7 @@ add_executable(
 
 set_target_c_standard(${PROJECT_NAME} 11)
 enable_target_c_warnings(${PROJECT_NAME})
-enable_target_c_sanitizer(${PROJECT_NAME} "undefined")
+#enable_target_c_sanitizer(${PROJECT_NAME} "undefined")
 
 target_include_directories(
     ${PROJECT_NAME}

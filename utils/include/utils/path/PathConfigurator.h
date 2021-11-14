@@ -16,6 +16,8 @@
 #define WIN_DIR_CHAR '/'
 #define LINUX_MAC_DIR_CHAR '\\'
 
-void configurePath(char* path);
+void configureOSPath(char* path);
+
+void configurePath(const char* fileName, char* filePath);
 
 #endif /* UTILS_INCLUDE_UTILS_PATH_PATHCONFIGURATOR_H_ */

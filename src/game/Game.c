@@ -141,6 +141,11 @@ int32_t onGameSavedGameProxy(void* proxy) {
 int32_t onGameStartedGameProxy(void *proxy) {
     struct Game* self = (struct Game*)proxy;
 
+    if (SUCCESS != loadGameLogic(&self->gameLogic, newGameLogicFile)) {
+        LOGERR("Error, loadGameLogic() failed");
+        return FAILURE;
+    }
+
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
             self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, newGameFile, newLogPanelFile)) {
@@ -148,10 +153,6 @@ int32_t onGameStartedGameProxy(void *proxy) {
         return FAILURE;
     }
     
-    if (SUCCESS != loadGameLogic(&self->gameLogic, newGameLogicFile)) {
-        LOGERR("Error, loadGameLogic() failed");
-        return FAILURE;
-    }
     startGameLogic(&self->gameLogic);
 
     return SUCCESS;
@@ -160,6 +161,11 @@ int32_t onGameStartedGameProxy(void *proxy) {
 int32_t onGameContinueGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
 
+    if (SUCCESS != loadGameLogic(&self->gameLogic, savedGameLogicFile)) {
+        LOGERR("Error, loadGameLogic() failed");
+        return FAILURE;
+    }
+    
     deinitPieceHandler(&self->pieceHandler);
     if (SUCCESS != initPieceHandler(&self->pieceHandler, &self->pieceHandler.cfg,
             self->gameLogic.activePlayerId, (void*)self, (void*)&self->gameBoard, savedGameFile, savedLogPanelFile)) {
@@ -167,10 +173,6 @@ int32_t onGameContinueGameProxy(void* proxy) {
         return FAILURE;
     }
 
-    if (SUCCESS != loadGameLogic(&self->gameLogic, savedGameLogicFile)) {
-        LOGERR("Error, loadGameLogic() failed");
-        return FAILURE;
-    }
     startGameLogic(&self->gameLogic);
 
     return SUCCESS;

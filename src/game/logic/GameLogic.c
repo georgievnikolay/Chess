@@ -11,6 +11,7 @@
 #include "game/proxies/GameProxy.h"
 #include "game/defines/ChessDefines.h"
 #include "game/config/GameLogicCfg.h"
+#include "utils/path/PathConfigurator.h"
 #include "utils/drawing/Color.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
@@ -153,26 +154,20 @@ int32_t loadGameLogic(struct GameLogic* self, const char* fileName) {
 
     FILE* fp;
 
-    char* back = "../";
-    char* folder = "resources/gameFiles/";
     char filePath[50];
-#ifdef RELEASE_BUILD
-    strcpy(filePath, folder);
-    strcat(filePath, fileName);
-#else
-    strcpy(filePath, back);
-    strcat(filePath, folder);
-    strcat(filePath, fileName);
-#endif
+    configurePath(fileName, filePath);
 
     if ((fp = fopen(filePath, "r")) == NULL) {
         LOGERR("Error, did not load file: %s", filePath);
         return FAILURE;
     }
 
-    fscanf(fp, "%d/%d/%d", &self->activePlayerId, 
-                           &self->numberOfMoves, 
-                           &self->turnSeconds);
+    if (0 == fscanf(fp, "%d/%d/%d", &self->activePlayerId, 
+                                    &self->numberOfMoves, 
+                                    &self->turnSeconds)) {
+        LOGERR("loadGameLogic() failed to read from file.");
+        return FAILURE;
+    }
 
     fclose(fp);
     fp = NULL;
@@ -183,12 +178,9 @@ int32_t loadGameLogic(struct GameLogic* self, const char* fileName) {
 int32_t saveGameLogic(const struct GameLogic* self) {
 
     FILE* fp;
-    const char* filePath = NULL;
-#ifdef RELEASE_BUILD
-    filePath = "resources/gameFiles/savedGameLogic.txt";
-#else
-    filePath = "../resources/gameFiles/savedGameLogic.txt";
-#endif
+    char* fileName = "savedGameLogic.txt";
+    char filePath[50];
+    configurePath(fileName, filePath);
 
     if ((fp = fopen(filePath, "w")) == NULL) {
         LOGERR("Error, did not load file: %s", filePath);

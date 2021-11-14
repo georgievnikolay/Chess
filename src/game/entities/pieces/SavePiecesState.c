@@ -8,6 +8,7 @@
 /* Third party includes */
 
 /* Own library includes */
+#include "utils/path/PathConfigurator.h"
 #include "utils/ErrorCodes.h"
 #include "utils/Log.h"
 
@@ -40,17 +41,8 @@ int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
                  int32_t playerIds[TILES_IN_ROW][TILES_IN_COL], const char* fileName) {
     
     FILE* fp = NULL;
-    char* back = "../";
-    char* folder = "resources/gameFiles/";
     char filePath[50];
-#ifdef RELEASE_BUILD
-    strcpy(filePath, folder);
-    strcat(filePath, fileName);
-#else
-    strcpy(filePath, back);
-    strcat(filePath, folder);
-    strcat(filePath, fileName);
-#endif
+    configurePath(fileName, filePath);
 
     if ((fp = fopen(filePath, "r")) == NULL) {
         LOGERR("Error, did not load file: %s", filePath);
@@ -94,16 +86,12 @@ int32_t loadFile(PieceType outPieces[TILES_IN_ROW][TILES_IN_COL],
 int32_t saveFile(const PieceType allPieces[TILES_IN_ROW][TILES_IN_COL],
                  int32_t playerIds[TILES_IN_ROW][TILES_IN_COL]) {
     FILE* fp = NULL;
-    
-    const char* fileName = NULL;
-#ifdef RELEASE_BUILD
-    fileName = "resources/gameFiles/savedGame.txt";
-#else
-    fileName = "../resources/gameFiles/savedGame.txt";
-#endif
+    char* fileName = "savedGame.txt";
+    char filePath[50];    
+    configurePath(fileName, filePath);
 
-    if ((fp = fopen(fileName, "w")) == NULL) {
-        LOGERR("Error, did not load file: %s", fileName);
+    if ((fp = fopen(filePath, "w")) == NULL) {
+        LOGERR("Error, did not load file: %s", filePath);
         return FAILURE;
     }
 

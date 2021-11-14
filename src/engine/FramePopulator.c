@@ -26,7 +26,7 @@ void populateResourceLocation(char* buffer, const char* relativePath) {
     strcpy(buffer, "../");
     strcat(buffer, relativePath);
 #endif
-    configurePath(buffer);
+    configureOSPath(buffer);
 }
 
 static void setRandomImage(char* imagePath) {

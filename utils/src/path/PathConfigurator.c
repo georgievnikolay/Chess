@@ -24,10 +24,24 @@ static void replaceCharacter(char* path) {
     }
 }
 
-void configurePath(char* path) {
+void configureOSPath(char* path) {
 #ifdef _WIN32
     replaceCharacter(path)
 #else
     UNUSED(replaceCharacter(path));
 #endif
+}
+
+void configurePath(const char* fileName, char* filePath) {
+    char* folder = "resources/gameFiles/";
+#ifdef RELEASE_BUILD
+    strcpy(filePath, folder);
+    strcat(filePath, fileName);
+#else
+    char* back = "../";
+    strcpy(filePath, back);
+    strcat(filePath, folder);
+    strcat(filePath, fileName);
+#endif
+    configureOSPath(filePath);   
 }
