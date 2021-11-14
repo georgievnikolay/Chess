@@ -32,6 +32,7 @@ add_executable(
         ${_INCLUDE_DIR}/game/config/GameCfg.h
         ${_INCLUDE_DIR}/game/config/GameLogicCfg.h
         ${_INCLUDE_DIR}/game/config/GameButtonCfg.h
+        ${_INCLUDE_DIR}/game/config/GamePanelsCfg.h
         ${_INCLUDE_DIR}/game/config/GameStatePanelCfg.h
         ${_INCLUDE_DIR}/game/config/PieceHandlerCfg.h
         ${_INCLUDE_DIR}/game/config/PiecePromotionPanelCfg.h
@@ -41,6 +42,7 @@ add_executable(
         ${_INCLUDE_DIR}/game/defines/GameDefines.h
         ${_INCLUDE_DIR}/game/defines/GameLogicDefines.h
         ${_INCLUDE_DIR}/game/defines/ChessStructs.h
+        ${_INCLUDE_DIR}/game/entities/panels/GamePanels.h
         ${_INCLUDE_DIR}/game/entities/panels/PiecePromotionPanel.h
         ${_INCLUDE_DIR}/game/entities/panels/GameStatePanel.h
         ${_INCLUDE_DIR}/game/entities/panels/LogPanel.h
@@ -72,6 +74,7 @@ add_executable(
         ${_SOURCE_DIR}/engine/FramePopulator.c
         ${_SOURCE_DIR}/engine/EngineConfigLoader.c
         
+        ${_SOURCE_DIR}/game/entities/panels/GamePanels.c
         ${_SOURCE_DIR}/game/entities/panels/PiecePromotionPanel.c
         ${_SOURCE_DIR}/game/entities/panels/GameStatePanel.c
         ${_SOURCE_DIR}/game/entities/panels/LogPanel.c

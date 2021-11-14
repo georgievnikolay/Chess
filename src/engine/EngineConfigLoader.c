@@ -116,8 +116,8 @@ static void populateGameCfg(struct GameCfg* cfg) {
     
     populatePieceHandlerCfg(&cfg->pieceHandlerCfg);
     populateGameLogicCfg(&cfg->gameLogicCfg);
-    populateGameStatePanelCfg(&cfg->gameStatePanelCfg);
-    populatePiecePromotionPanelCfg(&cfg->piecePromotionPanelCfg);
+    populateGameStatePanelCfg(&cfg->gamePanelsCfg.gameStatePanelCfg);
+    populatePiecePromotionPanelCfg(&cfg->gamePanelsCfg.piecePromotionPanelCfg);
 }
 
 struct EngineConfig loadEngineConfig() {

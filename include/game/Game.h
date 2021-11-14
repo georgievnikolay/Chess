@@ -10,8 +10,7 @@
 
 /* Own library includes */
 #include "game/config/GameCfg.h"
-#include "game/entities/panels/PiecePromotionPanel.h"
-#include "game/entities/panels/GameStatePanel.h"
+#include "game/entities/panels/GamePanels.h"
 #include "game/entities/board/GameBoard.h"
 #include "game/entities/pieces/PieceHandler.h"
 #include "game/logic/GameLogic.h"
@@ -24,8 +23,7 @@ struct InputEvent;
 struct Game {
     struct GameBoard gameBoard;
     struct PieceHandler pieceHandler;
-    struct PiecePromotionPanel piecePromotionPanel;
-    struct GameStatePanel gameStatePanel;
+    struct GamePanels gamePanels;
     struct GameLogic gameLogic;
     bool gameExited;
 };

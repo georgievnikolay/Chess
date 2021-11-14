@@ -8,8 +8,7 @@
 /* Third party includes */
 
 /* Own library includes */
-#include "game/entities/panels/GameStatePanel.h"
-#include "game/entities/panels/LogPanel.h"
+#include "game/entities/panels/GamePanels.h"
 #include "game/entities/pieces/types/ChessPiece.h"
 #include "game/defines/ChessDefines.h"
 #include "game/proxies/GameProxy.h"
@@ -42,17 +41,11 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
         return FAILURE;
     }
 
-    if (SUCCESS != initPiecePromotionPanel(&self->piecePromotionPanel, 
-            &cfg->piecePromotionPanelCfg, (void*)self)) {
+    if (SUCCESS != initGamePanels(&self->gamePanels, 
+            &cfg->gamePanelsCfg, (void*)self)) {
         LOGERR("Error, initPiecePromotionPanel() failed");
         return FAILURE;
-    }
-
-    if (SUCCESS != initGameStatePanel(&self->gameStatePanel, 
-            &cfg->gameStatePanelCfg, (void*)self)) {
-        LOGERR("Error, initGameStatePanel() failed");
-        return FAILURE;
-    }
+    }    
 
     if (SUCCESS != initGameLogic(&self->gameLogic, &cfg->gameLogicCfg, (void*)self)) {
         LOGERR("Error, initGameLogic() failed");
@@ -67,19 +60,12 @@ int32_t initGame(struct Game* self, const struct GameCfg* cfg) {
 void deinitGame(struct Game* self) {
     deinitGameBoard(&self->gameBoard);
     deinitPieceHandler(&self->pieceHandler);
-    deinitPiecePromotionPanel(&self->piecePromotionPanel);
-    deinitGameStatePanel(&self->gameStatePanel);
+    deinitGamePanels(&self->gamePanels);
     deinitGameLogic(&self->gameLogic);
 }
 
 void handleEventGame(struct Game* self, struct InputEvent* event) {
-    handleEventGameStatePanel(&self->gameStatePanel, event);
-    
-    if (self->piecePromotionPanel.isActive) {
-        handleEventPiecePromotionPanel(&self->piecePromotionPanel, event);
-        return;
-    }
-
+    handleEventGameStatePanels(&self->gamePanels, event);
     handleEventPieceHandler(&self->pieceHandler, event);
 }
 
@@ -87,8 +73,7 @@ void drawGame(struct Game* self) {
     drawGameBoard(&self->gameBoard);
     drawGameLogic(&self->gameLogic);
     drawPieceHandler(&self->pieceHandler);
-    drawPiecePromotionPanel(&self->piecePromotionPanel);
-    drawGameStatePanel(&self->gameStatePanel);
+    drawGamePanels(&self->gamePanels);
 }
 
 /*Proxies*/
@@ -107,7 +92,7 @@ void finishTurnGameProxy(void* proxy) {
 void activatePawnPromotionGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
     
-    activatePiecePromotionPanel(&self->piecePromotionPanel, 
+    activatePiecePromotionPanel(&self->gamePanels.piecePromotionPanel, 
                                 self->gameLogic.activePlayerId);
 }
 
@@ -196,7 +181,7 @@ void increaseNumberOfMovesGameProxy(void* proxy) {
 
 int32_t onGameEndedGameProxy(void* proxy) {
     struct Game* self = (struct Game*)proxy;
-    activateGameStatePanel(&self->gameStatePanel);
+    activateGameStatePanel(&self->gamePanels.gameStatePanel);
 
     return SUCCESS;
 }
