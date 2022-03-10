@@ -34,11 +34,11 @@ At the momement this project runs only on Linux
 - Game starts with one of three different screen images
 
 <br>
-
+<!--
 ## Known issues and things to improve:
 - Castle feauture not implememnted
 - Dead position not implemented
 - Checkmate feauture can be improved to cover more cases
 - Start Panel not showing when game has ended in Checkmate
-
+ -->
 
